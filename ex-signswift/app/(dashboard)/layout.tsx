@@ -1,9 +1,5 @@
+import Navbar from "@/components/(dashboard)/User/Navbar";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { EdgeStoreProvider } from "@/lib/edgestore";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,8 +13,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <EdgeStoreProvider>{children}</EdgeStoreProvider>
+      <body className=" bg-slate-800">
+        <nav>
+          <Navbar />
+        </nav>
+        {children}
       </body>
     </html>
   );
