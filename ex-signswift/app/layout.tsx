@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import AuthProvider from "./AuthProvider/AuthProvider"
+import { EdgeStoreProvider } from "@/lib/edgestore";
+import Navbar from "@/components/(dashboard)/User/Navbar";
+
+import AuthProvider from "./AuthProvider/AuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,10 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
-        {children}
-        </AuthProvider>
-        </body>
+        <nav>
+          <Navbar />
+        </nav>
+        <EdgeStoreProvider>{children}</EdgeStoreProvider>
+      </body>
+      <body className={inter.className}>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
