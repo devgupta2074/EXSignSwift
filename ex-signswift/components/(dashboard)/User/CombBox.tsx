@@ -18,21 +18,31 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useRouter } from "next/navigation";
 
 const frameworks = [
   {
     value: "User Settings",
     label: "User Settings",
     class: "",
+    link: "",
+  },
+  {
+    value: "Admin",
+    label: "Admin",
+    class: "",
+    link: "/admin",
   },
   {
     value: "Sign Out",
     label: "Sign Out",
     class: "text-red-600",
+    link: "",
   },
 ];
 
 export function ComboboxDemo() {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
@@ -85,7 +95,14 @@ export function ComboboxDemo() {
                     value === framework.value ? "opacity-100" : "opacity-0 "
                   )}
                 />
-                <p className={framework.class}>{framework.label}</p>
+                <p
+                  onClick={() => {
+                    router.push(framework.link);
+                  }}
+                  className={framework.class}
+                >
+                  {framework.label}
+                </p>
               </CommandItem>
             ))}
           </CommandGroup>

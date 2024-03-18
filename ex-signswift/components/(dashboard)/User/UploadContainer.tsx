@@ -23,15 +23,13 @@ export default function UploadContainer() {
         const res = await edgestore.publicFiles.upload({
           file,
           onProgressChange: (progress) => {
-            // you can use this to show a progress bar
             console.log(progress);
           },
         });
-        // you can run some server action or api here
-        // to add the necessary data to your database
+
         console.log(res);
-        //to do push data into db
-        router.push("/document/xxx");
+
+        router.push("/document/124");
       }
     } catch {
       toast({
