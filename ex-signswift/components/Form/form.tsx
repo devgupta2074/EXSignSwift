@@ -7,19 +7,18 @@ import { useDrag } from "react-dnd";
 import { Mail, User, Calendar, Text } from "lucide-react";
 import DropItem from "../DropItem/dropItem";
 interface FormProps {
-  childref: RefObject<HTMLButtonElement>;
-  childref1: RefObject<HTMLButtonElement>;
-  childref2: RefObject<HTMLButtonElement>;
-  childref3: RefObject<HTMLButtonElement>;
-  childref4: RefObject<HTMLButtonElement>;
+  childrefs: RefObject<HTMLButtonElement>[];
+  handleAddFields: () => void;
 }
-const Form: FC<FormProps> = ({
-  childref,
-  childref1,
-  childref2,
-  childref3,
-  childref4,
-}) => {
+const Form: FC<FormProps> = ({ childrefs, handleAddFields }) => {
+  const fieldValues = [
+    { id: 1, text: "Signature", icon: null },
+    { id: 2, text: "Email", icon: <Mail size={24} /> },
+    { id: 3, text: "Name", icon: <User size={24} /> },
+    { id: 4, text: "Date", icon: <Calendar size={24} /> },
+    { id: 5, text: "Text", icon: <Text size={24} /> },
+  ];
+
   return (
     <div
       className="flex justify-center items-start h-full bg-gray-800 mt-16"
@@ -40,43 +39,24 @@ const Form: FC<FormProps> = ({
             style={{}}
           >
             <fieldset className="grid grid-cols-2 gap-5 gap-x-19">
-              <DropItem
-                childref={childref}
-                itemId={0}
-                text={"Signature"}
-                icon={null}
-              />
-
-              <DropItem
-                childref={childref1}
-                itemId={1}
-                text={"Email"}
-                icon={<Mail size={24} />}
-              />
-              <DropItem
-                childref={childref2}
-                itemId={2}
-                text={"Name"}
-                icon={<User size={24} />}
-              />
-              <DropItem
-                childref={childref3}
-                itemId={3}
-                text={"Date"}
-                icon={<Calendar size={24} />}
-              />
-              <DropItem
-                childref={childref4}
-                itemId={4}
-                text={"Text"}
-                icon={null}
-              />
+              {childrefs.map((childref, index) => (
+                <DropItem
+                  key={index}
+                  childref={childref}
+                  itemId={index}
+                  text={fieldValues[index].text}
+                  icon={fieldValues[index].icon}
+                />
+              ))}
             </fieldset>
             <div className="flex gap-20 pt-10">
               <Button className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors  w-2/5">
                 Go Back
               </Button>
-              <Button className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-2/5">
+              <Button
+                className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-2/5"
+                onClick={handleAddFields}
+              >
                 Continue
               </Button>
             </div>

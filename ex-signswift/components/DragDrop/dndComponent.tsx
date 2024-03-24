@@ -2,8 +2,7 @@
 import React, { ReactElement, useState } from "react";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import PdfViewer from "../PdfViewer/viewer";
-import { FaTrash } from "react-icons/fa";
+
 import { ResizableBox } from "react-resizable";
 import { ReactNode } from "react";
 import Form from "../Form/form";
@@ -16,7 +15,11 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import myFile from "../PdfViewer/sow2.pdf";
 import "react-pdf/dist/Page/TextLayer.css";
 import { RefObject } from "react";
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+import usePdfFileFromUrl from "@/app/utils/usePdfUrl";
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.js",
+  import.meta.url
+).toString();
 interface PdfViewerProps {
   parentRef: RefObject<HTMLDivElement>;
 }
@@ -37,10 +40,10 @@ interface ChildRefs {
 
 export const DndComponent = () => {
   const [numPages, setNumPages] = useState<number>(0);
-  //   useEffect(() => {
-  //     console.log(myFile);
-  //   }, []);
 
+  const handleAddFields = () => {
+    console.log(copiedItems);
+  };
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
@@ -52,15 +55,47 @@ export const DndComponent = () => {
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
-  const childref = useRef<HTMLButtonElement>(null);
-  const childref1 = useRef<HTMLButtonElement>(null);
-  const childref2 = useRef<HTMLButtonElement>(null);
-  const childref3 = useRef<HTMLButtonElement>(null);
-  const childref4 = useRef<HTMLButtonElement>(null);
-  const parentRef = useRef<HTMLDivElement>(null);
+  const { pdfUrl, loading, error } = usePdfFileFromUrl(
+    "https://pdf-lib.js.org/assets/with_update_sections.pdf"
+  );
 
-  const [position, setPosition] = useState({ left: 0, top: 0 });
+  const parentRef = useRef<HTMLDivElement>(null);
   const [copiedItems, setCopiedItems] = useState<DroppedItem[]>([]);
+
+  const handleMouseDown = (e: React.MouseEvent, item: DroppedItem) => {
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startLeft = item.left;
+    const startTop = item.top;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      let left = startLeft + e.clientX - startX;
+      let top = startTop + e.clientY - startY;
+
+      const parentRect = parentRef?.current?.getBoundingClientRect();
+      const childref = childrefs[item.id];
+      const childRect = childref?.current?.getBoundingClientRect();
+      left = Math.max(0, left);
+      const maxLeft =
+        (parentRect?.width || 0) -
+        (childRect?.width || 0) +
+        (parentRect?.left || 0) -
+        35;
+      left = Math.min(left, maxLeft);
+      top = Math.max(0, top);
+      const maxTop = (parentRect?.height || 0) - (childRect?.height || 0) - 5;
+      top = Math.min(top, maxTop);
+      moveItem(item.id, left, top);
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
   useEffect(() => {
     const handleScroll = (event: WheelEvent) => {
       const pdfViewer = document.getElementById("pdf-viewer");
@@ -75,29 +110,20 @@ export const DndComponent = () => {
       window.removeEventListener("wheel", handleScroll);
     };
   }, []);
-
-  const childRefs: ChildRefs = {
-    0: childref,
-    1: childref1,
-    2: childref2,
-    3: childref3,
-    4: childref4,
+  const useRefsArray = (length: number) => {
+    return Array.from({ length }).map(() => useRef<HTMLButtonElement>(null));
   };
+  const childrefs = useRefsArray(5);
   const [, drop] = useDrop({
     accept: "test",
     drop: (item: { id: number }, monitor) => {
-      let actualChildRef = childRefs[item.id];
+      let actualChildRef = childrefs[item.id];
       console.log("dropping");
       const delta = monitor.getDifferenceFromInitialOffset();
       if (!delta || !parentRef.current) return;
-
-      //214 798
-      //817-
       const childRect = actualChildRef?.current?.getBoundingClientRect();
       const parentRect = parentRef?.current?.getBoundingClientRect();
-      console.log(parentRect);
-      console.log(delta);
-      console.log(childRect);
+
       let left = (childRect?.left || 0) + delta.x - parentRect.left;
       let top = (childRect?.top || 0) + delta.y - parentRect?.top;
       left = Math.max(0, left);
@@ -114,7 +140,7 @@ export const DndComponent = () => {
         width: childRect?.width,
         height: childRect?.height,
       };
-      console.log(copiedItems);
+
       setCopiedItems([...copiedItems, newItem]);
     },
   });
@@ -133,6 +159,7 @@ export const DndComponent = () => {
   };
 
   drop(parentRef);
+
   return (
     <div
       style={{
@@ -156,9 +183,8 @@ export const DndComponent = () => {
           id="pdf-viewer"
           className="border-2 border-rose-500 rounded-md m-2"
         >
-          <Document file={myFile} onLoadSuccess={onDocumentLoadSuccess}>
+          <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
             <div
-              className=""
               style={{
                 border: "2px solid green",
                 position: "relative",
@@ -178,8 +204,9 @@ export const DndComponent = () => {
                         position: "absolute",
                         borderRadius: "0.5rem",
                         zIndex: 1000,
-                        boxShadow: " inset 0 0 0 100px rgb(	173, 216, 230,.2)",
-                        backdropFilter: "blur(0.9px)",
+                        backgroundColor: "rgb(255,0, 127,.2)",
+                        backdropFilter: "blur(2px)",
+
                         fontWeight: "500",
                       }}
                     >
@@ -289,79 +316,19 @@ export const DndComponent = () => {
                             cursor: "move",
                           }}
                           onMouseDown={(e) => {
-                            const startX = e.clientX;
-                            const startY = e.clientY;
-                            const startLeft = item.left;
-                            const startTop = item.top;
-
-                            const handleMouseMove = (e: MouseEvent) => {
-                              let left = startLeft + e.clientX - startX;
-                              let top = startTop + e.clientY - startY;
-                              console.log(left, top, "onmouse move");
-                              const parentRect =
-                                parentRef?.current?.getBoundingClientRect();
-                              const childRect =
-                                childref?.current?.getBoundingClientRect();
-                              left = Math.max(0, left);
-                              const maxLeft =
-                                (parentRect?.width || 0) -
-                                (childRect?.width || 0) +
-                                (parentRect?.left || 0) -
-                                35;
-                              left = Math.min(left, maxLeft);
-                              top = Math.max(0, top);
-                              const maxTop =
-                                (parentRect?.height || 0) -
-                                (childRect?.height || 0) -
-                                5;
-                              top = Math.min(top, maxTop);
-                              moveItem(item.id, left, top);
-                            };
-
-                            const handleMouseUp = () => {
-                              document.removeEventListener(
-                                "mousemove",
-                                handleMouseMove
-                              );
-                              document.removeEventListener(
-                                "mouseup",
-                                handleMouseUp
-                              );
-                            };
-
-                            document.addEventListener(
-                              "mousemove",
-                              handleMouseMove
-                            );
-                            document.addEventListener("mouseup", handleMouseUp);
+                            handleMouseDown(e, item);
                           }}
                         >
                           <div
                             onClick={() => deleteItem(item.id)}
-                            style={{
-                              position: "absolute",
-                              top: -10,
-
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              right: -10,
-
-                              width: "2rem",
-                              backgroundColor: "white",
-                              height: "2rem",
-                              borderRadius: "50%",
-                            }}
+                            className="absolute top-[-10px] right-[-10px] flex justify-center items-center w-8 h-8 bg-white rounded-full"
                           >
                             <LuTrash
-                              style={{
-                                cursor: "pointer",
-                                color: "grey",
-                              }}
+                              className="cursor-pointer text-gray-500"
                               size={15}
                             />
                           </div>
-                          <div style={{ display: "flex", gap: 5 }}>
+                          <div className="flex gap-5">
                             <div
                               dangerouslySetInnerHTML={{
                                 __html: item?.icon || "",
@@ -413,13 +380,7 @@ export const DndComponent = () => {
           width: "50vw",
         }}
       >
-        <Form
-          childref={childref}
-          childref1={childref1}
-          childref2={childref2}
-          childref3={childref3}
-          childref4={childref4}
-        />
+        <Form childrefs={childrefs} handleAddFields={handleAddFields} />
       </div>
     </div>
   );
