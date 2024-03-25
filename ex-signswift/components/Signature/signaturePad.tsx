@@ -18,17 +18,19 @@ interface CustomSignaturePadProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   onSaveSignature: (signature: string) => void;
+  signatureCanvasRef: React.RefObject<SignatureCanvas>;
 }
 
 const CustomSignaturePad = ({
   open,
   setOpen,
   onSaveSignature,
+  signatureCanvasRef,
 }: CustomSignaturePadProps) => {
-  const signatureCanvasRef = React.useRef<SignatureCanvas | null>(null);
   const saveSignature = () => {
     const signatureImage = signatureCanvasRef?.current?.toDataURL();
     onSaveSignature(signatureImage || "");
+    signatureCanvasRef?.current?.clear();
   };
 
   return (

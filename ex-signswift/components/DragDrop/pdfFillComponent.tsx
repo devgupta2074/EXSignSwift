@@ -10,35 +10,32 @@ import { pdfjs } from "react-pdf";
 import CustomSignatureCanvas from "../Signature/signatureCanvas";
 import { DialogTrigger } from "../ui/dialog";
 import CustomSignaturePad from "../Signature/signaturePad";
+import SignatureCanvas from "react-signature-canvas";
+
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
 ).toString();
-const PdfFillComponent = () => {
+interface PdfFillComponentProps {
+  signatureCanvasRef: React.RefObject<SignatureCanvas>;
+  signatureCanvasRef2: React.RefObject<SignatureCanvas>;
+}
+const PdfFillComponent = ({
+  signatureCanvasRef,
+  signatureCanvasRef2,
+}: PdfFillComponentProps) => {
+  let id = -1;
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [open, setOpen] = React.useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
+  const [currentItemId, setCurrentItemId] = useState<number>(-1);
 
   const [signedItems, setSignedItems] = useState<number[]>([]);
-  const onSaveSignature = (signature: string) => {
+  const onSaveSignature = (signature: string, currentItemId: number) => {
+    console.log("currentItemId", currentItemId);
     if (currentItemId === -1) {
       console.log("Something Wrong");
-      return;
-    }
-
-    if (signedItems.includes(currentItemId)) {
-      //remove logic
-      let newCopiedItems = copiedItems.filter((item) => {
-        if (item.id === currentItemId) {
-          item.signature = "";
-        }
-        return item;
-      });
-
-      setCopiedItems(newCopiedItems);
-      setSignedItems(signedItems.filter((id) => id !== currentItemId));
-
       return;
     }
     setSignedItems([...signedItems, currentItemId]);
@@ -48,7 +45,6 @@ const PdfFillComponent = () => {
       }
       return item;
     });
-
     setCopiedItems(newCopiedItems);
   };
 
@@ -79,7 +75,6 @@ const PdfFillComponent = () => {
   const { pdfUrl, loading, error } = usePdfFileFromUrl(
     "https://pdf-lib.js.org/assets/with_update_sections.pdf"
   );
-  const [currentItemId, setCurrentItemId] = useState<number>(-1);
 
   const copiedItem: DroppedItem[] = [
     {
@@ -126,6 +121,7 @@ const PdfFillComponent = () => {
   const [copiedItems, setCopiedItems] = useState<DroppedItem[]>(copiedItem);
 
   const handleSign = (itemId: number) => {
+    //already signed
     if (signedItems.includes(itemId)) {
       //remove logic
       let newCopiedItems = copiedItems.filter((item) => {
@@ -137,11 +133,19 @@ const PdfFillComponent = () => {
 
       setCopiedItems(newCopiedItems);
       setSignedItems(signedItems.filter((id) => id !== itemId));
-
       return;
     }
-    setOpen(true);
+    //not signed but sign pad has sign and want to apply that sign
+    else if (
+      signatureCanvasRef2?.current !== null &&
+      !signatureCanvasRef2?.current?.isEmpty()
+    ) {
+      console.log(signatureCanvasRef2?.current?.toDataURL());
+      onSaveSignature(signatureCanvasRef2?.current?.toDataURL() || "", itemId);
+      return;
+    }
     setCurrentItemId(itemId);
+    setOpen(true);
   };
   return (
     <div
@@ -158,8 +162,8 @@ const PdfFillComponent = () => {
       <div>
         <div
           style={{
-            height: "70%",
-            marginTop: "5rem",
+            height: "85%",
+            marginTop: "0rem",
             overflowY: "scroll",
             overflowX: "clip",
           }}
@@ -274,9 +278,15 @@ const PdfFillComponent = () => {
       >
         <div>
           <CustomSignaturePad
+            signatureCanvasRef={signatureCanvasRef}
             open={open}
             setOpen={setOpen}
-            onSaveSignature={onSaveSignature}
+            onSaveSignature={() =>
+              onSaveSignature(
+                signatureCanvasRef.current?.toDataURL() || "",
+                currentItemId
+              )
+            }
           />
         </div>
       </div>
