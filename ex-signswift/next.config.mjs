@@ -1,5 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack: (config) => {
+    config.resolve.alias.canvas = false;
+    // config.module.rules.push({
+    //   test: /\.pdf$/,
+    //   use: {
+    //     loader: "file-loader",
+    //     options: {
+    //       name: "[path][name].[ext]",
+    //     },
+    //   },
+    // });
+    config.module.rules.push({
+      test: /\.(pdf)$/,
+      type: "asset/resource",
+    });
+
+    return config;
+  },
+  reactStrictMode: false,
+};
+const nextConfig = {
   env: {
     GOOGLE_CLIENT_ID:
       "56946012782-4fos0hcshm0n4jrfs9h3e5ril1hma1up.apps.googleusercontent.com",
