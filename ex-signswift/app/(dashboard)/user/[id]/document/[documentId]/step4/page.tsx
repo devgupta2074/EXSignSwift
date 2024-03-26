@@ -23,7 +23,7 @@ const page = () => {
       </div>
       <div className="w-1/2 flex justify-center items-start pt-0">
         <div className="w-3/5">
-          {/* <SignatureForm signatureCanvasRef={signatureCanvasRef2} /> */}
+          <SignatureForm signatureCanvasRef={signatureCanvasRef2} />
         </div>
       </div>
     </div>

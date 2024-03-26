@@ -56,9 +56,7 @@ export const DndComponent = ({ url }: { url: string }) => {
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
-  const { pdfUrl, loading, error } = usePdfFileFromUrl(
-    "https://files.edgestore.dev/juie8xgnkozwit7d/publicFiles/_public/a160fa36-fb1b-4be0-b060-2aa202703280.pdf"
-  );
+  const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
 
   const parentRef = useRef<HTMLDivElement>(null);
   const [copiedItems, setCopiedItems] = useState<DroppedItem[]>([]);
