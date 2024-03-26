@@ -3,14 +3,26 @@ import { DocumentTable } from "@/components/(dashboard)/User/DocumentTable";
 
 import { DocumentDropzone } from "@/components/(dashboard)/User/Upload";
 import UploadContainer from "@/components/(dashboard)/User/UploadContainer";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default async function Dashboard() {
+export default async function Dashboard({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const session = await getServerSession();
+
+  if (!session?.user) {
+    console.log(session);
+    redirect(`/login`);
+  }
   return (
     <main className=" flex flex-col gap-4 bg-gray-800">
       {/* User Dashboard with ID here the user should be directed to after login
       here will be the upload and table function */}
 
-      <UploadContainer />
+      <UploadContainer id={params.id} />
       <DocumentTable />
 
       {/* <p>navbar upload table</p> */}

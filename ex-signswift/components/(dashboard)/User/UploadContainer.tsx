@@ -2,10 +2,12 @@
 import { DocumentDropzone } from "@/components/(dashboard)/User/Upload";
 import { useToast } from "@/components/ui/use-toast";
 import { useEdgeStore } from "../../../lib/edgestore";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import axios from "axios";
 
-export default function UploadContainer() {
+export default function UploadContainer({ id }: { id: string }) {
   const router = useRouter();
+
   const { toast } = useToast();
   const { edgestore } = useEdgeStore();
   const onFileDropRejected = () => {
@@ -28,8 +30,17 @@ export default function UploadContainer() {
         });
 
         console.log(res);
-
-        router.push("/document/124");
+        const response = await axios.post(
+          "http://localhost:3000/api/document/uploadDocument",
+          {
+            userId: id,
+            ShareLink: res.url,
+          }
+        );
+        console.log(response);
+        router.push(
+          `http://localhost:3000/user/${id}/document/${response.data.user.id}`
+        );
       }
     } catch {
       toast({

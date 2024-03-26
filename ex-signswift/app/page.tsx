@@ -7,6 +7,7 @@ import { handler } from "./api/auth/[...nextauth]/route";
 import { config } from "@/lib/auth";
 
 // import { useSession } from "next-auth/react";
+import axios from "axios";
 export default async function Home() {
   const session: Session | null = await getServerSession(config);
 
@@ -15,7 +16,12 @@ export default async function Home() {
   if (!session) {
     redirect("/login");
   } else {
-    redirect(`/user/${session.user.id}`);
+    const response = await axios.post(
+      "http://localhost:3000/api/users/registerUser",
+      session.user
+    );
+    console.log(response.data.user.customerId);
+    redirect(`/user/${response.data.user.customerId}`);
   }
 
   return <></>;

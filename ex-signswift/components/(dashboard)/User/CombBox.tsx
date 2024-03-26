@@ -19,6 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const frameworks = [
   {
@@ -73,6 +74,7 @@ export function ComboboxDemo() {
               </div>
             </div>
           )}
+
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -105,6 +107,28 @@ export function ComboboxDemo() {
                 </p>
               </CommandItem>
             ))}
+            <CommandItem
+              onSelect={(currentValue) => {
+                setValue(currentValue === value ? "" : currentValue);
+                setOpen(false);
+              }}
+            >
+              <Check
+                className={cn(
+                  "mr-2 h-4 w-4 ",
+
+                  "opacity-100"
+                )}
+              />
+              <p
+                onClick={() => {
+                  signOut();
+                  router.push("/login");
+                }}
+              >
+                Sign Out
+              </p>
+            </CommandItem>
           </CommandGroup>
         </Command>
       </PopoverContent>

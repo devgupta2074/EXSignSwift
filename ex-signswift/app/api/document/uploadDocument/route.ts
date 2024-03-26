@@ -6,29 +6,18 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { name, email, id, image } = await req.json();
-  console.log(name, email);
+  const { userId, ShareLink } = await req.json();
+  console.log(userId, ShareLink);
   if (req.method === "POST") {
     // create user
     console.log("post");
-    console.log("create user");
-    const customer = await prisma.user.findUnique({
-      where: { email: email },
-    });
-    if (customer) {
-      console.log(customer);
-      return NextResponse.json({
-        message: "User Already Exsist in Database",
-        user: customer,
-        status: 201,
-      });
-    }
+    console.log("document creation process");
 
-    const user = await prisma.user.create({
-      data: { name: name, email: email, customerId: id, image: image },
+    const user = await prisma.document.create({
+      data: { userId: userId, ShareLink: ShareLink },
     });
     return NextResponse.json({
-      message: "User Created",
+      message: "Document Created",
       user: user,
       status: 201,
     });

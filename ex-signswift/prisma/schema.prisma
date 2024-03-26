@@ -31,10 +31,11 @@ model User {
   updatedAt            DateTime             @default(now()) @updatedAt
   lastSignedIn         DateTime             @default(now())
   roles                Role[]               @default([USER])
+  image                String?
 
   accounts             Account[]
   sessions             Session[]
-  Document             Document[]
+
   
   url                  String?              @unique
   userProfile       UserProfile?
@@ -85,46 +86,25 @@ enum DocumentStatus {
 
 model Document {
   id             Int                 @id @default(autoincrement())
-  userId         Int
-  User           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title          String
+  userId         String
+  title          String?
   status         DocumentStatus      @default(DRAFT)
   Recipient      Recipient[]
   Field          Field[]
-  ShareLink      DocumentShareLink[]
-  documentDataId String
-  documentData   DocumentData        @relation(fields: [documentDataId], references: [id], onDelete: Cascade)
-  documentMeta   DocumentMeta?
+  ShareLink      String
+ 
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @default(now()) @updatedAt
   completedAt    DateTime?
   deletedAt      DateTime?
-  teamId         Int?
 
 
-  auditLogs DocumentAuditLog[]
 
-  @@unique([documentDataId])
+
   @@index([userId])
   @@index([status])
 }
 
-model DocumentAuditLog {
-  id         String   @id @default(cuid())
-  documentId Int
-  createdAt  DateTime @default(now())
-  type       String
-  data       Json
-
-  // Details of the person who performed the action which caused the audit log.
-  name      String?
-  email     String?
-  userId    Int?
-  userAgent String?
-  ipAddress String?
-
-  Document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-}
 
 enum DocumentDataType {
   S3_PATH
@@ -132,26 +112,7 @@ enum DocumentDataType {
   BYTES_64
 }
 
-model DocumentData {
-  id          String           @id @default(cuid())
-  type        DocumentDataType
-  data        String
-  initialData String
-  Document    Document?
-  // Template    Template?
-}
 
-model DocumentMeta {
-  id          String   @id @default(cuid())
-  subject     String?
-  message     String?
-  timezone    String?  @default("Etc/UTC") @db.Text
-  password    String?
-  dateFormat  String?  @default("yyyy-MM-dd hh:mm a") @db.Text
-  documentId  Int      @unique
-  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  redirectUrl String?
-}
 
 enum ReadStatus {
   NOT_OPENED
@@ -255,7 +216,6 @@ model DocumentShareLink {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   @@unique([documentId, email])
 }
