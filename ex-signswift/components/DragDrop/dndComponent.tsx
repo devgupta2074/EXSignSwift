@@ -38,7 +38,8 @@ interface ChildRefs {
   [key: number]: React.MutableRefObject<HTMLButtonElement | null>;
 }
 
-export const DndComponent = () => {
+export const DndComponent = ({ url }: { url: string }) => {
+  console.log(url);
   const [numPages, setNumPages] = useState<number>(0);
 
   const handleAddFields = () => {
@@ -56,7 +57,7 @@ export const DndComponent = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
   const { pdfUrl, loading, error } = usePdfFileFromUrl(
-    "https://pdf-lib.js.org/assets/with_update_sections.pdf"
+    "https://files.edgestore.dev/juie8xgnkozwit7d/publicFiles/_public/a160fa36-fb1b-4be0-b060-2aa202703280.pdf"
   );
 
   const parentRef = useRef<HTMLDivElement>(null);

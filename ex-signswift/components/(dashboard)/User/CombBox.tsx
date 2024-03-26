@@ -81,7 +81,7 @@ export function ComboboxDemo() {
       <PopoverContent className="w-[200px] p-0">
         <Command>
           <CommandGroup>
-            {frameworks.map((framework) => (
+            {/* {frameworks.map((framework) => (
               <CommandItem
                 key={framework.value}
                 value={framework.value}
@@ -106,7 +106,7 @@ export function ComboboxDemo() {
                   {framework.label}
                 </p>
               </CommandItem>
-            ))}
+            ))} */}
             <CommandItem
               onSelect={(currentValue) => {
                 setValue(currentValue === value ? "" : currentValue);

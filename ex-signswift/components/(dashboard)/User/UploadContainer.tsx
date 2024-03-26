@@ -39,7 +39,7 @@ export default function UploadContainer({ id }: { id: string }) {
         );
         console.log(response);
         router.push(
-          `http://localhost:3000/user/${id}/document/${response.data.user.id}`
+          `http://localhost:3000/user/${id}/document/${response.data.user.id}/step1`
         );
       }
     } catch {
