@@ -20,13 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <nav>
+        {/* <nav>
           <Navbar />
-        </nav>
-        <EdgeStoreProvider>{children}</EdgeStoreProvider>
-      </body>
-      <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
+        </nav> */}
+        <AuthProvider>
+          {" "}
+          <EdgeStoreProvider>{children}</EdgeStoreProvider>
+        </AuthProvider>
       </body>
     </html>
   );

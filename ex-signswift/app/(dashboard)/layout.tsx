@@ -12,13 +12,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className=" bg-slate-800">
-        {/* <nav>
-          <Navbar />
-        </nav> */}
-        {children}
-      </body>
-    </html>
+    <>
+      <nav>
+        <Navbar />
+      </nav>
+      {children}
+    </>
   );
 }
