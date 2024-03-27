@@ -1,9 +1,10 @@
 "use client";
 import { DndComponent } from "@/components/DragDrop/dndComponent";
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { set } from "zod";
 
 async function fetchData(params: any) {
   try {
@@ -11,7 +12,7 @@ async function fetchData(params: any) {
       "http://localhost:3000/api/document/getDocument",
       { userId: parseInt(params.id), id: params.documentId }
     );
-    console.log(response.data);
+    console.log(response.data, "ddev");
     return response;
 
     // Assuming you want to do something with the response data
@@ -28,9 +29,13 @@ export default function Document({
   params: { id: string; documentId: string };
 }) {
   const [url, setUrl] = React.useState("");
-  const response = fetchData(params).then((response) =>
-    setUrl(response?.data.Document.url)
-  );
+  useEffect(() => {
+    fetchData(params).then((response) =>
+      setUrl(response?.data.Document.ShareLink)
+    );
+  }, [params]);
+
+  console.log(url, "tapasavi");
   return (
     <div
       className="w-full flex flex-row  space-x-10 items-center pt-0 "
