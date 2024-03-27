@@ -1,12 +1,32 @@
 "use client"
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import Input from "./Input";
 
 export default function Step2() {
-    const [inputs, setInputs] = useState<JSX.Element[]>([<Input key={0} />]);
+   
+
+    const [name, setName] = useState<String[]>([]); 
+    const [email, setEmail] = useState<String[]>([]);
+
+    const handleNameChange = (event:ChangeEvent<HTMLInputElement>) => {
+        setName([...name, event.target.value]);
+    };
+
+    // Function to handle changes in the email input
+    const handleEmailChange = (event:ChangeEvent<HTMLInputElement>) => {
+        setEmail([...email, event.target.value]);
+    };
+    const [inputs, setInputs] = useState<JSX.Element[]>([<Input key={0} onChangeName={handleNameChange} onChangeEmail={handleEmailChange}/>]);
+    
+
+    
+    
 
     function onClickHandler() {
-        setInputs([...inputs, <Input key={inputs.length} />]);
+        console.log("name", name);
+        console.log("Email", email);
+       
+        setInputs([...inputs, <Input key={inputs.length} onChangeName={handleNameChange} onChangeEmail={handleEmailChange}/>]);
     }
 
     return (

@@ -9,8 +9,8 @@ import { config } from "@/lib/auth";
 // import { useSession } from "next-auth/react";
 import axios from "axios";
 export default async function Home() {
-  const session: Session | null = await getServerSession(config);
 
+  const session: Session | null = await getServerSession(config);
   console.log("dev", session);
   // const router = useRouter();
   if (!session) {
@@ -24,5 +24,6 @@ export default async function Home() {
     redirect(`/user/${response.data.user.customerId}`);
   }
 
-  return <></>;
+  return <>
+ </>;
 }
