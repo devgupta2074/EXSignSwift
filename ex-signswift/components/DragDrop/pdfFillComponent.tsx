@@ -16,21 +16,37 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
 ).toString();
+
+interface DroppedItem {
+  id: number;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  pageNumber: number;
+  text: string;
+  icon: ReactNode;
+  user: string;
+  signature?: string;
+}
+
 interface PdfFillComponentProps {
   signatureCanvasRef: React.RefObject<SignatureCanvas>;
   signatureCanvasRef2: React.RefObject<SignatureCanvas>;
+  copiedItems: DroppedItem[];
 }
 const PdfFillComponent = ({
   signatureCanvasRef,
   signatureCanvasRef2,
+  copiedItems,
 }: PdfFillComponentProps) => {
   let id = -1;
+  console.log(copiedItems);
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [open, setOpen] = React.useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
   const [currentItemId, setCurrentItemId] = useState<number>(-1);
-
   const [signedItems, setSignedItems] = useState<number[]>([]);
   const onSaveSignature = (signature: string, currentItemId: number) => {
     console.log("currentItemId", currentItemId);
@@ -58,17 +74,6 @@ const PdfFillComponent = ({
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
-  interface DroppedItem {
-    id: number;
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-    pageNumber: number;
-    text: string;
-    icon: ReactNode;
-    signature?: string;
-  }
 
   //arr ->find if he ki nhi he ->sign use state
 
@@ -76,49 +81,7 @@ const PdfFillComponent = ({
     "https://pdf-lib.js.org/assets/with_update_sections.pdf"
   );
 
-  const copiedItem: DroppedItem[] = [
-    {
-      id: 0,
-      text: "Signature",
-      icon: "",
-      width: 224,
-      height: 96,
-      left: 44,
-      top: 78,
-      pageNumber: 1,
-    },
-    {
-      id: 1,
-      text: "Signature",
-      icon: "",
-      width: 224,
-      height: 96,
-      left: 366,
-      top: 28,
-      pageNumber: 1,
-    },
-    {
-      id: 2,
-      text: "Date",
-      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar "><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>',
-      width: 224,
-      height: 96,
-      left: 374,
-      top: 236,
-      pageNumber: 1,
-    },
-    {
-      id: 3,
-      text: "Text",
-      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text "><path d="M17 6.1H3"></path><path d="M21 12.1H3"></path><path d="M15.1 18H3"></path></svg>',
-      width: 224,
-      height: 96,
-      left: 81,
-      top: 309,
-      pageNumber: 1,
-    },
-  ];
-  const [copiedItems, setCopiedItems] = useState<DroppedItem[]>(copiedItem);
+  const [copiedItems2, setCopiedItems] = useState<DroppedItem[]>(copiedItems);
 
   const handleSign = (itemId: number) => {
     //already signed
@@ -191,14 +154,13 @@ const PdfFillComponent = ({
                         top: item.top,
                         position: "absolute",
                         borderRadius: "0.5rem",
-                        zIndex: 50,
-                        color: "white",
+
                         fontWeight: "500",
                       }}
-                      className="bg-rose-500  cursor-pointer hover:bg-rose-700"
+                      className="cursor-pointer text-gray-800 z-50 bg-white dark:bg-gray-800 dark:text-white border-2 border-gray-200  rounded-md shadow-md flex justify-center items-center"
                     >
                       {item.signature ? (
-                        <div className="relative shadow-xl">
+                        <div className="relative shadow-xl h-full w-full">
                           <div className="hover:backdrop-blur-md absolute inset-0 flex justify-center items-center z-50  border-gray-200  rounded-md shadow-md">
                             <div className="text-rose-500 text-xs opacity-0 transition-opacity duration-300 hover:opacity-100 w-full h-full flex justify-center items-center">
                               Remove

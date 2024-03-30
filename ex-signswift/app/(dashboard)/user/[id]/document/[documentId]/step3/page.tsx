@@ -5,20 +5,20 @@ import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-async function fetchData(params: any) {
-  try {
-    const response = await axios.post(
-      "http://localhost:3000/api/document/getDocument",
-      { userId: parseInt(params.id), id: params.documentId }
-    );
-    console.log(response.data);
-    return response;
+// async function fetchData(params: any) {
+//   try {
+//     const response = await axios.post(
+//       "http://localhost:3000/api/document/getDocument",
+//       { userId: parseInt(params.id), id: params.documentId }
+//     );
+//     console.log(response.data);
+//     return response;
 
-    // Assuming you want to do something with the response data
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-}
+//     // Assuming you want to do something with the response data
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//   }
+// }
 
 // Call the async function
 
@@ -27,18 +27,24 @@ export default function Document({
 }: {
   params: { id: string; documentId: string };
 }) {
-  const [url, setUrl] = React.useState("");
-  const response = fetchData(params).then((response) =>
-    setUrl(response?.data.Document.url)
-  );
+  // const [url, setUrl] = React.useState("");
+  // const response = fetchData(params).then((response) =>
+  //   setUrl(response?.data.Document.url)
+  // );
   return (
     <div
-      className="w-full flex flex-row  space-x-10 items-center pt-0 "
-      style={{ overflowY: "hidden", height: "100vh" }}
+      className="w-full h-full overflow-hidden"
+      style={{
+        display: "flex",
+        overflowY: "hidden",
+        flexDirection: "column",
+      }}
     >
-      <DndProvider backend={HTML5Backend}>
-        <DndComponent url={url} />
-      </DndProvider>
+      <div className="flex-1 overflow-hidden">
+        <DndProvider backend={HTML5Backend}>
+          <DndComponent url={""} />
+        </DndProvider>
+      </div>
     </div>
   );
 }

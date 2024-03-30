@@ -8,6 +8,7 @@ interface DropItemProps {
   childref: RefObject<HTMLButtonElement>;
   itemId: number;
   text: string;
+
   icon: ReactNode;
 }
 
@@ -28,8 +29,8 @@ const DropItem: FC<DropItemProps> = ({ childref, itemId, icon, text }) => {
       type="button"
       size={"sm"}
       style={{
-        width: "14rem",
-        height: "6rem",
+        width: "12rem",
+        height: "5rem",
         border: "1px solid #EAEAEA",
       }}
       className="flex items-center justify-center bg-white text-black p-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300 transition-colors"

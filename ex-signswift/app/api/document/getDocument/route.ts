@@ -6,20 +6,28 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { id, userId } = await req.json();
+  const {docId}=await req.json();
+  
+    try{
+      const document = await prisma.document.findUnique({
+        where: { id: parseInt(docId) },
+        include: {Field:true},
+      });
+      
+      return NextResponse.json({
+        message: "Document",
+        Document: document,
+        status: 200,
+      });
+    }
+    catch(error){
+  return NextResponse.json({
+    message:"Imnernal Server Error",
+    status: 500,
+  })
+    }
+  
 
-  if (req.method === "POST") {
-    // create user
-    console.log("post");
-    console.log("create user");
-    const customer = await prisma.document.findUnique({
-      where: { id: parseInt(id) },
-    });
-
-    return NextResponse.json({
-      message: "Document",
-      Document: customer,
-      status: 201,
-    });
-  }
+ 
+  
 }

@@ -5,30 +5,39 @@ import { Prisma } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { userId, ShareLink } = await req.json();
-  
-  console.log(userId, ShareLink);
-  if (req.method === "POST") {
-    // create user
-    console.log("post");
-    console.log("document creation process");
+//update title of document
 
-    const user = await prisma.document.create({
-      data: { userId: userId, ShareLink: ShareLink },
-    });
+
+export async function POST(req: NextRequest, res: NextApiResponse) {
+  const {docId} = await req.json();
+
+
+  try{
+    
+    const result=await prisma.recipient.findMany({
+        where:{
+            documentId:docId
+        }
+        
+
+    })
+    console.log(result);
+    
     return NextResponse.json({
       message: "Document Created",
-      user: user,
+      result,  
       status: 201,
     });
-  } else {
-    return NextResponse.json({
-      message: "Method Not Allowed",
-
-      status: 405,
-    });
   }
+  catch(error){
+return NextResponse.json({
+  message:"Imnernal Server Error",
+  status: 500,
+})
+  }
+
+    
+  
 }
 // We hash the user entered password using crypto.js
 

@@ -1,16 +1,59 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefObject } from "react";
 import { FC } from "react";
-import { useDrag } from "react-dnd";
+
 import { Mail, User, Calendar, Text } from "lucide-react";
+import Link from "next/link";
+import { ReactNode } from "react";
 import DropItem from "../DropItem/dropItem";
+import ComboBox from "../DragDrop/comboBox";
+import axios from "axios";
+interface DroppedItem {
+  id: number;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  pageNumber: number;
+  text: string;
+  icon: ReactNode;
+  userEmail: string;
+  userId: number;
+  //for which user->mail id save  getting from common box set value
+}
 interface FormProps {
   childrefs: RefObject<HTMLButtonElement>[];
-  handleAddFields: () => void;
+  copiedItems: DroppedItem[];
+  value: number;
+  setValue: (value: number) => void;
+  value2: string;
+  setValue2: (value: string) => void;
 }
-const Form: FC<FormProps> = ({ childrefs, handleAddFields }) => {
+const Form: FC<FormProps> = ({
+  childrefs,
+  copiedItems,
+  value,
+  setValue,
+  value2,
+  setValue2,
+}) => {
+  console.log("copied item in form", copiedItems);
+  const handleContinue = async () => {
+    try {
+      const saveDocsSign = await axios.post("/api/document/saveDocsSign", {
+        docId: "1",
+        droppedItem: copiedItems,
+      });
+      console.log("saveDocsSign", saveDocsSign);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // console.log("copied item in form", copiedItems);
+
   const fieldValues = [
     { id: 1, text: "Signature", icon: null },
     { id: 2, text: "Email", icon: <Mail size={24} /> },
@@ -20,10 +63,7 @@ const Form: FC<FormProps> = ({ childrefs, handleAddFields }) => {
   ];
 
   return (
-    <div
-      className="flex justify-center items-start h-full bg-gray-800 mt-16"
-      style={{ height: "90%" }}
-    >
+    <div className="flex justify-center items-start h-full bg-gray-800 mt-16">
       <div className="w-auto" style={{ height: "100%" }}>
         <Card
           className="p-6 mt-4  bg-gray-800 border-2 border-rose-500 "
@@ -34,11 +74,20 @@ const Form: FC<FormProps> = ({ childrefs, handleAddFields }) => {
               Add Fields Form
             </h1>
           </CardContent>
+          <CardContent className="w-full">
+            <ComboBox
+              value={value}
+              setValue={setValue}
+              value2={value2}
+              setValue2={setValue2}
+            />
+          </CardContent>
+
           <CardContent
             className="flex  gap-1 w-auto flex-col pt-5 pb-10"
             style={{}}
           >
-            <fieldset className="grid grid-cols-2 gap-5 gap-x-19">
+            <fieldset className="grid grid-cols-2 gap-7 gap-x-25">
               {childrefs.map((childref, index) => (
                 <DropItem
                   key={index}
@@ -49,13 +98,18 @@ const Form: FC<FormProps> = ({ childrefs, handleAddFields }) => {
                 />
               ))}
             </fieldset>
-            <div className="flex gap-20 pt-10">
-              <Button className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors  w-2/5">
+            <div className="flex gap-20 pt-7 items-center justify-center">
+              <Button
+                className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors  w-full"
+                type="button"
+              >
                 Go Back
               </Button>
+
               <Button
-                className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-2/5"
-                onClick={handleAddFields}
+                type="button"
+                onClick={handleContinue}
+                className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
               >
                 Continue
               </Button>

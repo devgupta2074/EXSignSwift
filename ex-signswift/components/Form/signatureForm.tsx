@@ -35,10 +35,10 @@ const SignatureForm = ({ signatureCanvasRef }: SignatureFormProps) => {
                 />
               </div>
 
-              <div>
+              <div className=" h-56 w-full ">
                 <Label htmlFor="Signature">Signature</Label>
-                <Card className="mt-1">
-                  <CardContent className="p-0">
+                <Card className="mt-2  h-4/5">
+                  <CardContent className="p-0 h-full">
                     <CustomSignatureCanvas
                       signatureCanvasRef={signatureCanvasRef}
                     />

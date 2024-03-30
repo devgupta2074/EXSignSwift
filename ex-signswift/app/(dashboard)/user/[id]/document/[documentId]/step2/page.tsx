@@ -17,6 +17,7 @@ const page = () => {
         style={{ overflowY: "hidden" }}
       >
         <PdfFillComponent
+        
           signatureCanvasRef={signatureCanvasRef}
           signatureCanvasRef2={signatureCanvasRef2}
         />

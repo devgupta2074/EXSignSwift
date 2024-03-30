@@ -10,9 +10,8 @@ const CustomSignatureCanvas = ({
 }: CustomSignatureCanvasProps) => {
   const [openModal, setOpenModal] = React.useState(false);
   const clearSignature = () => {
+    console.log("clear signature");
     signatureCanvasRef?.current?.clear();
-
-    //image
   };
 
   return (
@@ -36,8 +35,8 @@ const CustomSignatureCanvas = ({
       <div className="absolute bottom-4 right-4 z-50  text-xs   ">
         <button
           className="text-gray-400"
-          type="button"
           onClick={clearSignature}
+          type="button"
         >
           Clear Signature
         </button>

@@ -12,11 +12,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="h-screen overflow-hidden" style={{ overflowY: "hidden" }}>
       <nav>
         <Navbar />
       </nav>
       {children}
-    </>
+    </div>
   );
 }

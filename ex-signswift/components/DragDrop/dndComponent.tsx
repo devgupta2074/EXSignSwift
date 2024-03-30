@@ -6,6 +6,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { ResizableBox } from "react-resizable";
 import { ReactNode } from "react";
 import Form from "../Form/form";
+import { useRouter } from "next/navigation";
 import { LuTrash } from "react-icons/lu";
 
 import { FC, useEffect } from "react";
@@ -32,19 +33,18 @@ interface DroppedItem {
   height: number;
   pageNumber: number;
   text: string;
-  icon: ReactNode;
+  icon: string;
+  userEmail: string;
+  userId: number;
 }
 interface ChildRefs {
   [key: number]: React.MutableRefObject<HTMLButtonElement | null>;
 }
 
 export const DndComponent = ({ url }: { url: string }) => {
-  console.log(url);
   const [numPages, setNumPages] = useState<number>(0);
 
-  const handleAddFields = () => {
-    console.log(copiedItems);
-  };
+  const handleAddFields = () => {};
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
@@ -56,10 +56,11 @@ export const DndComponent = ({ url }: { url: string }) => {
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
-  const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
+  const { pdfUrl, loading, error } = usePdfFileFromUrl(
+    "https://pdf-lib.js.org/assets/with_update_sections.pdf"
+  );
 
   const parentRef = useRef<HTMLDivElement>(null);
-  const [copiedItems, setCopiedItems] = useState<DroppedItem[]>([]);
 
   const handleMouseDown = (e: React.MouseEvent, item: DroppedItem) => {
     const startX = e.clientX;
@@ -112,10 +113,12 @@ export const DndComponent = ({ url }: { url: string }) => {
   const useRefsArray = (length: number) => {
     return Array.from({ length }).map(() => useRef<HTMLButtonElement>(null));
   };
+  const router = useRouter();
   const childrefs = useRefsArray(5);
   const [, drop] = useDrop({
     accept: "test",
     drop: (item: { id: number }, monitor) => {
+      console.log("user is", item);
       let actualChildRef = childrefs[item.id];
       console.log("dropping");
       const delta = monitor.getDifferenceFromInitialOffset();
@@ -132,17 +135,24 @@ export const DndComponent = ({ url }: { url: string }) => {
       const newItem = {
         icon: actualChildRef?.current?.querySelector("div")?.innerHTML || "",
         pageNumber: currentPage,
-        id: copiedItems?.length,
+        id: item.id,
         left,
         top,
         text: actualChildRef?.current?.innerText || "",
-        width: childRect?.width,
-        height: childRect?.height,
-      };
+        width: childRect?.width || 0,
+        height: childRect?.height || 0,
 
+        userEmail: value2,
+        userId: value,
+      };
+      console.log(copiedItems);
       setCopiedItems([...copiedItems, newItem]);
     },
   });
+  const [value, setValue] = useState<number>(0);
+  const [value2, setValue2] = useState<string>("");
+  //value is person email to send
+  const [copiedItems, setCopiedItems] = useState<DroppedItem[]>([]);
   //2rem->40
   const moveItem = (id: number, left: number, top: number) => {
     const newItems = copiedItems.map((item) => {
@@ -164,23 +174,20 @@ export const DndComponent = ({ url }: { url: string }) => {
       style={{
         display: "flex",
         flexDirection: "row",
+        justifyContent: "center",
         width: "100%",
-        overflowY: "hidden",
-        height: "100%",
-        padding: "1rem",
       }}
       className="bg-gray-800"
     >
       <div>
         <div
           style={{
-            height: "70%",
             marginTop: "5rem",
             overflowY: "scroll",
             overflowX: "clip",
           }}
           id="pdf-viewer"
-          className="border-2 border-rose-500 rounded-md m-2"
+          className="border-2 border-rose-500 rounded-md m-2 h-3/5"
         >
           <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
             <div
@@ -327,13 +334,18 @@ export const DndComponent = ({ url }: { url: string }) => {
                               size={15}
                             />
                           </div>
-                          <div className="flex gap-5">
-                            <div
-                              dangerouslySetInnerHTML={{
-                                __html: item?.icon || "",
-                              }}
-                            ></div>
-                            <div>{item?.text}</div>
+                          <div className="flex flex-col gap-2 items-center justify-center">
+                            <div className="flex gap-5">
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: item?.icon || "",
+                                }}
+                              ></div>
+                              <div>{item?.text}</div>
+                            </div>
+                            <div className="text-xs text-center">
+                              {item?.userEmail}
+                            </div>
                           </div>
                         </div>
                       </ResizableBox>
@@ -353,6 +365,7 @@ export const DndComponent = ({ url }: { url: string }) => {
                 : "bg-rose-500 text-white cursor-pointer"
             }`}
             onClick={handlePrevPage}
+            type="button"
             disabled={currentPage === 1}
           >
             Prev
@@ -366,6 +379,7 @@ export const DndComponent = ({ url }: { url: string }) => {
                 ? "bg-rose-700 text-white cursor-not-allowed"
                 : "bg-rose-500 text-white cursor-pointer"
             }`}
+            type="button"
             onClick={handleNextPage}
             disabled={currentPage === numPages}
           >
@@ -378,8 +392,16 @@ export const DndComponent = ({ url }: { url: string }) => {
         style={{
           width: "50vw",
         }}
+        className="h-1/4"
       >
-        <Form childrefs={childrefs} handleAddFields={handleAddFields} />
+        <Form
+          childrefs={childrefs}
+          copiedItems={copiedItems}
+          value={value}
+          value2={value2}
+          setValue2={setValue2}
+          setValue={setValue}
+        />
       </div>
     </div>
   );
