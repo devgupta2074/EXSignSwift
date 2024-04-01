@@ -1,6 +1,7 @@
 "use client";
+import EmailForm from "@/components/(dashboard)/User/EmailForm";
 import PdfFillComponent from "@/components/DragDrop/pdfFillComponent";
-import SignatureForm from "@/components/Form/signatureForm";
+
 import React from "react";
 import SignatureCanvas from "react-signature-canvas";
 const page = () => {
@@ -22,7 +23,9 @@ const page = () => {
         />
       </div>
       <div className="w-1/2 flex justify-center items-start pt-0">
-        <div className="w-3/5"></div>
+        <div className="w-3/5">
+          <EmailForm />
+        </div>
       </div>
     </div>
   );
