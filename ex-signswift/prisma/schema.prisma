@@ -3,53 +3,37 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-
-}
-
-// enum IdentityProvider {
-//   DOCUMENSO
-//   GOOGLE
-// }
-
-enum Role {
-  ADMIN
-  USER
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id                   Int                  @id @default(autoincrement())
-  name                 String?
-  customerId           String?              @unique
-  email                String               @unique
-  emailVerified        DateTime?
-  password             String?
-  source               String?
-  signature            String?
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @default(now()) @updatedAt
-  lastSignedIn         DateTime             @default(now())
-  roles                Role[]               @default([USER])
-  image                String?
-
-  accounts             Account[]
-  sessions             Session[]
-
-  
-  url                  String?              @unique
-  userProfile       UserProfile?
+  id            Int          @id @default(autoincrement())
+  name          String?
+  customerId    String?      @unique
+  email         String       @unique
+  emailVerified DateTime?
+  password      String?
+  source        String?
+  signature     String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
+  lastSignedIn  DateTime     @default(now())
+  roles         Role[]       @default([USER])
+  url           String?      @unique
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  userProfile   UserProfile?
 
   @@index([email])
 }
 
 model UserProfile {
-  id  Int     @id
-  bio String?
-
-  User User? @relation(fields: [id], references: [id], onDelete: Cascade)
+  id   Int     @id
+  bio  String?
+  User User    @relation(fields: [id], references: [id], onDelete: Cascade)
 }
-
 
 model Account {
   id                String  @id @default(cuid())
@@ -57,15 +41,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -75,7 +58,95 @@ model Session {
   sessionToken String   @unique
   userId       Int
   expires      DateTime
-  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id          Int            @id @default(autoincrement())
+  userId      String
+  title       String?
+  status      DocumentStatus @default(DRAFT)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now()) @updatedAt
+  completedAt DateTime?
+  ShareLink   String
+  Field       Field[]
+  Recipient   Recipient[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Recipient {
+  id            Int           @id @default(autoincrement())
+  documentId    Int?
+  templateId    Int?
+  email         String        @db.VarChar(255)
+  name          String        @default("") @db.VarChar(255)
+  token         String
+  expired       DateTime?
+  signedAt      DateTime?
+  role          RecipientRole @default(SIGNER)
+  readStatus    ReadStatus    @default(NOT_OPENED)
+  signingStatus SigningStatus @default(NOT_SIGNED)
+  sendStatus    SendStatus    @default(NOT_SENT)
+  Field         Field[]
+  Document      Document?     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  Signature     Signature[]
+
+  @@unique([documentId, email])
+  @@unique([templateId, email])
+  @@index([documentId])
+  @@index([templateId])
+  @@index([token])
+}
+
+model Field {
+  id          Int        @id @default(autoincrement())
+  secondaryId String     @unique @default(cuid())
+  documentId  Int?
+  recipientId Int?
+  page        Int
+  width       Decimal    @default(-1)
+  height      Decimal    @default(-1)
+  left        Decimal    @default(0)
+  text        String
+  top         Decimal    @default(0)
+  Document    Document?  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  Recipient   Recipient? @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  Signature   Signature?
+
+  @@index([documentId])
+  @@index([recipientId])
+}
+
+model Signature {
+  id                     Int       @id @default(autoincrement())
+  created                DateTime  @default(now())
+  recipientId            Int
+  fieldId                Int       @unique
+  signatureImageAsBase64 String?
+  typedSignature         String?
+  Field                  Field     @relation(fields: [fieldId], references: [id])
+  Recipient              Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([recipientId])
+}
+
+model DocumentShareLink {
+  id         Int      @id @default(autoincrement())
+  email      String
+  slug       String   @unique
+  documentId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([documentId, email])
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 enum DocumentStatus {
@@ -84,35 +155,11 @@ enum DocumentStatus {
   COMPLETED
 }
 
-model Document {
-  id             Int                 @id @default(autoincrement())
-  userId         String
-  title          String?
-  status         DocumentStatus      @default(DRAFT)
-  Recipient      Recipient[]
-  Field          Field[]
-  ShareLink      String
- 
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @default(now()) @updatedAt
-  completedAt    DateTime?
-  deletedAt      DateTime?
-
-
-
-
-  @@index([userId])
-  @@index([status])
-}
-
-
 enum DocumentDataType {
   S3_PATH
   BYTES
   BYTES_64
 }
-
-
 
 enum ReadStatus {
   NOT_OPENED
@@ -136,31 +183,6 @@ enum RecipientRole {
   APPROVER
 }
 
-model Recipient {
-  id            Int           @id @default(autoincrement())
-  documentId    Int?
-  templateId    Int?
-  email         String        @db.VarChar(255)
-  name          String        @default("") @db.VarChar(255)
-  token         String
-  expired       DateTime?
-  signedAt      DateTime?
-  role          RecipientRole @default(SIGNER)
-  readStatus    ReadStatus    @default(NOT_OPENED)
-  signingStatus SigningStatus @default(NOT_SIGNED)
-  sendStatus    SendStatus    @default(NOT_SENT)
-  Document      Document?     @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  // Template      Template?     @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  Field         Field[]
-  Signature     Signature[]
-
-  @@unique([documentId, email])
-  @@unique([templateId, email])
-  @@index([documentId])
-  @@index([templateId])
-  @@index([token])
-}
-
 enum FieldType {
   SIGNATURE
   FREE_SIGNATURE
@@ -168,54 +190,4 @@ enum FieldType {
   EMAIL
   DATE
   TEXT
-}
-
-model Field {
-  id          Int        @id @default(autoincrement())
-  secondaryId String     @unique @default(cuid())
-  documentId  Int?
-  templateId  Int?
-  recipientId Int?
-  type        FieldType
-  page        Int
-  positionX   Decimal    @default(0)
-  positionY   Decimal    @default(0)
-  width       Decimal    @default(-1)
-  height      Decimal    @default(-1)
-  customText  String
-  inserted    Boolean
-  Document    Document?  @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  // Template    Template?  @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  Recipient   Recipient? @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-  Signature   Signature?
-
-  @@index([documentId])
-  @@index([templateId])
-  @@index([recipientId])
-}
-
-model Signature {
-  id                     Int      @id @default(autoincrement())
-  created                DateTime @default(now())
-  recipientId            Int
-  fieldId                Int      @unique
-  signatureImageAsBase64 String?
-  typedSignature         String?
-
-  Recipient Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-  Field     Field     @relation(fields: [fieldId], references: [id], onDelete: Restrict)
-
-  @@index([recipientId])
-}
-
-model DocumentShareLink {
-  id         Int      @id @default(autoincrement())
-  email      String
-  slug       String   @unique
-  documentId Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-
-  @@unique([documentId, email])
 }

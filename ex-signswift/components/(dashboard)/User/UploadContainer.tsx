@@ -30,17 +30,12 @@ export default function UploadContainer({ id }: { id: string }) {
         });
 
         console.log(res);
-        const response = await axios.post(
-          "http://localhost:3000/api/document/uploadDocument",
-          {
-            userId: id,
-            ShareLink: res.url,
-          }
-        );
+        const response = await axios.post("/api/document/uploadDocument", {
+          userId: id,
+          ShareLink: res.url,
+        });
         console.log(response);
-        router.push(
-          `http://localhost:3000/user/${id}/document/${response.data.user.id}/step1`
-        );
+        router.push(`/user/${id}/document/${response.data.user.id}/step1`);
       }
     } catch {
       toast({

@@ -7,10 +7,10 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 async function fetchData(params: any) {
   try {
-    const response = await axios.post(
-      "http://localhost:3000/api/document/getDocument",
-      { userId: parseInt(params.id), id: params.documentId }
-    );
+    const response = await axios.post("/api/document/getDocument", {
+      userId: parseInt(params.id),
+      id: params.documentId,
+    });
     console.log(response.data);
     return response;
 

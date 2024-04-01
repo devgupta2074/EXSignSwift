@@ -10,10 +10,20 @@ import { RefObject } from "react";
 import { useState } from "react";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 interface PdfViewerProps {
-  parentRef: RefObject<HTMLDivElement>;
+  parentRef?: RefObject<HTMLDivElement>;
+  pdfurl: string;
 }
-const PdfViewer: FC<PdfViewerProps> = ({ parentRef }) => {
+const PdfViewer: FC<PdfViewerProps> = ({ parentRef, pdfurl }) => {
   const [numPages, setNumPages] = useState<number>(0);
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, numPages));
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
   //   useEffect(() => {
   //     console.log(pdfFile);
   //   }, []);
@@ -23,22 +33,66 @@ const PdfViewer: FC<PdfViewerProps> = ({ parentRef }) => {
   };
 
   return (
-    <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
-      {Array.from(new Array(numPages), (el, index) => (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
+        overflowY: "hidden",
+        height: "100%",
+        padding: "1rem",
+      }}
+      className="bg-gray-800"
+    >
+      <div>
         <div
-          ref={parentRef}
-          key={index}
-          style={{ border: "1px solid orange", zIndex: 1000 }}
+          style={{
+            height: "70%",
+            marginTop: "5rem",
+            overflowY: "scroll",
+            overflowX: "clip",
+          }}
+          id="pdf-viewer"
+          className="border-2 border-rose-500 rounded-md m-2"
         >
-          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-          <div>
-            Page {index + 1} of {numPages}
-          </div>
+          <Document file={pdfurl} onLoadSuccess={onDocumentLoadSuccess}>
+            <div
+              ref={parentRef}
+              style={{ border: "2px solid green", position: "relative" }}
+            >
+              <Page key={`page_${currentPage}`} pageNumber={currentPage} />
+            </div>
+          </Document>
         </div>
-      ))}
-
-      <div></div>
-    </Document>
+        <div className="mt-7 flex gap-40 items-center  justify-center">
+          <button
+            className={`px-6 py-2 mr-2 rounded-md ${
+              currentPage === 1
+                ? "bg-rose-700 text-white cursor-not-allowed"
+                : "bg-rose-500 text-white cursor-pointer"
+            }`}
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          <p className="text-lg  text-white mx-4">
+            Page {currentPage} of {numPages}
+          </p>
+          <button
+            className={`px-6 py-2 rounded-md ${
+              currentPage === numPages
+                ? "bg-rose-700 text-white cursor-not-allowed"
+                : "bg-rose-500 text-white cursor-pointer"
+            }`}
+            onClick={handleNextPage}
+            disabled={currentPage === numPages}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
