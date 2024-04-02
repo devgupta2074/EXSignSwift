@@ -1,12 +1,13 @@
 // We impot our prisma client
 import prisma from "../../../../lib/prisma";
 // Prisma will help handle and catch errors
-import { Prisma } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
   const {docId}=await req.json();
+  
+
   
     try{
       const document = await prisma.document.findUnique({

@@ -9,7 +9,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { userId,title,id } = await req.json();
+  const {title,id } = await req.json();
+
   try{
     const document=await prisma.document.update({
       where: { id: id },

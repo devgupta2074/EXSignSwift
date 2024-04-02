@@ -16,32 +16,34 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
 ).toString();
-
-interface DroppedItem {
+interface IField {
   id: number;
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-  pageNumber: number;
+  secondaaryId: string;
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+  page: number;
   text: string;
-  icon: ReactNode;
-  user: string;
+  icon: string;
+  recipientId: string;
   signature?: string;
 }
 
 interface PdfFillComponentProps {
   signatureCanvasRef: React.RefObject<SignatureCanvas>;
   signatureCanvasRef2: React.RefObject<SignatureCanvas>;
-  copiedItems: DroppedItem[];
+  copiedItems: IField[];
+  url: string;
 }
 const PdfFillComponent = ({
   signatureCanvasRef,
   signatureCanvasRef2,
   copiedItems,
+  url,
 }: PdfFillComponentProps) => {
   let id = -1;
-  console.log(copiedItems);
+
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [open, setOpen] = React.useState(false);
@@ -77,11 +79,9 @@ const PdfFillComponent = ({
 
   //arr ->find if he ki nhi he ->sign use state
 
-  const { pdfUrl, loading, error } = usePdfFileFromUrl(
-    "https://pdf-lib.js.org/assets/with_update_sections.pdf"
-  );
+  const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
 
-  const [copiedItems2, setCopiedItems] = useState<DroppedItem[]>(copiedItems);
+  const [copiedItems2, setCopiedItems] = useState<IField[]>(copiedItems);
 
   const handleSign = (itemId: number) => {
     //already signed
@@ -116,11 +116,14 @@ const PdfFillComponent = ({
         display: "flex",
         flexDirection: "row",
         width: "100%",
+        justifyContent: "center",
         overflowY: "hidden",
         height: "100%",
-        padding: "1rem",
+        paddingLeft: "3.5rem",
+        paddingRight: "3.5rem",
+        paddingTop: "1rem",
       }}
-      className="bg-gray-800"
+      className="bg-gray-800 m-auto"
     >
       <div>
         <div
@@ -128,6 +131,7 @@ const PdfFillComponent = ({
             height: "85%",
             marginTop: "0rem",
             overflowY: "scroll",
+            width: "100%",
             overflowX: "clip",
           }}
           id="pdf-viewer"
@@ -136,22 +140,21 @@ const PdfFillComponent = ({
           <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
             <div
               style={{
-                border: "2px solid green",
                 position: "relative",
               }}
               ref={parentRef}
             >
-              {copiedItems.map(
+              {copiedItems?.map(
                 (item, indx) =>
-                  item.pageNumber === currentPage && (
+                  item.page === currentPage && (
                     <div
                       onClick={() => handleSign(item.id)}
                       key={indx}
                       style={{
-                        width: item.width,
-                        height: item.height,
-                        left: item.left,
-                        top: item.top,
+                        width: parseInt(item.width),
+                        height: parseInt(item.height),
+                        left: parseInt(item.left),
+                        top: parseInt(item.top),
                         position: "absolute",
                         borderRadius: "0.5rem",
 
@@ -177,11 +180,11 @@ const PdfFillComponent = ({
                             key={item.id}
                             style={{
                               position: "absolute",
-                              width: item.width,
+                              width: parseInt(item.width),
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
-                              height: item.height,
+                              height: parseInt(item.height),
                               textAlign: "center",
                             }}
                           >

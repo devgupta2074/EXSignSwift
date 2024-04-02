@@ -1,19 +1,36 @@
 "use client";
 import React, { FC, useEffect } from "react";
 import { pdfjs } from "react-pdf";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import { Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
-import pdfFile from "./sow2.pdf";
+
 import "react-pdf/dist/Page/TextLayer.css";
 import { RefObject } from "react";
 
 import { useState } from "react";
 import usePdfFileFromUrl from "@/app/utils/usePdfUrl";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+interface IField {
+  id: number;
+  secondaaryId: string;
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+  page: number;
+  text: string;
+  icon: string;
+  recipientId: string;
+}
 interface PdfViewerProps {
   url: string;
+  copiedItems?: IField[];
 }
-const PdfViewer: FC<PdfViewerProps> = ({ url }) => {
+
+const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
+  console.log("copied Items", copiedItems);
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const handlePrevPage = () => {
@@ -30,20 +47,72 @@ const PdfViewer: FC<PdfViewerProps> = ({ url }) => {
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
+  const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
 
-  const { pdfUrl, loading, error } = usePdfFileFromUrl(
-    "https://pdf-lib.js.org/assets/with_update_sections.pdf"
-  );
+  // if (loading) {
+  //   return <Skeleton className="h-96 w-full" />;
+  // }
+
   return (
-    <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
-      {Array.from(new Array(numPages), (el, index) => (
-        <div key={index} style={{ border: "1px solid orange", zIndex: 1000 }}>
-          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-          <div>
-            Page {index + 1} of {numPages}
-          </div>
+    <div>
+      <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+        <div
+          style={{
+            border: "2px solid red",
+            position: "relative",
+          }}
+        >
+          {copiedItems?.map(
+            (item, indx) =>
+              item.page === currentPage && (
+                <div
+                  key={indx}
+                  style={{
+                    width: parseInt(item.width),
+                    height: parseInt(item.height),
+                    left: parseInt(item.left),
+                    top: parseInt(item.top),
+                    position: "absolute",
+                    borderRadius: "0.5rem",
+                    zIndex: 1000,
+                    fontWeight: "500",
+                  }}
+                  className="bg-white text-gray-700 border-2 border-gray-200  rounded-md shadow-md flex justify-center items-center cursor-pointer"
+                >
+                  <div
+                    key={item.id}
+                    style={{
+                      position: "absolute",
+                      width: parseInt(item.width),
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: parseInt(item.height),
+                      textAlign: "center",
+                      zIndex: 1200,
+                    }}
+                  >
+                    <div className="flex flex-col gap-2 items-center justify-center">
+                      <div className="flex gap-5">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: item?.icon || "",
+                          }}
+                        ></div>
+                        <div>{item?.text}</div>
+                      </div>
+                      <div className="text-xs text-center">
+                        {item?.recipientId}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+          )}
+
+          <Page key={`page_${currentPage}`} pageNumber={currentPage} />
         </div>
-      ))}
+      </Document>
 
       <div className="mt-7 flex flex-row gap-40 items-center  justify-center">
         <button
@@ -74,7 +143,7 @@ const PdfViewer: FC<PdfViewerProps> = ({ url }) => {
           Next
         </button>
       </div>
-    </Document>
+    </div>
   );
 };
 

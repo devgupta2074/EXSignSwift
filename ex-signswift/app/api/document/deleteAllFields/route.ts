@@ -9,23 +9,22 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const {docId} = await req.json();
+  const resp=await req.json();
+const docId=resp.docId;
+
+
+  //id ->String
 
   try{
-    
-    const result=await prisma.recipient.findMany({
-        where:{
-            documentId:docId
-        }
-        
-
-    })
-    
+    const resoo=await prisma.field.deleteMany({
+        where: { documentId: parseInt(docId||"") },
+      });
+    console.log(resoo);
     
     return NextResponse.json({
-      message: "Document Created",
-      result,  
-      status: 201,
+      message: "All Fields Deleted Successfully",
+      result:resoo,
+      status: 200,
     });
   }
   catch(error){

@@ -5,7 +5,8 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { set } from "zod";
+
+import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import {
@@ -44,17 +45,23 @@ export default function Document({
   params: { id: string; documentId: string };
 }) {
   const [url, setUrl] = React.useState("");
+  const [loading, setLoading] = React.useState<boolean>(true);
   const router = useRouter();
-  // useEffect(() => {
-  //   fetchData(params).then((response) =>
-  //     setUrl(response?.data.Document.ShareLink)
-  //   );
-  // }, [params]);
+  useEffect(() => {
+    axios
+      .post("http://localhost:3000/api/document/getDocument", {
+        docId: params.documentId,
+      })
+      .then((response) => {
+        console.log(response.data, "response");
+        setUrl(response?.data?.Document?.ShareLink);
+      });
+  }, [params]);
 
   const handleSave = async () => {
+    setLoading(true);
     const data = {
-      userId: 1,
-      id: 1,
+      id: params.documentId,
       title: title,
     };
 
@@ -62,12 +69,12 @@ export default function Document({
       "http://localhost:3000/api/document/updateDocumentTitle",
       data
     );
+    setLoading(false);
     if (updateDocRes) {
-      // router.push(`/user/${params.id}/document/${params.documentId}/step3`);
+      router.push(`/user/${params.id}/document/${params.documentId}/step2`);
     }
-    console.log(updateDocRes.data, "updateDocRes");
   };
-  const [title, setTitle] = React.useState<string>("Random");
+  const [title, setTitle] = React.useState<string>("");
   return (
     <div
       className="w-full flex flex-row m-10 items-start gap-40 pt-0"
@@ -81,7 +88,7 @@ export default function Document({
         id="pdf-viewer"
         className="border-2 border-rose-500 rounded-md  h-4/5 w-1/2"
       >
-        <PdfViewer url="" />
+        <PdfViewer url={url} />
       </div>
       <div className="w-1/3 h-full  ">
         <Tabs defaultValue="account" className="w-[400px]">
@@ -107,7 +114,14 @@ export default function Document({
                 </div>
               </CardContent>
               <CardFooter>
-                <Button onClick={handleSave}>Save changes</Button>
+                {!loading ? (
+                  <Button disabled>
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                    Please wait
+                  </Button>
+                ) : (
+                  <Button onClick={handleSave}>Save changes</Button>
+                )}
               </CardFooter>
             </Card>
           </TabsContent>

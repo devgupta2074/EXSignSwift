@@ -7,24 +7,32 @@ import { NextRequest, NextResponse } from "next/server";
 
 //update title of document
 
+interface Irec{
+  name:string;
+  email:string;
+token:string,
+documentId:number
+}
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const {id} = await req.json();
+  const {docId,recipient} = await req.json();
+  console.log(docId,recipient)
 
   try{
     
-    const rec=await prisma.recipient.create({
-        data:{
-            documentId:id,
-            email:"TapasviArora2002@gmail.com",
-            name:"TapasviArora",
-            token:"sadad",
-        }
+    const result=await prisma.recipient.createMany({
+      data: recipient.map((rec:Irec) => ({
+        name: rec.name.toString(),
+        email: rec.email.toString(),
+        token: rec.token.toString(),
+        documentId: parseInt(docId),
+      })),
     })
+    
     
     return NextResponse.json({
       message: "Document Created",
-      
+      recipient:result,
       status: 201,
     });
   }
@@ -32,6 +40,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
 return NextResponse.json({
   message:"Imnernal Server Error",
   status: 500,
+  error:error 
 })
   }
 
