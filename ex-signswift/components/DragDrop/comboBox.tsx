@@ -30,19 +30,23 @@ interface ComboBoxProps {
   setValue: (value: number) => void;
   value2: string;
   setValue2: (value: string) => void;
+  docId: string;
 }
 
 export function ComboBox({
   value,
   setValue,
   value2,
+  docId,
   setValue2,
 }: ComboBoxProps) {
   const [open, setOpen] = React.useState<boolean>(false);
+  console.log(docId);
 
   const [receptient, setReceptient] = React.useState<receptient[]>([]);
-  React.useLayoutEffect(() => {
-    const getReceptient = async (docId: number) => {
+
+  React.useEffect(() => {
+    const getReceptient = async () => {
       const result = await axios.post(
         "http://localhost:3000/api/document/getreceptient",
         docId
@@ -56,8 +60,8 @@ export function ComboBox({
       console.log(receptientLabel);
       setReceptient(receptient ? receptientLabel : null);
     };
-    getReceptient(1);
-  }, []);
+    getReceptient();
+  }, [docId]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

@@ -44,16 +44,27 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
   }, [params]);
 
   return (
-    <div
-      className="w-full flex flex-row  space-x-10   bg-gray-800 pt-5"
-      style={{ overflowY: "hidden", height: "90vh" }}
-    >
-      <div className="w-1/2 h-full border-2 border-red overflow-y-scroll">
-        <PdfViewer url={url} copiedItems={copiedItems} />
-      </div>
-      <div className="w-1/2 flex justify-center items-start pt-0">
-        <div className="w-3/5">
-          <EmailForm />
+    <div className="flex flex-col ">
+      <div className="flex justify-center items-center"></div>
+      <div
+        className="w-full flex flex-row justify-center items-center  space-x-10   bg-gray-800 pt-5"
+        style={{ overflowY: "hidden", height: "86vh" }}
+      >
+        <div
+          style={{
+            overflowY: "hidden",
+            overflowX: "hidden",
+            height: "100%",
+          }}
+          id="pdf-viewer"
+          className="h-full w-1/2"
+        >
+          <PdfViewer copiedItems={copiedItems} url={url} />
+        </div>
+        <div className=" justify-center pt-0 h-full ">
+          <div className="w-full h-full">
+            <EmailForm />
+          </div>
         </div>
       </div>
     </div>
