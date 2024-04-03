@@ -49,7 +49,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
         >
           <PdfViewer url={url} />
         </div>
-        <div className="w-1/2 justify-center pt-0 h-full ">
+        <div className=" justify-center pt-0 h-full ">
           <div className="w-full h-full">
             <Step2 docId={params.documentId} userId={params.id} />
           </div>

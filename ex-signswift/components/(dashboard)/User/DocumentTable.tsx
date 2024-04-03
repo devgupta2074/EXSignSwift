@@ -202,7 +202,7 @@ export function DocumentTable() {
   });
 
   return (
-    <div className="w-full p-10">
+    <div className="w-full h-full p-10">
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."

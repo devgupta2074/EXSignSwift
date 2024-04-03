@@ -51,14 +51,16 @@ const Form: FC<FormProps> = ({
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+
   const handleContinue = async () => {
     setLoading(true);
     try {
       const saveDocsSign = await axios.post("/api/document/saveDocsSign", {
-        docId: "1",
+        docId: parseInt(docId),
         droppedItem: copiedItems,
       });
       setLoading(false);
+      console.log(saveDocsSign);
       router.push(`/user/${userId}/document/${docId}/step4`);
     } catch (err) {
       console.log(err);
@@ -88,6 +90,7 @@ const Form: FC<FormProps> = ({
           </CardContent>
           <CardContent className="w-full">
             <ComboBox
+              docId={docId}
               value={value}
               setValue={setValue}
               value2={value2}

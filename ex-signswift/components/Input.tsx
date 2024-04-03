@@ -6,7 +6,7 @@ interface InputProps {
 }
 export default function Input({ onChangeName, onChangeEmail }: InputProps) {
   return (
-    <div className="flex flex-row space-x-2">
+    <div className="flex flex-col gap-2 ">
       <input
         type="text"
         placeholder="Name"
