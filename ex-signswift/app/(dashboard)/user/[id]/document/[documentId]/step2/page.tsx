@@ -40,15 +40,16 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
       >
         <div
           style={{
-            overflowY: "scroll",
+            overflowY: "hidden",
             overflowX: "hidden",
+            height: "100%",
           }}
           id="pdf-viewer"
-          className="border-2 border-rose-500 rounded-md  h-full w-1/2"
+          className="h-full w-1/2"
         >
           <PdfViewer url={url} />
         </div>
-        <div className="w-1/2 flex justify-center pt-0 h-full ">
+        <div className="w-1/2 justify-center pt-0 h-full ">
           <div className="w-full h-full">
             <Step2 docId={params.documentId} userId={params.id} />
           </div>

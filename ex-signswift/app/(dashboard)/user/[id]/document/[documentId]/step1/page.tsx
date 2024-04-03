@@ -82,11 +82,11 @@ export default function Document({
     >
       <div
         style={{
-          overflowY: "scroll",
+          overflowY: "hidden",
           overflowX: "hidden",
         }}
         id="pdf-viewer"
-        className="border-2 border-rose-500 rounded-md  h-4/5 w-1/2"
+        className=" rounded-md  h-4/5 w-1/2"
       >
         <PdfViewer url={url} />
       </div>

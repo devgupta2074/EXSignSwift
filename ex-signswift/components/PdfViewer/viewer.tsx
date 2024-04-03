@@ -54,13 +54,13 @@ const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
   // }
 
   return (
-    <div>
+    <div className=" h-screen">
       <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
         <div
           style={{
-            border: "2px solid red",
             position: "relative",
           }}
+          className="border-2 border-rose-500 rounded-md overflow-y-scroll h-[35rem]"
         >
           {copiedItems?.map(
             (item, indx) =>
@@ -114,7 +114,7 @@ const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
         </div>
       </Document>
 
-      <div className="mt-7 flex flex-row gap-40 items-center  justify-center">
+      <div className="mt-4 flex flex-row gap-40 items-center  justify-center">
         <button
           className={`px-6 py-2 mr-2 rounded-md ${
             currentPage === 1
