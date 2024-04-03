@@ -48,6 +48,7 @@ const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
+  console.log(url);
   const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
 
   // if (loading) {
@@ -55,7 +56,7 @@ const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
   // }
 
   return (
-    <div>
+    <div className=" overflow-y-visible">
       <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
         <div
           style={{

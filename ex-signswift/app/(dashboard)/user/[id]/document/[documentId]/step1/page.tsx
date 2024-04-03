@@ -46,16 +46,24 @@ export default function Document({
 }) {
   const [url, setUrl] = React.useState("");
   const [loading, setLoading] = React.useState<boolean>(true);
+
   const router = useRouter();
+  // useEffect(() => {
+  //   axios
+  //     .post("http://localhost:3000/api/document/getDocument", {
+  //       docId: params.documentId,
+  //     })
+  //     .then((response) => {
+  //       console.log(response.data, "response");
+  //       setUrl(response?.data?.Document?.ShareLink);
+  //     });
+  const [name, setName] = React.useState("");
+
   useEffect(() => {
-    axios
-      .post("http://localhost:3000/api/document/getDocument", {
-        docId: params.documentId,
-      })
-      .then((response) => {
-        console.log(response.data, "response");
-        setUrl(response?.data?.Document?.ShareLink);
-      });
+    fetchData(params).then((response) => {
+      console.log(response);
+      setUrl(response?.data?.Document?.ShareLink);
+    });
   }, [params]);
 
   const handleSave = async () => {
@@ -77,16 +85,23 @@ export default function Document({
   const [title, setTitle] = React.useState<string>("");
   return (
     <div
-      className="w-full flex flex-row m-10 items-start gap-40 pt-0"
-      style={{ overflowY: "hidden", height: "100vh" }}
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
+
+        height: "100%",
+        padding: "1rem",
+      }}
+      className="bg-gray-800"
     >
       <div
-        style={{
-          overflowY: "scroll",
-          overflowX: "hidden",
-        }}
+        // style={{
+        //   overflowY: "scroll",
+        //   overflowX: "hidden",
+        // }}
         id="pdf-viewer"
-        className="border-2 border-rose-500 rounded-md  h-4/5 w-1/2"
+        className="border-2 border-rose-500 rounded-md  h-full w-1/2"
       >
         <PdfViewer url={url} />
       </div>
@@ -125,53 +140,6 @@ export default function Document({
                       </div>
                     </fieldset>
                   </div>
-      <div className="w-1/3 h-full  ">
-        <Tabs defaultValue="account" className="w-[400px]">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="account">Document</TabsTrigger>
-            <TabsTrigger value="password">Name</TabsTrigger>
-          </TabsList>
-          <TabsContent value="account">
-            <Card>
-              <CardHeader>
-                <CardTitle>Document</CardTitle>
-                <CardDescription>Give name to document</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="name">Title</Label>
-                  <Input
-                    id="name"
-                    defaultValue="Random"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-              </CardContent>
-              <CardFooter>
-                {!loading ? (
-                  <Button disabled>
-                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                    Please wait
-                  </Button>
-                ) : (
-                  <Button onClick={handleSave}>Save changes</Button>
-                )}
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          <TabsContent value="password">
-            <Card>
-              <CardHeader>
-                <CardTitle>Password</CardTitle>
-                <CardDescription>
-                  Change your password here. After saving, you'll be logged out.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="current">Current password</Label>
-                  <Input id="current" type="password" />
                 </div>
                 <div className=" ">
                   <div>
