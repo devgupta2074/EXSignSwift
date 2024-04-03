@@ -2,9 +2,11 @@ import { Payment, columns } from "@/components/(dashboard)/User/Columns";
 import { DocumentTable } from "@/components/(dashboard)/User/DocumentTable";
 
 import { DocumentDropzone } from "@/components/(dashboard)/User/Upload";
-import UploadContainer from "@/components/(dashboard)/User/UploadContainer";
+import * as React from "react";
+
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import UploadContainer from "../../../../components/(dashboard)/User/UploadContainer";
 
 export default async function Dashboard({
   params,

@@ -35,6 +35,12 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       recipient:result,
       status: 201,
     });
+  } catch (error) {
+    return NextResponse.json({
+      message: "Imnernal Server Error",
+      status: 500,
+      error: error,
+    });
   }
   catch(error){
 return NextResponse.json({
@@ -43,9 +49,6 @@ return NextResponse.json({
   error:error 
 })
   }
-
-    
-  
 }
 // We hash the user entered password using crypto.js
 

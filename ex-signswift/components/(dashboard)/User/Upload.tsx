@@ -7,6 +7,7 @@ import { useDropzone } from "react-dropzone";
 
 import { cn } from "../../../lib/utils";
 import { Card, CardContent } from "./Card";
+import * as React from "react";
 
 const DocumentDropzoneContainerVariants: Variants = {
   initial: {

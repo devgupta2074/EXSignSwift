@@ -1,25 +1,25 @@
 "use client";
-import { DndComponent } from "@/components/DragDrop/dndComponent";
+import { DndComponent } from "../../../../../../../components/DragDrop/dndComponent";
 import axios from "axios";
 import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useEffect } from "react";
 
-// async function fetchData(params: any) {
-//   try {
-//     const response = await axios.post(
-//       "http://localhost:3000/api/document/getDocument",
-//       { userId: parseInt(params.id), id: params.documentId }
-//     );
-//     console.log(response.data);
-//     return response;
+async function fetchData(params: any) {
+  try {
+    const response = await axios.post("/api/document/getDocument", {
+      userId: parseInt(params.id),
+      id: params.documentId,
+    });
+    console.log(response.data);
+    return response;
 
-//     // Assuming you want to do something with the response data
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//   }
-// }
+    // Assuming you want to do something with the response data
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
 
 // Call the async function
 

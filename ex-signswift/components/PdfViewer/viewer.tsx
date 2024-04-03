@@ -32,14 +32,15 @@ interface PdfViewerProps {
 const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
   console.log("copied Items", copiedItems);
   const [numPages, setNumPages] = useState<number>(0);
+
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const handlePrevPage = () => {
-    setCurrentPage((prev) => prev - 1);
-  };
   const handleNextPage = () => {
-    setCurrentPage((prev) => prev + 1);
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, numPages));
   };
 
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
   //   useEffect(() => {
   //     console.log(pdfFile);
   //   }, []);
