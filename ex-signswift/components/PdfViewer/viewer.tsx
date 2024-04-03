@@ -11,18 +11,20 @@ import { useState } from "react";
 import usePdfFileFromUrl from "@/app/utils/usePdfUrl";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 interface PdfViewerProps {
-  url: string;
+  parentRef?: RefObject<HTMLDivElement>;
+  pdfurl: string;
 }
-const PdfViewer: FC<PdfViewerProps> = ({ url }) => {
+const PdfViewer: FC<PdfViewerProps> = ({ parentRef, pdfurl }) => {
   const [numPages, setNumPages] = useState<number>(0);
+
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const handlePrevPage = () => {
-    setCurrentPage((prev) => prev - 1);
-  };
   const handleNextPage = () => {
-    setCurrentPage((prev) => prev + 1);
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, numPages));
   };
 
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
   //   useEffect(() => {
   //     console.log(pdfFile);
   //   }, []);
@@ -35,46 +37,66 @@ const PdfViewer: FC<PdfViewerProps> = ({ url }) => {
     "https://pdf-lib.js.org/assets/with_update_sections.pdf"
   );
   return (
-    <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
-      {Array.from(new Array(numPages), (el, index) => (
-        <div key={index} style={{ border: "1px solid orange", zIndex: 1000 }}>
-          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-          <div>
-            Page {index + 1} of {numPages}
-          </div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
+        overflowY: "hidden",
+        height: "100%",
+        padding: "1rem",
+      }}
+      className="bg-gray-800"
+    >
+      <div>
+        <div
+          style={{
+            height: "70%",
+            marginTop: "5rem",
+            overflowY: "scroll",
+            overflowX: "clip",
+          }}
+          id="pdf-viewer"
+          className="border-2 border-rose-500 rounded-md m-2"
+        >
+          <Document file={pdfurl} onLoadSuccess={onDocumentLoadSuccess}>
+            <div
+              ref={parentRef}
+              style={{ border: "2px solid green", position: "relative" }}
+            >
+              <Page key={`page_${currentPage}`} pageNumber={currentPage} />
+            </div>
+          </Document>
         </div>
-      ))}
-
-      <div className="mt-7 flex flex-row gap-40 items-center  justify-center">
-        <button
-          className={`px-6 py-2 mr-2 rounded-md ${
-            currentPage === 1
-              ? "bg-rose-700 text-white cursor-not-allowed"
-              : "bg-rose-500 text-white cursor-pointer"
-          }`}
-          onClick={handlePrevPage}
-          type="button"
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-        <p className="text-lg  text-white mx-4">
-          Page {currentPage} of {numPages}
-        </p>
-        <button
-          className={`px-6 py-2 rounded-md ${
-            currentPage === numPages
-              ? "bg-rose-700 text-white cursor-not-allowed"
-              : "bg-rose-500 text-white cursor-pointer"
-          }`}
-          type="button"
-          onClick={handleNextPage}
-          disabled={currentPage === numPages}
-        >
-          Next
-        </button>
+        <div className="mt-7 flex gap-40 items-center  justify-center">
+          <button
+            className={`px-6 py-2 mr-2 rounded-md ${
+              currentPage === 1
+                ? "bg-rose-700 text-white cursor-not-allowed"
+                : "bg-rose-500 text-white cursor-pointer"
+            }`}
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          <p className="text-lg  text-white mx-4">
+            Page {currentPage} of {numPages}
+          </p>
+          <button
+            className={`px-6 py-2 rounded-md ${
+              currentPage === numPages
+                ? "bg-rose-700 text-white cursor-not-allowed"
+                : "bg-rose-500 text-white cursor-pointer"
+            }`}
+            onClick={handleNextPage}
+            disabled={currentPage === numPages}
+          >
+            Next
+          </button>
+        </div>
       </div>
-    </Document>
+    </div>
   );
 };
 

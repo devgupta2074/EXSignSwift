@@ -7,36 +7,27 @@ import { NextRequest, NextResponse } from "next/server";
 
 //update title of document
 
-
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const {id} = await req.json();
+  const { recpients } = await req.json();
 
-  try{
-    
-    const rec=await prisma.recipient.create({
-        data:{
-            documentId:id,
-            email:"TapasviArora2002@gmail.com",
-            name:"TapasviArora",
-            token:"sadad",
-        }
-    })
-    
+  console.log(recpients);
+  try {
+    const rec = await prisma.recipient.createMany({
+      data: recpients,
+    });
+
     return NextResponse.json({
       message: "Document Created",
-      
+
       status: 201,
     });
+  } catch (error) {
+    return NextResponse.json({
+      message: "Imnernal Server Error",
+      status: 500,
+      error: error,
+    });
   }
-  catch(error){
-return NextResponse.json({
-  message:"Imnernal Server Error",
-  status: 500,
-})
-  }
-
-    
-  
 }
 // We hash the user entered password using crypto.js
 

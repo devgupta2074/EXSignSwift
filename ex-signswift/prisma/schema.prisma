@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+
 }
 
 model User {
@@ -111,7 +112,9 @@ model Field {
   top         Decimal    @default(0)
   width       Decimal    @default(-1)
   height      Decimal    @default(-1)
+
   text        String
+ 
   Document    Document?  @relation(fields: [documentId], references: [id], onDelete: Cascade)
   Recipient   Recipient? @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   Signature   Signature?

@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
   const { userId, ShareLink } = await req.json();
-  
+
   console.log(userId, ShareLink);
   if (req.method === "POST") {
     // create user
