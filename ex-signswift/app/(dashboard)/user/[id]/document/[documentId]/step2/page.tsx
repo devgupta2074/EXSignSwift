@@ -36,7 +36,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
       </div>
       <div
         className="w-full flex flex-row justify-center items-center  space-x-10   bg-gray-800 pt-5"
-        style={{ overflowY: "hidden", height: "86vh" }}
+        // style={{ overflowY: "hidden", height: "86vh" }}
       >
         <div
           style={{

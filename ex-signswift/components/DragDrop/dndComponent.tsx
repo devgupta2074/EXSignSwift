@@ -183,18 +183,19 @@ export const DndComponent = ({
         flexDirection: "row",
         justifyContent: "center",
         width: "100%",
+        gap: "2rem",
       }}
       className="bg-gray-800"
     >
       <div>
         <div
           style={{
-            marginTop: "5rem",
+            // marginTop: "5rem",
             overflowY: "scroll",
             overflowX: "clip",
           }}
           id="pdf-viewer"
-          className="border-2 border-rose-500 rounded-md m-2 h-3/5"
+          className="border-2 border-rose-500 rounded-md  dnd-pdf-view"
         >
           <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
             <div
@@ -396,10 +397,12 @@ export const DndComponent = ({
       </div>
 
       <div
-        style={{
-          width: "50vw",
-        }}
-        className="h-1/4"
+        style={
+          {
+            // width: "50vw",
+          }
+        }
+        className=""
       >
         <Form
           userId={userId}

@@ -20,7 +20,7 @@ export default async function Dashboard({
     redirect(`/login`);
   }
   return (
-    <main className=" flex flex-col gap-4 bg-gray-800">
+    <main className=" flex flex-col gap-4 ">
       {/* User Dashboard with ID here the user should be directed to after login
       here will be the upload and table function */}
 

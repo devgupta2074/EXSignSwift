@@ -77,11 +77,11 @@ const Form: FC<FormProps> = ({
   ];
 
   return (
-    <div className="flex justify-center items-start h-full bg-gray-800 mt-16">
-      <div className="w-auto" style={{ height: "100%" }}>
+    <div className="dnd-form flex justify-center items-start bg-gray-800 ">
+      <div className="" style={{ height: "100%" }}>
         <Card
-          className="p-6 mt-4  bg-gray-800 border-2 border-rose-500 "
-          style={{ height: "95%" }}
+          className="p-6 bg-gray-800 border-2 border-rose-500 "
+          // style={{ height: "95%" }}
         >
           <CardContent>
             <h1 className="text-3xl font-semibold text-white">

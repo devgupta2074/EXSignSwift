@@ -48,14 +48,14 @@ export default function Document({
   }, [params]);
   return (
     <div
-      className="w-full h-full overflow-hidden"
+      className="dnd-step-section "
       style={{
         display: "flex",
-        overflowY: "hidden",
+        // overflowY: "hidden",
         flexDirection: "column",
       }}
     >
-      <div className="flex-1 overflow-hidden">
+      <div className="dnd-step-container">
         <DndProvider backend={HTML5Backend}>
           <DndComponent
             url={url}

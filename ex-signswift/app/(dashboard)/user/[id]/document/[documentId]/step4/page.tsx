@@ -47,17 +47,17 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
     <div className="flex flex-col ">
       <div className="flex justify-center items-center"></div>
       <div
-        className="w-full flex flex-row justify-center items-center  space-x-10   bg-gray-800 pt-5"
-        style={{ overflowY: "hidden", height: "86vh" }}
+        className="w-full flex flex-row justify-center  space-x-10   bg-gray-800 "
+        // style={{ overflowY: "hidden", height: "86vh" }}
       >
         <div
           style={{
-            overflowY: "hidden",
-            overflowX: "hidden",
+            // overflowY: "hidden",
+            // overflowX: "hidden",
             height: "100%",
           }}
           id="pdf-viewer"
-          className="h-full w-1/2"
+          className=" w-1/2"
         >
           <PdfViewer copiedItems={copiedItems} url={url} />
         </div>
