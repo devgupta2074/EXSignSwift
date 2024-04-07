@@ -1,7 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChangeEvent } from "react";
 import axios from "axios";
+import { Input as DefaultInput } from "./ui/input";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { ReloadIcon } from "@radix-ui/react-icons";
@@ -10,6 +11,10 @@ import Input from "./Input";
 interface InputObject {
   id: number;
   input: JSX.Element;
+}
+interface IReceptient {
+  name: string;
+  email: string;
 }
 export default function Step2({
   docId,
@@ -20,9 +25,31 @@ export default function Step2({
 }) {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [count, setCount] = React.useState<number>(1);
+  const [receptient, setReceptient] = React.useState<IReceptient[]>([]);
   const router = useRouter();
   const [name, setName] = useState<String[]>([]);
   const [email, setEmail] = useState<String[]>([]);
+
+  useEffect(() => {
+    const fetchRecepients = async () => {
+      const result = await axios.post(
+        "http://localhost:3000/api/document/getreceptient",
+        docId
+      );
+      const receptientres = result?.data;
+
+      receptientres?.result?.map((item: any) => {
+        const res = {
+          name: item.name,
+          email: item.email,
+        };
+        setReceptient((prev) => [...prev, res]);
+      });
+    };
+    fetchRecepients();
+  }, [docId, userId]);
+
+  console.log(email, name);
 
   const handleNameChange = (
     index: number,
@@ -37,7 +64,7 @@ export default function Step2({
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const updatedEmails = [...email];
-    updatedEmails.splice(index, 1, event.target.value);
+    updatedEmails.splice(index, 1, event.target.value.toLowerCase());
     setEmail(updatedEmails);
   };
   const [inputs, setInputs] = useState<InputObject[]>([
@@ -59,7 +86,7 @@ export default function Step2({
   }
   const onContinue = (e: any) => {
     e.preventDefault();
-
+    setLoading(true);
     const recipents: recipent[] = [];
     for (let i = 0; i < inputs.length; i++) {
       recipents.push({
@@ -69,14 +96,13 @@ export default function Step2({
       });
     }
     const createRecepients = async () => {
-      setLoading(true);
       const response = await axios.post(
         "http://localhost:3000/api/document/addreceptient",
         { docId, recipient: recipents }
       );
       console.log(response.data);
-      setLoading(false);
       router.push(`/user/${userId}/document/${docId}/step3`);
+      setLoading(false);
     };
     createRecepients();
   };
@@ -142,6 +168,20 @@ export default function Step2({
                       >
                         Delete
                       </button>
+                    </div>
+                  ))}
+                  {receptient.map((item) => (
+                    <div>
+                      <DefaultInput
+                        className="bg-white p-2"
+                        type="email"
+                        value={item.email}
+                      />
+                      <DefaultInput
+                        className="bg-white p-2"
+                        type="name"
+                        value={item.name}
+                      />
                     </div>
                   ))}
                 </div>

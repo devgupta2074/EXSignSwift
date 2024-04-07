@@ -42,6 +42,15 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
     };
     getDocument();
   }, [params]);
+  const handleSign = () => {
+    const signDoc = async () => {
+      await axios.post("http://localhost:3000/api/document/addSignature", {
+        docId: params.documentId,
+        copiedItems: copiedItems,
+      });
+    };
+    signDoc();
+  };
 
   return (
     <div
@@ -71,7 +80,10 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
       </div>
       <div className="w-1/2 flex justify-center items-start pt-10 h-full">
         <div className=" w-3/4">
-          <SignatureForm signatureCanvasRef={signatureCanvasRef2} />
+          <SignatureForm
+            signatureCanvasRef={signatureCanvasRef2}
+            handleSign={handleSign}
+          />
         </div>
       </div>
     </div>

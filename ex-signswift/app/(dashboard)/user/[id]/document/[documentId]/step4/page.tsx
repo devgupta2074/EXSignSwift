@@ -20,11 +20,17 @@ interface IField {
   page: number;
   text: string;
   icon: string;
-  recipientId: string;
+  recipientId: number;
+}
+interface IReceptient {
+  email: string;
+  name: string;
+  id: number;
 }
 const page = ({ params }: { params: { id: string; documentId: string } }) => {
   const signatureCanvasRef = React.useRef<SignatureCanvas | null>(null);
   const signatureCanvasRef2 = React.useRef<SignatureCanvas | null>(null);
+  const [receptient, setReceptient] = React.useState<IReceptient[]>([]);
   const [url, setUrl] = React.useState("");
   const [copiedItems, setCopiedItems] = React.useState<IField[]>([]);
   useEffect(() => {
@@ -36,7 +42,10 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
         }
       );
       console.log("step4", response);
-
+      response?.data?.Document?.Recipient.map((item: IReceptient) => {
+        const res1 = { name: item.name, email: item.email, id: item.id };
+        setReceptient((prev) => [...prev, res1]);
+      });
       setUrl(response?.data?.Document?.ShareLink);
       setCopiedItems(response?.data?.Document?.Field);
     };
@@ -59,7 +68,11 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
           id="pdf-viewer"
           className=" w-1/2"
         >
-          <PdfViewer copiedItems={copiedItems} url={url} />
+          <PdfViewer
+            copiedItems={copiedItems}
+            receptient={receptient}
+            url={url}
+          />
         </div>
         <div className=" justify-center pt-0 h-full ">
           <div className="w-full h-full">

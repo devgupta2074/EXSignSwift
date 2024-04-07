@@ -7,8 +7,7 @@ import { FC } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 
 import { Mail, User, Calendar, Text } from "lucide-react";
-import Link from "next/link";
-import { ReactNode } from "react";
+
 import { useRouter } from "next/navigation";
 import DropItem from "../DropItem/dropItem";
 import ComboBox from "../DragDrop/comboBox";
@@ -59,9 +58,10 @@ const Form: FC<FormProps> = ({
         docId: parseInt(docId),
         droppedItem: copiedItems,
       });
-      setLoading(false);
+
       console.log(saveDocsSign);
       router.push(`/user/${userId}/document/${docId}/step4`);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }

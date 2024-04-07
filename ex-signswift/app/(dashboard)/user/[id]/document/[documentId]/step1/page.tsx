@@ -64,15 +64,14 @@ export default function Document({
       id: params.documentId,
       title: title,
     };
-
     const updateDocRes = await axios.post(
       "http://localhost:3000/api/document/updateDocumentTitle",
       data
     );
-    setLoading(false);
     if (updateDocRes) {
       router.push(`/user/${params.id}/document/${params.documentId}/step2`);
     }
+    setLoading(false);
   };
   const [title, setTitle] = React.useState<string>("");
   return (
@@ -92,9 +91,8 @@ export default function Document({
       </div>
       <div className="w-1/3 h-full  ">
         <Tabs defaultValue="account" className="w-[400px]">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-1">
             <TabsTrigger value="account">Document</TabsTrigger>
-            <TabsTrigger value="password">Name</TabsTrigger>
           </TabsList>
           <TabsContent value="account">
             <Card>
@@ -122,29 +120,6 @@ export default function Document({
                 ) : (
                   <Button onClick={handleSave}>Save changes</Button>
                 )}
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          <TabsContent value="password">
-            <Card>
-              <CardHeader>
-                <CardTitle>Password</CardTitle>
-                <CardDescription>
-                  Change your password here. After saving, you'll be logged out.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="current">Current password</Label>
-                  <Input id="current" type="password" />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="new">New password</Label>
-                  <Input id="new" type="password" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save password</Button>
               </CardFooter>
             </Card>
           </TabsContent>

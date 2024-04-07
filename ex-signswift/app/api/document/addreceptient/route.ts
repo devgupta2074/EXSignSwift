@@ -23,7 +23,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     const result=await prisma.recipient.createMany({
       data: recipient.map((rec:Irec) => ({
         name: rec.name.toString(),
-        email: rec.email.toString(),
+        email: rec.email.toString().toLowerCase(),
         token: rec.token.toString(),
         documentId: parseInt(docId),
       })),

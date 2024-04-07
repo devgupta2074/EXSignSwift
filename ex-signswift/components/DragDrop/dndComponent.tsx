@@ -81,11 +81,7 @@ export const DndComponent = ({
       const childref = childrefs[item.id];
       const childRect = childref?.current?.getBoundingClientRect();
       left = Math.max(0, left);
-      const maxLeft =
-        (parentRect?.width || 0) -
-        (childRect?.width || 0) +
-        (parentRect?.left || 0) -
-        35;
+      const maxLeft = (parentRect?.width || 0) - (childRect?.width || 0) - 5;
       left = Math.min(left, maxLeft);
       top = Math.max(0, top);
       const maxTop = (parentRect?.height || 0) - (childRect?.height || 0) - 5;

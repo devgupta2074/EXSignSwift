@@ -22,14 +22,20 @@ interface IField {
   page: number;
   text: string;
   icon: string;
-  recipientId: string;
+  recipientId: number;
+}
+interface IReceptient {
+  email: string;
+  name: string;
+  id: number;
 }
 interface PdfViewerProps {
   url: string;
   copiedItems?: IField[];
+  receptient?: IReceptient[];
 }
 
-const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
+const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems, receptient }) => {
   console.log("copied Items", copiedItems);
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -46,6 +52,11 @@ const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
+  };
+  const getReceptientEmail = (id: number) => {
+    const recipient = receptient?.find((item) => item?.id === id);
+    console.log(receptient, id);
+    return recipient ? recipient.email : -1;
   };
   const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
 
@@ -102,7 +113,7 @@ const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
                         <div>{item?.text}</div>
                       </div>
                       <div className="text-xs text-center">
-                        {item?.recipientId}
+                        {getReceptientEmail(item?.recipientId)}
                       </div>
                     </div>
                   </div>

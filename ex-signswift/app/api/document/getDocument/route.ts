@@ -5,15 +5,19 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const {docId}=await req.json();
-  
-
-  
+  const {docId}=await req.json();  
     try{
       const document = await prisma.document.findUnique({
-        where: { id: parseInt(docId) },
-        include: {Field:true},
-      });
+        where:{
+          id:parseInt(docId)
+        },
+        include:{
+          Field:true,
+          Recipient:true
+        }
+
+
+      })
       
       return NextResponse.json({
         message: "Document",

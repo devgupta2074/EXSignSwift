@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 // import Welcome from "../../emails/Welcome"
 import EmailTemp from "../../emails/EmailTemp";
-import { Resend } from "resend";
+// import { Resend } from "resend";
 
 const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
 dotenv.config();
-
 let transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT,

@@ -7,8 +7,12 @@ import CustomSignatureCanvas from "../Signature/signatureCanvas";
 import SignatureCanvas from "react-signature-canvas";
 interface SignatureFormProps {
   signatureCanvasRef: React.RefObject<SignatureCanvas>;
+  handleSign: () => void;
 }
-const SignatureForm = ({ signatureCanvasRef }: SignatureFormProps) => {
+const SignatureForm = ({
+  signatureCanvasRef,
+  handleSign,
+}: SignatureFormProps) => {
   return (
     <div className="w-full border-border bg-widget sticky flex  flex-col rounded-xl border px-4 py-6 top-20  bg-white w-full ">
       <form className="px-4 py-2">
@@ -61,6 +65,7 @@ const SignatureForm = ({ signatureCanvasRef }: SignatureFormProps) => {
               <Button
                 type="button"
                 className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
+                onClick={handleSign}
                 // onClick prop
               >
                 Sign
