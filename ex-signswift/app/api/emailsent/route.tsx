@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import logo from "../../emails/ex_logg.png"
 
 dotenv.config();
 
@@ -24,9 +25,12 @@ export async function POST(req: NextRequest) {
     const mailOptions = {
       from: process.env.SMTP_MAIL,
       to: [ "gupta.archit01@gmail.com", "dg136@snu.edu.in"], // Change to your recipient emails
+      
       subject: subject,
       html: `
       <div style="font-family: Arial, sans-serif; margin: 20px; padding: 20px; border: 1px solid #e0e0e0;">
+      <img src=${logo} alt="" />
+      
         <h2>Internship Acceptance Letter</h2>
         <p>
           Dear 
