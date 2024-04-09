@@ -25,7 +25,7 @@ const EmailForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: "ag213@snu.edu.in",
+           email: "ag213@snu.edu.in",
           subject: inputs.subject,
           email_body: inputs.email_body,
         }), // Change the email address as needed

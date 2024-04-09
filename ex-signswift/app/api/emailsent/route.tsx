@@ -1,72 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
-// import Welcome from "../../emails/Welcome"
-import EmailTemp from "../../emails/EmailTemp";
-// import { Resend } from "resend";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
-const dotenv = require("dotenv");
-const nodemailer = require("nodemailer");
 dotenv.config();
+
 let transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
+  port: Number(process.env.SMTP_PORT),
   secure: true, // true for 465, false for other ports
   auth: {
-    user: process.env.SMTP_MAIL, // generated ethereal user
-    pass: process.env.SMTP_PASSWORD, // generated ethereal password
+    user: process.env.SMTP_MAIL,
+    pass: process.env.SMTP_PASSWORD,
   },
 });
 
 export async function POST(req: NextRequest) {
-  // const { email, subject, message } = req.body;
-  // console.log(email, subject, message);
-  // const welcomeContent = useServerAction(() => {
-  //     return <Welcome />;
-  // });
+  try {
+    const { email,subject,email_body} = await req.json();
 
-  console.log("check");
+    
+    console.log(email,subject,email_body);
 
-  //   const emailHtml = renderTo(<Welcome />);
+    const mailOptions = {
+      from: process.env.SMTP_MAIL,
+      to: [ "gupta.archit01@gmail.com", "dg136@snu.edu.in"], // Change to your recipient emails
+      subject: subject,
+      html: `
+      <div style="font-family: Arial, sans-serif; margin: 20px; padding: 20px; border: 1px solid #e0e0e0;">
+        <h2>Internship Acceptance Letter</h2>
+        <p>
+          Dear 
+        </p>
+        <p>
+          We are pleased to inform you that you have been accepted as an intern at ExSquared Company.
+        </p>
+        <p>
+          Please click the button below to proceed with accepting and signing the contract.
+        </p>
+        <p>${email_body}<p/>
+        <a href="http://localhost:3000/" style="display: inline-block; background-color: #0070f3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Accept and Sign Contract</a>
+        <p>
+          If you have any questions or concerns, please feel free to contact us.
+        </p>
+        <p>
+          Best regards,<br>
+          ExSquared
+        </p>
+      </div>
+    `, // Using the message from the request body
+    };
 
-  var mailOptions = {
-    from: process.env.SMTP_MAIL,
-    to: ["ag213@snu.edu.in", "gupta.archit01@gmail.com"],
-    subject: "check_multiple in main",
-    // react: <Welcome />
-    // html: emailHtml,
-    html: " <h3>heloo</h3>",
-  };
+    await transporter.sendMail(mailOptions);
 
-  console.log("check2");
-  await transporter.sendMail(mailOptions, function (error: any, info: any) {
-    if (error) {
-      // console.log(check3)
-      console.log(error);
-    } else {
-      console.log("Email sent successfully!");
-      return NextResponse.json("data");
-    }
-  });
-  return NextResponse.json("data");
+    console.log("Email sent successfully!");
+
+    return NextResponse.json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return NextResponse.json({ error: "Failed to send email" });
+  }
 }
-
-// const resend = new Resend(process.env.EMAIL_KEY);
-
-// export async function POST(req: NextRequest) {
-//   // console.log(await req.json())
-//   const { email, subject, email_body } = await req.json();
-//   console.log(email);
-//   try {
-//     const data = await resend.emails.send({
-//       from: "onboarding@resend.dev",
-//       // to:"ag213@snu.edu.in",
-//       to: email,
-//       subject: "EX Squared India: Full Time Job Letter",
-//       react: EmailTemp({ subject, email_body }),
-//     });
-
-//     return NextResponse.json(data);
-//   } catch (error) {
-//     console.log(error);
-//     return NextResponse.json({ error });
-//   }
-// }
