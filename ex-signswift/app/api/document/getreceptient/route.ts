@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         documentId: parseInt(data),
       },
     });
-    console.log(result);
+    console.log(result, "route.ts");
 
     return NextResponse.json({
       message: "Document Created",

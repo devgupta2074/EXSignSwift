@@ -1,14 +1,44 @@
 "use client";
-import { useState } from "react";
-import React from "react";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+
+import axios from "axios";
+
 // import ""
 
 // import styles from "./globals.css";
 
-const EmailForm = () => {
+interface IReceptient {
+  name: string;
+  email: string;
+}
+
+const EmailForm = ({ docId, userId }: { docId: string; userId: string }) => {
   const [emailSent, setEmailSent] = useState(false);
   const [inputs, setInputs] = useState({ subject: "", email_body: "" });
+  const [receptient, setReceptient] = React.useState<IReceptient[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchRecepients = async () => {
+      const result = await axios.post(
+        "http://localhost:3000/api/document/getreceptient",
+        docId
+      );
+      const receptientres = result?.data;
+
+      receptientres?.result?.map((item: any) => {
+        const res = {
+          name: item.name,
+          email: item.email,
+        };
+        setReceptient((prev) => [...prev, res]);
+      });
+    };
+    fetchRecepients();
+  }, [docId, userId]);
 
   const handleChange = (event: any) => {
     const name = event.target.name;
@@ -18,6 +48,9 @@ const EmailForm = () => {
   };
 
   const sendEmail = async () => {
+    console.log(receptient, "check by arc now");
+    const emails = receptient.map((item) => item.email);
+    console.log(emails);
     try {
       const response = await fetch("/api/emailsent", {
         method: "POST",
@@ -25,7 +58,7 @@ const EmailForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-           email: "ag213@snu.edu.in",
+          email: emails,
           subject: inputs.subject,
           email_body: inputs.email_body,
         }), // Change the email address as needed

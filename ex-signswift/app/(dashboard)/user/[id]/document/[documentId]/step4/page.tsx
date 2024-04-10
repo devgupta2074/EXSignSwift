@@ -45,6 +45,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
       response?.data?.Document?.Recipient.map((item: IReceptient) => {
         const res1 = { name: item.name, email: item.email, id: item.id };
         setReceptient((prev) => [...prev, res1]);
+        console.log("check bu arc", receptient);
       });
       setUrl(response?.data?.Document?.ShareLink);
       setCopiedItems(response?.data?.Document?.Field);
@@ -76,7 +77,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
         </div>
         <div className=" justify-center pt-0 h-full ">
           <div className="w-full h-full">
-            <EmailForm />
+            <EmailForm docId={params.documentId} userId={params.id} />
           </div>
         </div>
       </div>
