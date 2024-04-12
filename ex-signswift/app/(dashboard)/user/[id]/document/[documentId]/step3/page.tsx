@@ -46,6 +46,7 @@ export default function Document({
     };
     getDocument();
   }, [params]);
+
   return (
     <div
       className="dnd-step-section "
