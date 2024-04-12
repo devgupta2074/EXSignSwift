@@ -6,7 +6,7 @@ import Link from "next/link";
 
 // import styles from "./globals.css";
 
-const EmailForm = () => {
+const EmailForm = ({ recipient }: any) => {
   const [emailSent, setEmailSent] = useState(false);
   const [inputs, setInputs] = useState({ subject: "", email_body: "" });
 
@@ -16,7 +16,8 @@ const EmailForm = () => {
 
     setInputs((values) => ({ ...values, [name]: value }));
   };
-
+  const mails = recipient?.map((email: any) => email.email);
+  console.log(mails);
   const sendEmail = async () => {
     try {
       const response = await fetch("/api/emailsent", {
@@ -25,7 +26,7 @@ const EmailForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-           email: "ag213@snu.edu.in",
+          email: mails,
           subject: inputs.subject,
           email_body: inputs.email_body,
         }), // Change the email address as needed

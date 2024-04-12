@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import logo from "../../emails/ex_logg.png"
+import logo from "../../emails/ex_logg.png";
 
 dotenv.config();
 
@@ -17,15 +17,14 @@ let transporter = nodemailer.createTransport({
 
 export async function POST(req: NextRequest) {
   try {
-    const { email,subject,email_body} = await req.json();
+    const { email, subject, email_body } = await req.json();
 
-    
-    console.log(email,subject,email_body);
+    console.log(email, subject, email_body);
 
     const mailOptions = {
       from: process.env.SMTP_MAIL,
-      to: [ "gupta.archit01@gmail.com", "dg136@snu.edu.in"], // Change to your recipient emails
-      
+      to: email, // Change to your recipient emails
+
       subject: subject,
       html: `
       <div style="font-family: Arial, sans-serif; margin: 20px; padding: 20px; border: 1px solid #e0e0e0;">

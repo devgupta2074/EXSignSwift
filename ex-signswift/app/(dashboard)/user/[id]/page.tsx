@@ -19,13 +19,14 @@ export default async function Dashboard({
     console.log(session);
     redirect(`/login`);
   }
+
   return (
     <main className=" flex flex-col gap-4 ">
       {/* User Dashboard with ID here the user should be directed to after login
       here will be the upload and table function */}
 
       <UploadContainer id={params.id} />
-      <DocumentTable />
+      <DocumentTable id={params.id} email={session?.user?.email} />
 
       {/* <p>navbar upload table</p> */}
     </main>

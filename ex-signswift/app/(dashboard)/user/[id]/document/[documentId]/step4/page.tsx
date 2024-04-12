@@ -51,7 +51,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
     };
     getDocument();
   }, [params]);
-
+  console.log(receptient);
   return (
     <div className="flex flex-col ">
       <div className="flex justify-center items-center"></div>
@@ -76,7 +76,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
         </div>
         <div className=" justify-center pt-0 h-full ">
           <div className="w-full h-full">
-            <EmailForm />
+            <EmailForm recipient={receptient} />
           </div>
         </div>
       </div>

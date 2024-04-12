@@ -76,6 +76,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
           copiedItems={copiedItems}
           signatureCanvasRef={signatureCanvasRef}
           signatureCanvasRef2={signatureCanvasRef2}
+          userid={params.id}
         />
       </div>
       <div className="w-1/2 flex justify-center items-start pt-10 h-full">

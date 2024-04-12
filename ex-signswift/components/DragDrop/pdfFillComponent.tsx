@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Document, Page } from "react-pdf";
 import { useState } from "react";
 import usePdfFileFromUrl from "@/app/utils/usePdfUrl";
@@ -11,6 +11,8 @@ import CustomSignatureCanvas from "../Signature/signatureCanvas";
 import { DialogTrigger } from "../ui/dialog";
 import CustomSignaturePad from "../Signature/signaturePad";
 import SignatureCanvas from "react-signature-canvas";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -35,21 +37,24 @@ interface PdfFillComponentProps {
   signatureCanvasRef2: React.RefObject<SignatureCanvas>;
   copiedItems: IField[];
   url: string;
+  userid?: string;
 }
 const PdfFillComponent = ({
   signatureCanvasRef,
   signatureCanvasRef2,
   copiedItems,
   url,
+  userid,
 }: PdfFillComponentProps) => {
   let id = -1;
-
+  const session = useSession();
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [open, setOpen] = React.useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
   const [currentItemId, setCurrentItemId] = useState<number>(-1);
   const [signedItems, setSignedItems] = useState<number[]>([]);
+  console.log(copiedItems, "dev");
   const onSaveSignature = (signature: string, currentItemId: number) => {
     console.log("currentItemId", currentItemId);
     if (currentItemId === -1) {
@@ -110,6 +115,20 @@ const PdfFillComponent = ({
     setCurrentItemId(itemId);
     setOpen(true);
   };
+  useEffect(() => {
+    axios
+      .post(
+        "http://localhost:3000/api/document/getRecipientId",
+        { email: session?.data?.user?.email }
+        //why parse user id
+      )
+      .then((response) => {
+        const x = copiedItems.filter(
+          (item) => item.recipientId === response.data.result[0].id
+        );
+        setCopiedItems(x);
+      });
+  }, [session]);
   return (
     <div
       style={{
