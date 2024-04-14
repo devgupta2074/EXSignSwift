@@ -147,8 +147,8 @@ export default function Step2({
           className=" border-rose-500 sticky flex h-full  flex-col overflow-auto rounded-xl border px-4 py-6"
         >
           <div className="-mx-2 flex flex-1 flex-col px-2">
-            <h3 className="text-white text-2xl font-semibold">General</h3>
-            <p className="text-gray-100 mt-2 text-sm">
+            <h3 className=" text-2xl font-semibold">General</h3>
+            <p className="text-gray-500 mt-2 text-sm">
               Configure general settings for the document.
             </p>
             <div className="border-border mb-0 mt-4"></div>
@@ -163,7 +163,8 @@ export default function Step2({
                         onChangeEmail={(e) => handleEmailChange(input.id, e)}
                       />
                       <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        className=" bg-rose-500   bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        // 
                         onClick={(e) => handleDelete(e, input.id)}
                       >
                         Delete
@@ -187,7 +188,8 @@ export default function Step2({
                 </div>
                 <div className="mt-4">
                   <button
-                    className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded"
+                    className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded"
+                    // bg-rose-500 
                     onClick={(e) => onClickHandler(e)}
                   >
                     Add
@@ -206,7 +208,7 @@ export default function Step2({
               </div>
               <div className="mt-4 flex gap-x-4">
                 <button
-                  className="inline-flex items-center justify-center text-white text-sm font-medium  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-secondary-foreground h-11 px-8 rounded-md bg-rose-500 hover:bg-rose-500/80 flex-1 "
+                  className="steps-button inline-flex items-center justify-center text-white text-sm font-medium  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-secondary-foreground h-11 px-8 rounded-md bg-rose-500 hover:bg-rose-500/80 flex-1 "
                   type="button"
                   onClick={() => {}}
                 >
@@ -215,14 +217,14 @@ export default function Step2({
                 {loading ? (
                   <Button
                     disabled
-                    className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                    className="steps-button inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
                   >
                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                     Please wait
                   </Button>
                 ) : (
                   <button
-                    className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                    className="steps-button inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
                     type="button"
                     onClick={(e) => {
                       onContinue(e);

@@ -10,13 +10,15 @@ export default function Input({ onChangeName, onChangeEmail }: InputProps) {
       <input
         type="text"
         placeholder="Name"
-        className="border text-white border-gray-300 bg-gray-800 rounded-md px-3 py-2 focus:outline-none focus:border-rose-500"
+        className="border text-white   rounded-md px-3 py-2 focus:outline-none focus:border-rose-500"  
+        // bg-gray-800 border-gray-300 
         onChange={onChangeName}
       />
       <input
         type="text"
         placeholder="E-mail"
-        className="border text-white border-gray-300 bg-gray-800 rounded-md px-3 py-2 focus:outline-none focus:border-rose-500"
+        className="border text-white  rounded-md px-3 py-2 focus:outline-none focus:border-rose-500"
+        // bg-gray-800 border-gray-300 
         onChange={onChangeEmail}
       />
     </div>

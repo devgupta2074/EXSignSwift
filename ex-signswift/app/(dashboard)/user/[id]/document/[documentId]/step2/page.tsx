@@ -35,7 +35,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
         </h1>
       </div>
       <div
-        className="w-full flex flex-row justify-center items-center  space-x-10   bg-gray-800 pt-5"
+        className="step-two-container flex justify-center items-center  bg-gray-800 pt-5"
         // style={{ overflowY: "hidden", height: "86vh" }}
       >
         <div
@@ -49,7 +49,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
         >
           <PdfViewer url={url} />
         </div>
-        <div className=" justify-center pt-0 h-full ">
+        <div className="step-two-form justify-center pt-0  ">
           <div className="w-full h-full">
             <Step2 docId={params.documentId} userId={params.id} />
           </div>

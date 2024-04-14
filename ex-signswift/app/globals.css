@@ -255,6 +255,33 @@ html {
   }
 }
 
+/* Step 2 ======================================================================================================== */
+.step-two-container{
+  width: 1400px;
+  /* border: 2px solid white; */
+  margin: auto;
+  gap: 5px;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+.step-two-form form{
+  /* flex-grow: 1; */
+  background-color: white;
+  color: #1f2937;
+}
+
+.step-two-form form input{
+  color: black;
+  border: 1px solid black;
+}
+
+.step-two-form form .steps-button{
+  background-color: #1f2937;
+}
+.step-two-form form .delete{
+  background-color: #f53e5e;
+}
+
 /* Step3==================================================================================================== */
 .dnd-step-section {
   /* border: 2px solid #fff; */
