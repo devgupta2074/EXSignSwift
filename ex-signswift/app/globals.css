@@ -307,10 +307,10 @@ html {
 }
 
 .email-main {
-  background-color: #1f2937;
-  border: 2px solid #f53e5e;
+  background-color: #fff;
+  border: 2px solid #010305;
   padding: 1rem;
-  color: #fff;
+  color: #1f2937;
   border-radius: 1rem;
 }
 
@@ -321,7 +321,7 @@ html {
   padding: 0 20px;
   /* border: 2px solid #ccc; */
   border-radius: 5px;
-  background-color: #1f2937;
+  background-color: #fff;
   /* font-family: "Outfit"; */
 }
 
@@ -344,11 +344,11 @@ html {
 
 .email-form input,
 .email-form textarea {
-  background-color: #1f2937;
-  border: 2px solid #fff;
+  background-color: #ffffff;
+  border: 1px solid #c3bebe;
   margin-top: 0.6rem;
   margin-bottom: 1.2rem;
-  border-radius: 0.6rem;
+  border-radius: 0.2rem;
 }
 
 .email-subject,
@@ -361,7 +361,7 @@ html {
 }
 
 .email-form-button {
-  background-color: #f53e5e;
+  background-color: #1f2937;
   color: #fff;
   border: none;
   padding: 10px 20px;
