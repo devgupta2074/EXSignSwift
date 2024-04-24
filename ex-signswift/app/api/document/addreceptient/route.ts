@@ -16,31 +16,32 @@ documentId:number
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
   const {docId,recipient} = await req.json();
-  console.log(docId,recipient)
+  console.log(docId,recipient,"in add recpientr");
 
   try{
     
-    const result=await prisma.recipient.createMany({
-      data: recipient.map((rec:Irec) => ({
-        name: rec.name.toString(),
-        email: rec.email.toString().toLowerCase(),
-        token: rec.token.toString(),
+    const result=await prisma.recipient?.createMany({
+      data:recipient?.map((rec:Irec) => ({
+        name: rec?.name?.toString(),
+        email: rec?.email?.toString()?.toLowerCase(),
+        token: rec?.token?.toString(),
         documentId: parseInt(docId),
       })),
     })
+    console.log(result,"in add recpint");
     
     
     return NextResponse.json({
-      message: "Document Created",
-      recipient:result,
-      status: 201,
+      message: "Recepient Addded Success",
+      success:true,
+      status: 200,
     });
   }
-  catch(error){
+  catch(error:any){
 return NextResponse.json({
-  message:"Imnernal Server Error",
+  message:"Imnernal Server asda Error",
   status: 500,
-  error:error 
+  error:error.message 
 })
   }
 

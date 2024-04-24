@@ -1,37 +1,8 @@
 "use client";
 
 import * as React from "react";
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
 import axios from "axios";
-
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -43,6 +14,8 @@ import {
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import H4 from "@/components/Typography/H4";
+import Loader from "@/components/Loader";
 
 export type Payment = {
   id: string;
@@ -63,7 +36,9 @@ export function DocumentTable(id: { id: string; email: string }) {
   const [recpientData, setRecipientData] = React.useState([]);
   const [data, setData] = React.useState<any[]>([]);
   console.log(id);
+  const [loading, setLoading] = React.useState(false);
   React.useEffect(() => {
+    setLoading(true);
     axios
       .post(
         "http://localhost:3000/api/document/getAllUserDocuments",
@@ -92,25 +67,32 @@ export function DocumentTable(id: { id: string; email: string }) {
             .then((response: any) => {
               console.log(response.data, "response");
               const x = [...signedData];
-              x.push(response.data.Document);
+
+              x?.push(response?.data?.Document);
               setSignedData(x);
             });
         });
       });
+    setLoading(false);
   }, [id]);
 
   const router = useRouter();
   console.log(signedData, "signed");
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+        <Loader />
+      </div>
+    );
+  }
   return (
     <div className="w-full sm:p-4">
-      <h2 className="p-4 text-white">Created Documents</h2>
       <div className="rounded-md sm:border">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="font-medium">Id</TableHead>
               <TableHead className="font-medium">Title</TableHead>
-
               <TableHead className="font-medium">Link</TableHead>
               <TableHead className="font-medium">Status</TableHead>
               <TableHead className="font-medium">Actions</TableHead>
@@ -121,62 +103,26 @@ export function DocumentTable(id: { id: string; email: string }) {
               ? data.map((link) => (
                   <TableRow key={link?.id}>
                     <TableCell>{link?.id}</TableCell>
-                    <TableCell>{link?.title}</TableCell>
+                    <TableCell>{link?.title || "NULL"}</TableCell>
                     <TableCell>
-                      <Button>
-                        <Link href={link.ShareLink}>View</Link>
+                      <Button className="bg-[#A2E771]  w-24 hover:bg-[#A2E77] ">
+                        <Link href={link.ShareLink}>
+                          <H4>View</H4>
+                        </Link>
                       </Button>
                     </TableCell>
                     <TableCell>{link.status}</TableCell>
                     <TableCell>
                       <Button
+                        className="bg-[#A2E771]  w-24 p-2 hover:bg-[#A2E771] "
                         onClick={() => {
                           router.push(
                             `/user/${id.id}/document/${link.id}/step1`
                           );
                         }}
                       >
-                        Edit
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              : null}
-          </TableBody>
-        </Table>
-      </div>
-      <h2 className="p-4 text-white">Signed Documents</h2>
-      <div className="rounded-md sm:border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="font-medium">Id</TableHead>
-              <TableHead className="font-medium">Title</TableHead>
-
-              <TableHead className="font-medium">Link</TableHead>
-              <TableHead className="font-medium">Status</TableHead>
-              <TableHead className="font-medium">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {signedData
-              ? signedData.map((link) => (
-                  <TableRow key={link?.id}>
-                    <TableCell>{link?.id}</TableCell>
-                    <TableCell>{link?.title}</TableCell>
-                    <TableCell>
-                      <Button>
-                        <Link href={link.ShareLink}>View</Link>
-                      </Button>
-                    </TableCell>
-                    <TableCell>{link.status}</TableCell>
-                    <TableCell>
-                      <Button
-                        onClick={() => {
-                          router.push(`/user/${id.id}/signdoc/${link.id}`);
-                        }}
-                      >
-                        Sign
+                        {/* Sign or view*/}
+                        <H4>Sign</H4>
                       </Button>
                     </TableCell>
                   </TableRow>

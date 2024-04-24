@@ -1,13 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { ChangeEvent } from "react";
-import axios from "axios";
-import { Input as DefaultInput } from "./ui/input";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { MdDeleteOutline } from "react-icons/md";
 
 import Input from "./Input";
+import { addRecepient, deleteRecepientById } from "@/api-service/recepientApi";
+import { useApi } from "@/api-service/useApi";
+import Loader from "./Loader";
+import { DropdownMenuDemo } from "./DropDownMenu";
 interface InputObject {
   id: number;
   input: JSX.Element;
@@ -19,37 +22,45 @@ interface IReceptient {
 export default function Step2({
   docId,
   userId,
+  receptientProp,
 }: {
   docId: string;
   userId: string;
+  receptientProp: any;
 }) {
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [count, setCount] = React.useState<number>(1);
+  // const [count, setCount] = React.useState<number>(1);
   const [receptient, setReceptient] = React.useState<IReceptient[]>([]);
   const router = useRouter();
   const [name, setName] = useState<String[]>([]);
   const [email, setEmail] = useState<String[]>([]);
 
+  const {
+    loading: loading2,
+    error: error2,
+    data: data2,
+    request: request2,
+  } = useApi(addRecepient) as {
+    loading: boolean;
+    error: string;
+    data: any;
+    request: (...args: any[]) => Promise<any>;
+  };
+  const {
+    loading: loading3,
+    error: error3,
+    data: data3,
+    request: request3,
+  } = useApi(deleteRecepientById) as {
+    loading: boolean;
+    error: string;
+    data: any;
+    request: (...args: any[]) => Promise<any>;
+  };
+
+  const [count, setCount] = useState(1);
   useEffect(() => {
-    const fetchRecepients = async () => {
-      const result = await axios.post(
-        "http://localhost:3000/api/document/getreceptient",
-        docId
-      );
-      const receptientres = result?.data;
-
-      receptientres?.result?.map((item: any) => {
-        const res = {
-          name: item.name,
-          email: item.email,
-        };
-        setReceptient((prev) => [...prev, res]);
-      });
-    };
-    fetchRecepients();
-  }, [docId, userId]);
-
-  console.log(email, name);
+    console.log("number times step 2 render");
+  }, []);
 
   const handleNameChange = (
     index: number,
@@ -86,7 +97,7 @@ export default function Step2({
   }
   const onContinue = (e: any) => {
     e.preventDefault();
-    setLoading(true);
+
     const recipents: recipent[] = [];
     for (let i = 0; i < inputs.length; i++) {
       recipents.push({
@@ -96,16 +107,16 @@ export default function Step2({
       });
     }
     const createRecepients = async () => {
-      const response = await axios.post(
-        "http://localhost:3000/api/document/addreceptient",
-        { docId, recipient: recipents }
-      );
-      console.log(response.data);
-      router.push(`/user/${userId}/document/${docId}/step3`);
-      setLoading(false);
+      request2(addRecepient({ docId, recipient: recipents }));
     };
+
     createRecepients();
   };
+  if (data2?.success) {
+    console.log("added succes");
+    router.push(`/user/${userId}/document/${docId}/step3`);
+  }
+
   const deleteInput = (id: number): void => {
     const updatedInputs = inputs.filter((input) => input.id !== id);
     // Assuming you need to update the state or any other action after deletion
@@ -138,17 +149,28 @@ export default function Step2({
     e.preventDefault();
     deleteInput(id);
   };
+  const handleRemoveRecepient = (id: number) => {
+    console.log("recepitn to remove is ", id);
+    // request3(id);
+  };
+  if (loading3) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full">
       <div className="w-full h-full">
         <form
           id="document-flow-form-container"
-          className=" border-rose-500 sticky flex h-full  flex-col overflow-auto rounded-xl border px-4 py-6"
+          className=" bg-white sticky flex h-full  flex-col overflow-auto rounded-xl border px-4 py-6"
         >
           <div className="-mx-2 flex flex-1 flex-col px-2">
-            <h3 className="text-white text-2xl font-semibold">General</h3>
-            <p className="text-gray-100 mt-2 text-sm">
+            <h3 className="text-black text-2xl font-semibold">General</h3>
+            <p className="text-black mt-2 text-sm">
               Configure general settings for the document.
             </p>
             <div className="border-border mb-0 mt-4"></div>
@@ -156,51 +178,64 @@ export default function Step2({
               <div className="flex flex-1 flex-col">
                 <div className="space-y-4">
                   {inputs.map((input) => (
-                    <div key={input.id} className="flex space-x-2">
-                      <Input
-                        key={input.id}
-                        onChangeName={(e) => handleNameChange(input.id, e)}
-                        onChangeEmail={(e) => handleEmailChange(input.id, e)}
-                      />
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    <div key={input.id} className="flex  flex-row gap-2">
+                      <div className="w-full">
+                        <Input
+                          key={input.id}
+                          onChangeName={(e) => handleNameChange(input.id, e)}
+                          onChangeEmail={(e) => handleEmailChange(input.id, e)}
+                        />
+                      </div>
+                      <div className="w-full h-full">
+                        <DropdownMenuDemo />
+                      </div>
+                      <div
+                        className="flex justify-center items-center hover:cursor-pointer"
                         onClick={(e) => handleDelete(e, input.id)}
                       >
-                        Delete
-                      </button>
+                        <MdDeleteOutline size={25} className=" text-gray-600" />
+                      </div>
                     </div>
                   ))}
-                  {receptient.map((item) => (
-                    <div>
-                      <DefaultInput
-                        className="bg-white p-2"
-                        type="email"
-                        value={item.email}
-                      />
-                      <DefaultInput
-                        className="bg-white p-2"
-                        type="name"
-                        value={item.name}
-                      />
+                  {receptientProp?.result?.map((item: any) => (
+                    <div className="flex flex-row gap-2">
+                      <div className="flex flex-row gap-2">
+                        <input
+                          className="border text-black border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:border-rose-500 w-full"
+                          type="email"
+                          value={item.email}
+                        />
+                        <input
+                          className="border text-black border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:border-rose-500 w-full"
+                          type="name"
+                          value={item.name}
+                        />
+                      </div>
+                      <div
+                        className="flex justify-center items-center hover:cursor-pointer"
+                        onClick={() => handleRemoveRecepient(item.id)}
+                      >
+                        <MdDeleteOutline size={25} className=" text-gray-600" />
+                      </div>
                     </div>
                   ))}
                 </div>
                 <div className="mt-4">
                   <button
-                    className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded"
+                    className="bg-rose-500 hover:bg-rose-700 text-white font-normal py-2 px-4 rounded"
                     onClick={(e) => onClickHandler(e)}
                   >
-                    Add
+                    + Add Signer
                   </button>
                 </div>
               </div>
             </div>
-            <div className=" ">
+            <div className="mt-72">
               <div>
                 <p className="text-muted-foreground text-sm">
                   Step <span>2 of 4</span>
                 </p>
-                <div className="relative h-1 bg-gray-300 rounded-full mb-2">
+                <div className="relative h-1 rounded-full mb-2">
                   <div className="absolute left-0 top-0 h-full bg-rose-500 w-2/4"></div>
                 </div>
               </div>
@@ -212,7 +247,7 @@ export default function Step2({
                 >
                   Go Back
                 </button>
-                {loading ? (
+                {loading2 ? (
                   <Button
                     disabled
                     className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"

@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import DropItem from "../DropItem/dropItem";
 import ComboBox from "../DragDrop/comboBox";
 import axios from "axios";
+import H2 from "../Typography/H2";
 
 interface DroppedItem {
   id: number;
@@ -58,7 +59,6 @@ const Form: FC<FormProps> = ({
         docId: parseInt(docId),
         droppedItem: copiedItems,
       });
-
       console.log(saveDocsSign);
       router.push(`/user/${userId}/document/${docId}/step4`);
       setLoading(false);
@@ -77,16 +77,14 @@ const Form: FC<FormProps> = ({
   ];
 
   return (
-    <div className="dnd-form flex justify-center items-start bg-gray-800 ">
+    <div className="w-full h-full flex justify-center items-start  ">
       <div className="" style={{ height: "100%" }}>
         <Card
-          className="p-6 bg-gray-800 border-2 border-rose-500 "
+          className="p-6  border-2 border-rose-500 "
           // style={{ height: "95%" }}
         >
-          <CardContent>
-            <h1 className="text-3xl font-semibold text-white">
-              Add Fields Form
-            </h1>
+          <CardContent className="mt-5 mb-5">
+            <H2>ADD FIELDS</H2>
           </CardContent>
           <CardContent className="w-full">
             <ComboBox

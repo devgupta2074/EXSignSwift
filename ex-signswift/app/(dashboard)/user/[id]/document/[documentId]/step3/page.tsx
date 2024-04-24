@@ -5,6 +5,11 @@ import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useEffect } from "react";
+import H2 from "@/components/Typography/H2";
+import H4 from "@/components/Typography/H4";
+import { useApi } from "@/api-service/useApi";
+import { getDocumentById } from "@/api-service/documentApi";
+import Loader from "@/components/Loader";
 
 // async function fetchData(params: any) {
 //   try {
@@ -32,34 +37,66 @@ export default function Document({
   // const response = fetchData(params).then((response) =>
   //   setUrl(response?.data.Document.url)
   // );
-  const [url, setUrl] = React.useState("");
-  useEffect(() => {
-    const getDocument = async () => {
-      const response = await axios.post(
-        "http://localhost:3000/api/document/getDocument",
-        {
-          docId: params.documentId,
-        }
-      );
-
-      setUrl(response?.data?.Document?.ShareLink);
+  interface IData {
+    Document: {
+      ShareLink: string;
+      createdAt: Date;
+      id: number;
+      title: string;
+      status: string;
+      updatedAt: Date;
+      Field: IField[];
     };
-    getDocument();
+  }
+  interface IField {
+    id: number;
+    secondaryId: string;
+    left: string;
+    top: string;
+    width: string;
+    height: string;
+    page: number;
+    text: string;
+    icon: string;
+    recipientId: number;
+  }
+  const { loading, error, data, request } = useApi(getDocumentById) as {
+    loading: boolean;
+    error: string;
+    data: IData | null;
+    request: (...args: any[]) => Promise<any>;
+  };
+  useEffect(() => {
+    if (params.documentId) {
+      request({ docId: params.documentId });
+    }
   }, [params]);
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div
-      className="dnd-step-section "
+      className="px-16"
       style={{
         display: "flex",
         // overflowY: "hidden",
         flexDirection: "column",
       }}
     >
-      <div className="dnd-step-container">
+      <div className="w-full flex flex-col gap-7    pt-10 mt-8">
+        <H2>{"Pdf_file_name"}</H2>
+        <H4>Recepient info</H4>
+      </div>
+      <div className="">
         <DndProvider backend={HTML5Backend}>
           <DndComponent
-            url={url}
+            addedfield={data?.Document?.Field || []}
+            url={data?.Document?.ShareLink || ""}
             docId={params.documentId}
             userId={params.documentId}
           />

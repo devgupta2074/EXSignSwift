@@ -122,10 +122,7 @@ export const DocumentDropzone = ({
 
   return (
     <motion.div
-      className={cn(
-        "flex aria-disabled:cursor-not-allowed m-10 p-5 ",
-        className
-      )}
+      className={cn("flex aria-disabled:cursor-not-allowed ", className)}
       variants={DocumentDropzoneContainerVariants}
       initial="initial"
       animate="animate"
@@ -135,7 +132,7 @@ export const DocumentDropzone = ({
       <Card
         role="button"
         className={cn(
-          "bg-slate-800 focus-visible:ring-ring ring-offset-background flex flex-1 cursor-pointer flex-col items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 aria-disabled:pointer-events-none aria-disabled:opacity-60",
+          " border-2 border-rose-300  focus-visible:ring-ring ring-offset-background flex flex-1 cursor-pointer flex-col items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 aria-disabled:pointer-events-none aria-disabled:opacity-60",
           className
         )}
         gradient={true}
@@ -144,7 +141,7 @@ export const DocumentDropzone = ({
         {...getRootProps()}
         {...props}
       >
-        <CardContent className="text-muted-foreground/40 flex flex-col items-center justify-center p-6">
+        <CardContent className="text-muted-foreground/40  flex flex-col items-center justify-center p-6">
           {/* <FilePlus strokeWidth="1px" className="h-16 w-16"/> */}
           <div className="flex">
             <motion.div
@@ -183,11 +180,9 @@ export const DocumentDropzone = ({
           </div>
 
           <input {...getInputProps()} />
-
           <p className="group-hover:text-rose-500 text-rose-400 mt-8 font-medium">
             {DocumentDescription[type].headline}
           </p>
-
           <p className="text-muted-foreground/80 mt-1 text-sm">
             {disabled ? disabledMessage : "Drag & drop your PDF here."}
           </p>

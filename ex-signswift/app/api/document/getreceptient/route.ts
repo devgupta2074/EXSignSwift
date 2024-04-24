@@ -8,16 +8,15 @@ import { NextRequest, NextResponse } from "next/server";
 //update title of document
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const data = await req.json();
-  console.log("ccc", data);
+  const { docId } = await req.json();
+  console.log("doc id is", docId);
 
   try {
     const result = await prisma.recipient.findMany({
       where: {
-        documentId: parseInt(data),
+        documentId: parseInt(docId),
       },
     });
-    console.log(result, "route.ts");
 
     return NextResponse.json({
       message: "Document Created",

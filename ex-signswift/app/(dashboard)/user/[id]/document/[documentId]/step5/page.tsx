@@ -9,7 +9,7 @@ const page = () => {
 
   return (
     <div
-      className="w-full flex flex-row  space-x-10   bg-gray-800 pt-5"
+      className="w-full flex flex-row  space-x-10    pt-5"
       style={{ overflowY: "hidden", height: "90vh" }}
     >
       <div

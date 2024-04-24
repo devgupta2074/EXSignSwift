@@ -1,16 +1,11 @@
 "use client";
 import React, { FC, useEffect } from "react";
 import { pdfjs } from "react-pdf";
-import { Skeleton } from "@/components/ui/skeleton";
-
 import { Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
-
 import "react-pdf/dist/Page/TextLayer.css";
-import { RefObject } from "react";
-
 import { useState } from "react";
-import usePdfFileFromUrl from "@/app/utils/usePdfUrl";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 interface IField {
   id: number;
@@ -36,9 +31,9 @@ interface PdfViewerProps {
 }
 
 const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems, receptient }) => {
-  console.log("copied Items", copiedItems);
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+
   const handlePrevPage = () => {
     setCurrentPage((prev) => prev - 1);
   };
@@ -58,20 +53,19 @@ const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems, receptient }) => {
     console.log(receptient, id);
     return recipient ? recipient.email : -1;
   };
-  const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
 
   // if (loading) {
   //   return <Skeleton className="h-96 w-full" />;
   // }
 
   return (
-    <div className=" h-screen">
-      <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+    <div className="h-full  overflow-y-scroll">
+      <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
         <div
           style={{
             position: "relative",
           }}
-          className="border-2 border-rose-500 rounded-md overflow-y-scroll h-[35rem]"
+          className="border-2 border-rose-500 rounded-md overflow-y-scroll flex  w-full justify-center"
         >
           {copiedItems?.map(
             (item, indx) =>
@@ -138,7 +132,7 @@ const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems, receptient }) => {
         >
           Prev
         </button>
-        <p className="text-lg  text-white mx-4">
+        <p className="text-lg  text-black mx-4">
           Page {currentPage} of {numPages}
         </p>
         <button

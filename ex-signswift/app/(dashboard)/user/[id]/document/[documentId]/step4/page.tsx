@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 
 import EmailForm from "@/components/emailForm";
 import PdfViewer from "@/components/PdfViewer/viewer";
+import H2 from "@/components/Typography/H2";
+import H4 from "@/components/Typography/H4";
 
 interface IField {
   id: number;
@@ -54,10 +56,13 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
   }, [params]);
   console.log(receptient);
   return (
-    <div className="flex flex-col ">
-      <div className="flex justify-center items-center"></div>
+    <div className="flex flex-col px-16 ">
+      <div className="w-full flex flex-col gap-7 pt-10 ">
+        <H2>{"Pdf_file_name"}</H2>
+        <H4>Recepient info</H4>
+      </div>
       <div
-        className="w-full flex flex-row justify-center  space-x-10   bg-gray-800 "
+        className="w-full flex flex-row   space-x-20   "
         // style={{ overflowY: "hidden", height: "86vh" }}
       >
         <div
@@ -67,7 +72,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
             height: "100%",
           }}
           id="pdf-viewer"
-          className=" w-1/2"
+          className="rounded-md   h-[55rem] w-[40rem]"
         >
           <PdfViewer
             copiedItems={copiedItems}
@@ -75,7 +80,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
             url={url}
           />
         </div>
-        <div className=" justify-center pt-0 h-full ">
+        <div className="w-[33rem] h-[50rem]  justify-center pt-0  ">
           <div className="w-full h-full">
             <EmailForm recipient={receptient} />
           </div>

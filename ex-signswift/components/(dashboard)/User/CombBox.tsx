@@ -55,7 +55,7 @@ export function ComboboxDemo() {
           role="combobox"
           size="default"
           aria-expanded={open}
-          className="w-[200px] justify-between bg-gray-700 "
+          className="w-[200px] justify-between  "
         >
           {value ? (
             frameworks.find((framework) => framework.value === value)?.label

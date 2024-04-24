@@ -1,14 +1,10 @@
 "use client";
-import { DndComponent } from "@/components/DragDrop/dndComponent";
 import PdfViewer from "@/components/PdfViewer/viewer";
-import axios from "axios";
 import React, { useEffect } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useApi } from "@/api-service/useApi";
 import {
   Card,
   CardContent,
@@ -20,110 +16,154 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  getDocumentById,
+  updateDocumentTitle,
+} from "@/api-service/documentApi";
+import Loader from "@/components/Loader";
+import H2 from "@/components/Typography/H2";
+import H4 from "@/components/Typography/H4";
 
-async function fetchData(params: any) {
-  try {
-    const response = await axios.post(
-      "http://localhost:3000/api/document/getDocument",
-      { userId: parseInt(params.id), id: parseInt(params.documentId) }
-      //why parse user id
-    );
-    console.log(response.data, "ddev");
-    return response;
-
-    // Assuming you want to do something with the response data
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
+interface IData {
+  Document: {
+    ShareLink: string;
+    createdAt: Date;
+    id: number;
+    title: string;
+    status: string;
+    updatedAt: Date;
+  };
 }
-
-// Call the async function
 
 export default function Document({
   params,
 }: {
   params: { id: string; documentId: string };
 }) {
-  const [url, setUrl] = React.useState("");
-  const [loading, setLoading] = React.useState<boolean>(true);
   const router = useRouter();
+  const { loading, error, data, request } = useApi(getDocumentById) as {
+    loading: boolean;
+    error: string;
+    data: IData | null;
+    request: (...args: any[]) => Promise<any>;
+  };
+  const {
+    loading: loading2,
+    error: error2,
+    data: data2,
+    request: request2,
+  } = useApi(updateDocumentTitle) as {
+    loading: boolean;
+    error: string;
+    data: any;
+    request: (...args: any[]) => Promise<any>;
+  };
+
   useEffect(() => {
-    axios
-      .post("http://localhost:3000/api/document/getDocument", {
-        docId: params.documentId,
-      })
-      .then((response) => {
-        console.log(response.data, "response");
-        setUrl(response?.data?.Document?.ShareLink);
-      });
+    if (params.documentId) {
+      request({ docId: params.documentId });
+    }
   }, [params]);
 
-  const handleSave = async () => {
-    setLoading(true);
+  const handleSave = () => {
     const data = {
       id: params.documentId,
       title: title,
     };
-    const updateDocRes = await axios.post(
-      "http://localhost:3000/api/document/updateDocumentTitle",
-      data
-    );
-    if (updateDocRes) {
-      router.push(`/user/${params.id}/document/${params.documentId}/step2`);
-    }
-    setLoading(false);
+    request2(data);
   };
+  const handleBack = () => {
+    router.back();
+  };
+  if (data2?.success) {
+    router.push(`/user/${params.id}/document/${params.documentId}/step2`);
+  }
   const [title, setTitle] = React.useState<string>("");
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+        <Loader />
+      </div>
+    );
+  }
   return (
     <div
-      className="w-full flex flex-row m-10 items-start gap-40 pt-0"
-      style={{ overflowY: "hidden", height: "100vh" }}
+      className="w-full flex flex-col p-10 px-16  items-start"
+      style={{ overflowY: "scroll" }}
     >
-      <div
-        style={{
-          overflowY: "hidden",
-          overflowX: "hidden",
-        }}
-        id="pdf-viewer"
-        className=" rounded-md  h-4/5 w-1/2"
-      >
-        <PdfViewer url={url} />
+      <div className="w-full flex flex-col gap-7">
+        <H2>{data?.Document?.title || "Pdf_file_name"}</H2>
+        <H4>Invited you to view the document</H4>
       </div>
-      <div className="w-1/3 h-full  ">
-        <Tabs defaultValue="account" className="w-[400px]">
-          <TabsList className="grid w-full grid-cols-1">
-            <TabsTrigger value="account">Document</TabsTrigger>
-          </TabsList>
-          <TabsContent value="account">
-            <Card>
-              <CardHeader>
-                <CardTitle>Document</CardTitle>
-                <CardDescription>Give name to document</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="name">Title</Label>
-                  <Input
-                    id="name"
-                    defaultValue="Random"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-              </CardContent>
-              <CardFooter>
-                {!loading ? (
-                  <Button disabled>
-                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                    Please wait
-                  </Button>
-                ) : (
-                  <Button onClick={handleSave}>Save changes</Button>
-                )}
-              </CardFooter>
-            </Card>
-          </TabsContent>
-        </Tabs>
+      <div className="flex gap-32 pt-5 w-full">
+        <div
+          style={{
+            overflowX: "hidden",
+          }}
+          id="pdf-viewer"
+          className="rounded-md   h-[55rem] w-[40rem]"
+        >
+          <PdfViewer url={data?.Document?.ShareLink || ""} />
+        </div>
+        <div className=" w-[30rem] h-full">
+          <div>
+            <Tabs defaultValue="account" className="w-full">
+              <TabsList className="grid w-full grid-cols-1">
+                <TabsTrigger value="account">Document</TabsTrigger>
+              </TabsList>
+              <TabsContent value="account">
+                <Card className="h-full">
+                  <CardHeader>
+                    <CardTitle>Document</CardTitle>
+                    <CardDescription>Give name to document</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="space-y-1">
+                      <Label htmlFor="name">Title</Label>
+                      <Input
+                        id="name"
+                        defaultValue={data?.Document?.title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                    </div>
+                  </CardContent>
+                  <div className="p-5 pb-0 mt-72">
+                    <p className="text-muted-foreground text-sm">
+                      Step <span>1 of 4</span>
+                    </p>
+                    <div className="relative h-1  rounded-full mb-2">
+                      <div className="absolute left-0 top-0 h-full bg-rose-500 w-1/4"></div>
+                    </div>
+                  </div>
+                  <CardFooter className="w-full flex flex-row-reverse gap-5 p-5">
+                    {loading2 ? (
+                      <Button
+                        className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                        disabled
+                      >
+                        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                        Please wait
+                      </Button>
+                    ) : (
+                      <Button
+                        className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                        onClick={handleSave}
+                      >
+                        Save changes
+                      </Button>
+                    )}
+                    <Button
+                      className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                      onClick={handleBack}
+                    >
+                      Go Back
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
       </div>
     </div>
   );

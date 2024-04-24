@@ -13,10 +13,10 @@ import { FC, useEffect } from "react";
 import { pdfjs } from "react-pdf";
 import { Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
-import myFile from "../PdfViewer/sow2.pdf";
+
 import "react-pdf/dist/Page/TextLayer.css";
 import { RefObject } from "react";
-import usePdfFileFromUrl from "@/app/utils/usePdfUrl";
+
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
@@ -38,6 +38,19 @@ interface DroppedItem {
   userEmail: string;
   userId: number;
 }
+interface addedItemProps {
+  id: number;
+  secondaryId: string;
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+  page: number;
+  text: string;
+  icon: string;
+  recipientId: number;
+}
+
 interface ChildRefs {
   [key: number]: React.MutableRefObject<HTMLButtonElement | null>;
 }
@@ -46,10 +59,12 @@ export const DndComponent = ({
   url,
   userId,
   docId,
+  addedfield,
 }: {
   url: string;
   userId: string;
   docId: string;
+  addedfield: addedItemProps[];
 }) => {
   const [numPages, setNumPages] = useState<number>(0);
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -63,7 +78,6 @@ export const DndComponent = ({
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
-  const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
 
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -177,26 +191,23 @@ export const DndComponent = ({
       style={{
         display: "flex",
         flexDirection: "row",
-        justifyContent: "center",
+        gap: "10rem",
         width: "100%",
-        gap: "2rem",
       }}
-      className="bg-gray-800"
+      className=""
     >
       <div>
         <div
           style={{
             // marginTop: "5rem",
             overflowY: "scroll",
-            overflowX: "clip",
+            overflowX: "scroll",
           }}
-          id="pdf-viewer"
-          className="border-2 border-rose-500 rounded-md  dnd-pdf-view"
+          className="border-2 border-rose-500 rounded-md   h-[55rem] w-[40rem]"
         >
-          <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+          <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
             <div
               style={{
-                border: "2px solid green",
                 position: "relative",
               }}
               ref={parentRef}
@@ -356,6 +367,51 @@ export const DndComponent = ({
                     </div>
                   )
               )}
+              {addedfield?.map(
+                (item, indx) =>
+                  item.page === currentPage && (
+                    <div
+                      key={indx}
+                      style={{
+                        width: parseInt(item.width),
+                        height: parseInt(item.height),
+                        left: parseInt(item.left),
+                        top: parseInt(item.top),
+                        position: "absolute",
+                        borderRadius: "0.5rem",
+                        zIndex: 1000,
+                        fontWeight: "500",
+                      }}
+                      className="bg-white text-gray-700 border-2 border-gray-200  rounded-md shadow-md flex justify-center items-center cursor-pointer"
+                    >
+                      <div
+                        key={item.id}
+                        style={{
+                          position: "absolute",
+                          width: parseInt(item.width),
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          height: parseInt(item.height),
+                          textAlign: "center",
+                          zIndex: 1200,
+                        }}
+                      >
+                        <div className="flex flex-col gap-2 items-center justify-center">
+                          <div className="flex gap-5">
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: item?.icon || "",
+                              }}
+                            ></div>
+                            <div>{item?.text}</div>
+                          </div>
+                          <div className="text-xs text-center"></div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+              )}
 
               <Page key={`page_${currentPage}`} pageNumber={currentPage} />
             </div>
@@ -398,7 +454,7 @@ export const DndComponent = ({
             // width: "50vw",
           }
         }
-        className=""
+        className="w-[33rem] h-[50rem]"
       >
         <Form
           userId={userId}

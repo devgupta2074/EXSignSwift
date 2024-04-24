@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Document, Page } from "react-pdf";
 import { useState } from "react";
-import usePdfFileFromUrl from "@/app/utils/usePdfUrl";
+
 import { useRef } from "react";
 import { ReactNode } from "react";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -84,8 +84,6 @@ const PdfFillComponent = ({
 
   //arr ->find if he ki nhi he ->sign use state
 
-  const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
-
   const [copiedItems2, setCopiedItems] = useState<IField[]>(copiedItems);
 
   const handleSign = (itemId: number) => {
@@ -136,18 +134,17 @@ const PdfFillComponent = ({
         flexDirection: "row",
         width: "100%",
         justifyContent: "center",
-        overflowY: "hidden",
+
         height: "100%",
         paddingLeft: "3.5rem",
         paddingRight: "3.5rem",
         paddingTop: "1rem",
       }}
-      className="bg-gray-800 m-auto"
     >
       <div>
         <div
           style={{
-            height: "85%",
+            height: "90%",
             marginTop: "0rem",
             overflowY: "scroll",
             width: "100%",
@@ -156,7 +153,7 @@ const PdfFillComponent = ({
           id="pdf-viewer"
           className="border-2 border-rose-500 rounded-md m-2"
         >
-          <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+          <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
             <div
               style={{
                 position: "relative",

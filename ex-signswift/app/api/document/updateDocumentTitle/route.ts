@@ -18,8 +18,8 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     });
     console.log(document);
     return NextResponse.json({
-      message: "Document Created",
-
+      message: "Document title updated",
+      success:true,
       status: 201,
     });
   } catch (error) {

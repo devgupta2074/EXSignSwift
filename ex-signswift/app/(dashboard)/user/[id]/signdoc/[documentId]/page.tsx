@@ -8,6 +8,8 @@ import React from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { ReactNode } from "react";
 import { useEffect } from "react";
+import H2 from "@/components/Typography/H2";
+import H4 from "@/components/Typography/H4";
 
 interface IField {
   id: number;
@@ -54,33 +56,33 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
 
   return (
     <div
-      className="w-full flex flex-row justify-center items-center  bg-gray-800 pt-5"
+      className="w-full flex flex-col  items-center px-16"
       style={{
         overflowY: "hidden",
         height: "100%",
       }}
     >
-      <div
-        className="w-1/2 h-full"
-        style={{
-          overflowY: "hidden",
-
-          display: "flex",
-          padding: "1rem",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <PdfFillComponent
-          url={url}
-          copiedItems={copiedItems}
-          signatureCanvasRef={signatureCanvasRef}
-          signatureCanvasRef2={signatureCanvasRef2}
-          userid={params.id}
-        />
+      <div className="w-full flex flex-col gap-7 pt-10 ">
+        <H2>{"Pdf_file_name"}</H2>
+        <H4>Recepient info</H4>
       </div>
-      <div className="w-1/2 flex justify-center items-start pt-10 h-full">
-        <div className=" w-3/4">
+      <div className="flex flex-row w-full  gap-36">
+        <div
+          className="rounded-md   h-[55rem] w-[40rem]"
+          style={{
+            display: "flex",
+            padding: "1rem",
+          }}
+        >
+          <PdfFillComponent
+            url={url}
+            copiedItems={copiedItems}
+            signatureCanvasRef={signatureCanvasRef}
+            signatureCanvasRef2={signatureCanvasRef2}
+            userid={params.id}
+          />
+        </div>
+        <div className="w-[30rem] h-[50rem]  flex  items-start pt-10 ">
           <SignatureForm
             signatureCanvasRef={signatureCanvasRef2}
             handleSign={handleSign}

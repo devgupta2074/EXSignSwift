@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CommandList } from "cmdk";
+import Loader from "../Loader";
 
 //value->only small letter allowed
 
@@ -44,12 +45,14 @@ export function ComboBox({
   console.log(docId);
 
   const [receptient, setReceptient] = React.useState<receptient[]>([]);
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     const getReceptient = async () => {
+      setLoading(true);
       const result = await axios.post(
         "http://localhost:3000/api/document/getreceptient",
-        docId
+        { docId }
       );
       const receptientres = result?.data;
       console.log(result);
@@ -59,10 +62,18 @@ export function ComboBox({
       });
       console.log(receptientLabel);
       setReceptient(receptient ? receptientLabel : null);
+      setLoading(false);
     };
     getReceptient();
   }, [docId]);
 
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+        <Loader />
+      </div>
+    );
+  }
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

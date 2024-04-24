@@ -96,7 +96,7 @@ const EmailForm = ({ recipient }: any) => {
           name="subject"
           value={inputs.subject || ""}
           onChange={handleChange}
-          className="email-subject"
+          className="email-subject border-2 border-gray-600"
         />
         <label className="email-form-label">Email message</label>
 
@@ -104,19 +104,19 @@ const EmailForm = ({ recipient }: any) => {
           name="email_body"
           value={inputs.email_body}
           onChange={handleChange}
-          className="email-body"
+          className="email-body border-2 border-gray-600"
           rows={5}
           cols={50}
         />
-        <button type="submit" className="email-form-button">
+        <button type="submit" className=" text-black email-form-button">
           Send Email
         </button>
       </form>
       <div>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground text-sm text-black">
           Step <span>4 of 4</span>
         </p>
-        <div className="relative h-1 bg-gray-300 rounded-full mb-2">
+        <div className="relative h-1  rounded-full mb-2">
           <div className="absolute left-0 top-0 h-full bg-rose-500 w-full"></div>
         </div>
       </div>
