@@ -3,6 +3,7 @@
 @tailwind utilities;
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 body {
   font-family: "Nunito", sans-serif;
 }
@@ -258,13 +259,16 @@ html {
 
 
 
+
+
 /* ===================Navbar============================================================================ */
 .nav-container{
   max-width: 1400px;
   border: 2px solid red;
-  margin: .4rem;
+  margin: .4rem auto;
   border-radius: 1rem;
   background-color: #f53e5e;
+  color: #ffffff;
 }
 .nav-profile{
   display: flex;
@@ -289,11 +293,17 @@ html {
 }
 
 .nav-Logo-section H2{
-  font-weight: 600;
+  font-weight: 800;
+  font-family: "Chakra Petch", sans-serif;
+  font-style: italic;
+  color: #ffffff;
 
 }
+.nav-Logo-section H4{
+  color: #ffffff;
+}
 .nav-profile{
-  padding: .4rem .4rem;
+  padding: .6rem .4rem;
   /* border: 5px solid black; */
   flex-grow: 1;
   display: flex;
@@ -303,10 +313,37 @@ html {
   align-items: flex-end;
 }
 .nav-profile .profile-icon-image{
-  width: 3rem;
+  width: 1.8rem;
+}
+/* =====================================DashBoard===================================== */
+
+.dashboard-tablist button{
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: 500;
+  /* background-color: #0056b3; */
+  padding: .4rem  2rem;
+  flex-grow: 1;
+  /* border: 1px solid #f53e5e; */
+
+}
+.dashboard-tablist button:hover{
+  border-radius: 0.4rem;
+  background-color: #f53e5e;
+  color: #fff;
+  /* border: 1px solid #f53e5e; */
+}
+.react-icon{
+  font-size: 1.4rem;
 }
 
-/* Step3==================================================================================================== */
+
+/*
+
+
+
+Step3==================================================================================================== */
 .dnd-step-section {
   /* border: 2px solid #fff; */
   /* height: 100vh; */
