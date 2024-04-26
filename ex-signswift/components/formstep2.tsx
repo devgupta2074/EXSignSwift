@@ -115,7 +115,7 @@ export default function Step2({
     e.preventDefault();
     console.log(receptientProp);
     console.log(inputs);
-    if (receptientProp?.result?.length > 0 && inputs?.length <= 0) {
+    if (receptientProp?.result?.length > 0 && inputs?.length <= 1) {
       router.push(`/user/${userId}/document/${docId}/step3`);
     } else {
       const recipents: recipent[] = [];

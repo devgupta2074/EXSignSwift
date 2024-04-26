@@ -42,10 +42,10 @@ const EmailForm = ({ recipient }: any) => {
     setInputs((values) => ({ ...values, [name]: value }));
   };
   const mails = recipient?.map((email: any) => email.email);
-  console.log("mails",mails);
-  console.log("recipient",recipient.item);
+  console.log("mails", mails);
+  console.log("recipient", recipient.item);
   const check = recipient.map((item: any) => item);
-  console.log("check",check)
+  console.log("check", check);
   const sendEmail = async () => {
     console.log(recipient, "check by arc now");
     const emails = recipient.map((item: any) => item.email);
@@ -65,6 +65,7 @@ const EmailForm = ({ recipient }: any) => {
 
       if (response.ok) {
         setEmailSent(true);
+        router.push("http://localhost:3000");
       } else {
         throw new Error("Failed to send email");
       }
@@ -111,7 +112,7 @@ const EmailForm = ({ recipient }: any) => {
           rows={5}
           cols={50}
         />
-        <button type="submit" className=" text-black email-form-button">
+        <button type="submit" className=" text-white email-form-button">
           Send Email
         </button>
       </form>
