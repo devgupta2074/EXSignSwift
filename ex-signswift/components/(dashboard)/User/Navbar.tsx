@@ -8,6 +8,7 @@ import H4 from "@/components/Typography/H4";
 import logo from "@/public/Profile.png"
 import Image from "next/image";
 import { FaPenNib } from "react-icons/fa";
+import { Link } from "lucide-react";
 
 const Navbar = (props:any) => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const Navbar = (props:any) => {
   function handleSignOut(){    
       console.log("signout click")
       router.push('/api/auth/signout');
-      // redirect(`/api/auth/signout`)                       
+      // redirect(`/api/auth/signout`)   wont't work because this is client component it would have worked in server side componenet                 
                 
   }
   return (
@@ -27,7 +28,10 @@ const Navbar = (props:any) => {
             <H4>Documents</H4>
           </div>
           <div className="nav-profile">
-            <Image className="profile-icon-image" src={logo} alt="logo" />
+            {/* <Image className="profile-icon-image" src={logo} alt="logo" /> */}
+            <a href="/">
+        <Image className="profile-icon-image" src={logo} alt="logo" />
+    </a>
             {/* <p>Profile Icon</p> */}
             <div className="user-data-logo">
 
