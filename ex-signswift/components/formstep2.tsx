@@ -11,6 +11,8 @@ import { addRecepient, deleteRecepientById } from "@/api-service/recepientApi";
 import { useApi } from "@/api-service/useApi";
 import Loader from "./Loader";
 import { DropdownMenuDemo } from "./DropDownMenu";
+import { SignNumberDropDown } from "./SignNumberDropDown";
+import axios from "axios";
 interface InputObject {
   id: number;
   input: JSX.Element;
@@ -70,6 +72,16 @@ export default function Step2({
     updatedNames.splice(index, 1, event.target.value);
     setName(updatedNames);
   };
+  const [selectedOption, setSelectedOption] = useState<number[]>([0]);
+
+  const handleDropDownMenu = (
+    index: number,
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const updatedNames = [...selectedOption];
+    updatedNames.splice(index, 1, parseInt(event.target.value));
+    setSelectedOption(updatedNames);
+  };
   const handleEmailChange = (
     index: number,
     event: ChangeEvent<HTMLInputElement>
@@ -78,6 +90,7 @@ export default function Step2({
     updatedEmails.splice(index, 1, event.target.value.toLowerCase());
     setEmail(updatedEmails);
   };
+
   const [inputs, setInputs] = useState<InputObject[]>([
     {
       id: 0,
@@ -86,6 +99,7 @@ export default function Step2({
           key={0}
           onChangeName={(e) => handleNameChange(0, e)}
           onChangeEmail={(e) => handleEmailChange(0, e)}
+          onChangeSignnumber={(e) => handleDropDownMenu(0, e)}
         />
       ),
     },
@@ -94,25 +108,39 @@ export default function Step2({
     name: string;
     email: string;
     token: number;
+    signnumber: number;
   }
-  const onContinue = (e: any) => {
+
+  const onContinue = async (e: any) => {
     e.preventDefault();
-
-    const recipents: recipent[] = [];
-    for (let i = 0; i < inputs.length; i++) {
-      recipents.push({
-        name: name[inputs[i].id].toString(),
-        email: email[inputs[i].id].toString(),
-        token: i,
-      });
+    console.log(receptientProp);
+    console.log(inputs);
+    if (receptientProp?.result?.length > 0 && inputs?.length <= 0) {
+      router.push(`/user/${userId}/document/${docId}/step3`);
+    } else {
+      const recipents: recipent[] = [];
+      for (let i = 0; i < inputs.length; i++) {
+        recipents.push({
+          name: name[inputs[i].id].toString(),
+          email: email[inputs[i].id].toString(),
+          token: i,
+          signnumber: selectedOption[i],
+        });
+      }
+      console.log(recipents);
+      const response = await axios.post(
+        "http://localhost:3000/api/document/addreceptient",
+        { docId, recipient: recipents }
+      );
+      console.log(response.data, "heell");
+      if (response.data.success) {
+        console.log("added succes");
+        router.push(`/user/${userId}/document/${docId}/step3`);
+      }
     }
-    const createRecepients = async () => {
-      request2(addRecepient({ docId, recipient: recipents }));
-    };
-
-    createRecepients();
   };
-  if (data2?.success) {
+  console.log(data2, "data2");
+  if (data2?.count == 1) {
     console.log("added succes");
     router.push(`/user/${userId}/document/${docId}/step3`);
   }
@@ -138,6 +166,7 @@ export default function Step2({
             key={inputs.length}
             onChangeName={(e) => handleNameChange(count, e)}
             onChangeEmail={(e) => handleEmailChange(count, e)}
+            onChangeSignnumber={(e) => handleDropDownMenu(0, e)}
           />
         ),
       },
@@ -149,9 +178,15 @@ export default function Step2({
     e.preventDefault();
     deleteInput(id);
   };
-  const handleRemoveRecepient = (id: number) => {
+  const handleRemoveRecepient = async (id: number) => {
     console.log("recepitn to remove is ", id);
-    // request3(id);
+    const response = await axios.delete(
+      `http://localhost:3000/api/document/deleteRecepient/${id}`
+    );
+    if (response.data.success) {
+      console.log("added succes");
+      router.refresh();
+    }
   };
   if (loading3) {
     return (
@@ -179,14 +214,18 @@ export default function Step2({
                 <div className="space-y-4">
                   {inputs.map((input) => (
                     <div key={input.id} className="flex  flex-row gap-2">
-                      <div className="w-full">
+                      <div className="w-full flex flex-row">
                         <Input
                           key={input.id}
                           onChangeName={(e) => handleNameChange(input.id, e)}
                           onChangeEmail={(e) => handleEmailChange(input.id, e)}
+                          onChangeSignnumber={(e) =>
+                            handleDropDownMenu(input.id, e)
+                          }
                         />
                       </div>
-                      <div className="w-full h-full">
+                      <div className="flex justify-center items-center hover:cursor-pointer"></div>
+                      <div className="flex justify-center items-center hover:cursor-pointer">
                         <DropdownMenuDemo />
                       </div>
                       <div

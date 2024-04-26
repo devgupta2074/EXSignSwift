@@ -79,6 +79,14 @@ export default function Document({
     router.push(`/user/${params.id}/document/${params.documentId}/step2`);
   }
   const [title, setTitle] = React.useState<string>("");
+  const [notempty, setNotEmpty] = React.useState<boolean>(false);
+  useEffect(() => {
+    if (title.length > 0) {
+      setNotEmpty(true);
+    } else {
+      setNotEmpty(false);
+    }
+  }, [title]);
   if (loading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
@@ -136,16 +144,26 @@ export default function Document({
                     </div>
                   </div>
                   <CardFooter className="w-full flex flex-row-reverse gap-5 p-5">
-                    {loading2 ? (
-                      <Button
-                        className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
-                        disabled
-                      >
-                        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                        Please wait
-                      </Button>
+                    {notempty ? (
+                      loading2 ? (
+                        <Button
+                          className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                          disabled
+                        >
+                          <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                          Please wait
+                        </Button>
+                      ) : (
+                        <Button
+                          className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                          onClick={handleSave}
+                        >
+                          Save changes
+                        </Button>
+                      )
                     ) : (
                       <Button
+                        disabled
                         className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
                         onClick={handleSave}
                       >

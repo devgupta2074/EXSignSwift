@@ -70,6 +70,7 @@ model Document {
   updatedAt   DateTime       @default(now()) @updatedAt
   completedAt DateTime?
   ShareLink   String
+  signnumber  Int?           @default(0)
   Field       Field[]
   Recipient   Recipient[]
 
@@ -90,6 +91,7 @@ model Recipient {
   readStatus    ReadStatus    @default(NOT_OPENED)
   signingStatus SigningStatus @default(NOT_SIGNED)
   sendStatus    SendStatus    @default(NOT_SENT)
+  signnumber    Int           @default(0)
   Field         Field[]
   Document      Document?     @relation(fields: [documentId], references: [id], onDelete: Cascade)
   Signature     Signature[]
@@ -107,11 +109,11 @@ model Field {
   documentId  Int?
   recipientId Int?
   page        Int
-  left        Decimal    @default(0)
-  top         Decimal    @default(0)
   width       Decimal    @default(-1)
   height      Decimal    @default(-1)
+  left        Decimal    @default(0)
   text        String
+  top         Decimal    @default(0)
   Document    Document?  @relation(fields: [documentId], references: [id], onDelete: Cascade)
   Recipient   Recipient? @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   Signature   Signature?
