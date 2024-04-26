@@ -44,10 +44,8 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (params.documentId) {
-      request({ docId: params.documentId });
-      request2({ docId: params.documentId });
-    }
+    request({ docId: params.documentId });
+    request2({ docId: params.documentId });
   }, [params]);
 
   if (loading) {
@@ -64,17 +62,17 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
         <H4>Recepient info</H4>
       </div>
       <div
-        className="w-full flex flex-row gap-24 pt-0"
+        className="w-full flex flex-row gap-24 mt-5"
         // style={{ overflowY: "hidden", height: "86vh" }}
       >
         <div
           style={{
             overflowY: "hidden",
-            overflowX: "hidden",
+
             height: "100%",
           }}
           id="pdf-viewer"
-          className="rounded-md   h-[55rem] w-[40rem]"
+          className="rounded-md   w-[40rem] overflow-x-scroll"
         >
           <PdfViewer url={data?.Document?.ShareLink || ""} />
         </div>

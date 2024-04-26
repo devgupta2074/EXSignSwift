@@ -36,44 +36,47 @@ export function DocumentTable(id: { id: string; email: string }) {
   const [recpientData, setRecipientData] = React.useState([]);
   const [data, setData] = React.useState<any[]>([]);
   console.log(id);
+  const actionStatus = (status: any) => {
+    if (status === "DRAFT") {
+      return "View";
+    } else if (status === "SIGN") {
+      return "Sign";
+    } else if (status === "PENDING") {
+      return "Pending";
+    } else if (status === "COMPLETED") {
+      return "completed";
+    }
+  };
+  const actionStatusUrl = (link: any) => {
+    if (link.status === "DRAFT") {
+      return `http://localhost:3000/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/document/${link.id}/step1`;
+    } else if (link.status === "SIGN") {
+      return `http://localhost:3000/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/signdoc/${link.id}`;
+    } else if (link.status === "PENDING") {
+      return "";
+    } else if (link.status === "COMPLETED") {
+      return link.ShareLink;
+    }
+  };
   const [loading, setLoading] = React.useState(false);
   React.useEffect(() => {
-    setLoading(true);
-    axios
-      .post(
-        "http://localhost:3000/api/document/getAllUserDocuments",
-        { userId: id.id }
-        //why parse user id
-      )
-      .then((response) => {
-        console.log(response.data, "response");
-        setData(response?.data?.Document);
-      });
+    const fetchData = async () => {
+      setLoading(true);
+      await axios
+        .post(
+          "http://localhost:3000/api/document/getDocumentForUser",
+          { userId: id.id }
+          //why parse user id
+        )
+        .then((response) => {
+          const document = response.data?.Document;
 
-    axios
-      .post(
-        "http://localhost:3000/api/document/getRecipientId",
-        { email: id.email }
-        //why parse user id
-      )
-      .then((response) => {
-        console.log(response.data, "response get reciept");
-        setRecipientData(response?.data?.result);
-        response?.data?.result?.map((single: any) => {
-          axios
-            .post("http://localhost:3000/api/document/getDocument", {
-              docId: parseInt(single.documentId),
-            })
-            .then((response: any) => {
-              console.log(response.data, "response");
-              const x = [...signedData];
-
-              x?.push(response?.data?.Document);
-              setSignedData(x);
-            });
+          setData(document);
+          // setRecipientData(response && response?.data?.Document[0]?.Recipient);
         });
-      });
-    setLoading(false);
+      setLoading(false);
+    };
+    fetchData();
   }, [id]);
 
   const router = useRouter();
@@ -88,13 +91,12 @@ export function DocumentTable(id: { id: string; email: string }) {
   return (
     <div className="w-full sm:p-4">
       <div className="rounded-md sm:border">
-        <Table className="doc-table">
+        <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="font-medium">Id</TableHead>
+              <TableHead className="font-medium">Created at</TableHead>
               <TableHead className="font-medium">Title</TableHead>
               <TableHead className="font-medium">Recipient</TableHead>
-              <TableHead className="font-medium">Link</TableHead>
               <TableHead className="font-medium">Status</TableHead>
               <TableHead className="font-medium">Actions</TableHead>
             </TableRow>
@@ -103,12 +105,13 @@ export function DocumentTable(id: { id: string; email: string }) {
             {data
               ? data.map((link) => (
                   <TableRow key={link?.id}>
-                    <TableCell>{link?.id}</TableCell>
-                    <TableCell>{link?.title || "NULL"}</TableCell>
-                    <TableCell>rr</TableCell>
                     <TableCell>
-                      <Button className="view-tble-btn ">
-                        <Link href={link.ShareLink}>
+                      {new Date(link?.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>{link?.title || "NULL"}</TableCell>
+                    <TableCell>
+                      <Button className="bg-[#A2E771]  w-24 hover:bg-[#A2E77] ">
+                        <Link href={link.ShareLink || ""}>
                           <H4>View</H4>
                         </Link>
                       </Button>
@@ -116,15 +119,13 @@ export function DocumentTable(id: { id: string; email: string }) {
                     <TableCell>{link.status}</TableCell>
                     <TableCell>
                       <Button
-                        className="sign-tble-btn  "
+                        className="bg-[#A2E771]  w-24 p-2 hover:bg-[#A2E771] "
                         onClick={() => {
-                          router.push(
-                            `/user/${id.id}/document/${link.id}/step1`
-                          );
+                          router.push(actionStatusUrl(link));
                         }}
                       >
                         {/* Sign or view*/}
-                        <H4>Sign</H4>
+                        <H4>{actionStatus(link?.status)}</H4>
                       </Button>
                     </TableCell>
                   </TableRow>

@@ -5,28 +5,45 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { userId } = await req.json();
-  console.log(userId);
+  const { email } = await req.json();
+  console.log(email);
+  console.log(email);
   try {
-    const document = await prisma.document.findMany({
+    const recep = await prisma.recipient.findFirst({
       where: {
-        userId: userId,
+        email: email,
       },
       include: {
-        Field: true,
+        Document: true,
+      },
+    });
+    const rid = recep?.id;
+    // getting all unsigned docs
+
+    const documents = await prisma.document.findMany({
+      where: {
+        Recipient: {
+          some: {
+            email: email,
+            signingStatus: "NOT_SIGNED",
+          },
+        },
+      },
+      include: {
         Recipient: true,
       },
     });
-    console.log(document);
+
+    console.log(documents);
 
     return NextResponse.json({
       message: "Document",
-      Document: document,
+      Document: documents,
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json({
-      message: error,
+      message: error.message,
       status: 500,
     });
   }

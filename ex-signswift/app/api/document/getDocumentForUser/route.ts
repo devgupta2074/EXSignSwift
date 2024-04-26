@@ -1,20 +1,17 @@
-// We import our Prisma client
-import prisma from "@/lib/prisma";
+// We impot our prisma client
+import prisma from "../../../../lib/prisma";
 // Prisma will help handle and catch errors
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { docId } = await req.json();
-
+  const { userId } = await req.json();
+  console.log(userId);
+  console.log(userId);
   try {
-    const document = await prisma.document.findUnique({
+    const document = await prisma.document.findMany({
       where: {
-        id: parseInt(docId),
-      },
-      include: {
-        Field: true,
-        Recipient: true,
+        userId: userId,
       },
     });
 
@@ -23,9 +20,9 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       Document: document,
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json({
-      message: "Internal Server Error",
+      message: error.message,
       status: 500,
     });
   }

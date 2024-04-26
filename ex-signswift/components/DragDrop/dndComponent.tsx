@@ -67,6 +67,7 @@ export const DndComponent = ({
   addedfield: addedItemProps[];
 }) => {
   const [numPages, setNumPages] = useState<number>(0);
+  console.log(docId, userId);
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
@@ -196,14 +197,15 @@ export const DndComponent = ({
       }}
       className=""
     >
-      <div>
+      <div className="h-full">
         <div
           style={{
             // marginTop: "5rem",
-            overflowY: "scroll",
+            overflowY: "hidden",
+
             overflowX: "scroll",
           }}
-          className="border-2 border-rose-500 rounded-md   h-[55rem] w-[40rem]"
+          className="border-2 border-rose-500 rounded-md   h-full w-[40rem]"
         >
           <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
             <div

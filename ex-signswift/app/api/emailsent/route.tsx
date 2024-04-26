@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
     const mailOptions = {
       from: process.env.SMTP_MAIL,
       to: email, // Change to your recipient emails
-
       subject: subject,
       html: `
       <div style="font-family: Arial, sans-serif; margin: 20px; padding: 20px; border: 1px solid #e0e0e0;">
@@ -38,10 +37,11 @@ export async function POST(req: NextRequest) {
           We are pleased to inform you that you have been accepted as an intern at ExSquared Company.
         </p>
         <p>
-          Please click the button below to proceed with accepting and signing the contract.
+          Please click the button below to proceed with accepting and signing the contract
+          Go to or platform to 
         </p>
         <p>${email_body}<p/>
-        <a href="http://localhost:3000/" style="display: inline-block; background-color: #0070f3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Accept and Sign Contract</a>
+        <a href="http://localhost:3000/login" style="display: inline-block; background-color: #0070f3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Accept and Sign Contract</a>
         <p>
           If you have any questions or concerns, please feel free to contact us.
         </p>

@@ -113,20 +113,7 @@ const PdfFillComponent = ({
     setCurrentItemId(itemId);
     setOpen(true);
   };
-  useEffect(() => {
-    axios
-      .post(
-        "http://localhost:3000/api/document/getRecipientId",
-        { email: session?.data?.user?.email }
-        //why parse user id
-      )
-      .then((response) => {
-        const x = copiedItems.filter(
-          (item) => item.recipientId === response.data.result[0].id
-        );
-        setCopiedItems(x);
-      });
-  }, [session]);
+
   return (
     <div
       style={{

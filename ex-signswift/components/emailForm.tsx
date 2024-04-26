@@ -1,18 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import axios from "axios";
+import Loader from "./Loader";
+import { Button } from "./ui/button";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 // import ""
 
 // import styles from "./globals.css";
 
-const EmailForm = ({ recipient }: any) => {
+const EmailForm = ({
+  userId,
+  recipient,
+}: {
+  userId: string;
+  recipient: any;
+}) => {
   const [emailSent, setEmailSent] = useState(false);
   const [inputs, setInputs] = useState({ subject: "", email_body: "" });
+  const [loading, setLoading] = useState(false);
+
   // const [receptient, setReceptient] = React.useState<IReceptient[]>([]);
   const router = useRouter();
 
@@ -38,7 +49,6 @@ const EmailForm = ({ recipient }: any) => {
   const handleChange = (event: any) => {
     const name = event.target.name;
     const value = event.target.value;
-
     setInputs((values) => ({ ...values, [name]: value }));
   };
   const mails = recipient?.map((email: any) => email.email);
@@ -63,14 +73,17 @@ const EmailForm = ({ recipient }: any) => {
         }), // Change the email address as needed
       });
 
-      if (response.ok) {
+      if (response) {
         setEmailSent(true);
-        router.push("http://localhost:3000");
+        setLoading(false);
+        router.push(`/user/${userId}`);
       } else {
         throw new Error("Failed to send email");
       }
     } catch (error) {
       console.error("Error sending email:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,6 +93,14 @@ const EmailForm = ({ recipient }: any) => {
     // alert(inputs.username + inputs.age);
     await sendEmail();
   };
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <main className="email-main">
@@ -112,9 +133,23 @@ const EmailForm = ({ recipient }: any) => {
           rows={5}
           cols={50}
         />
-        <button type="submit" className=" text-white email-form-button">
-          Send Email
-        </button>
+        {loading ? (
+          <Button
+            disabled
+            className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
+          >
+            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+            Please wait
+          </Button>
+        ) : (
+          <Button
+            className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
+            type="button"
+            onClick={handleSubmit}
+          >
+            Send Email
+          </Button>
+        )}
       </form>
       <div>
         <p className="text-muted-foreground text-sm text-black">

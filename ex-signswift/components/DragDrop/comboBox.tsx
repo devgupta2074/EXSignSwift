@@ -49,6 +49,7 @@ export function ComboBox({
 
   React.useEffect(() => {
     const getReceptient = async () => {
+      console.log("step3 renderer");
       setLoading(true);
       const result = await axios.post(
         "http://localhost:3000/api/document/getreceptient",
@@ -62,6 +63,8 @@ export function ComboBox({
       });
       console.log(receptientLabel);
       setReceptient(receptient ? receptientLabel : null);
+      setValue2(receptientLabel[0]?.value);
+      setValue(receptientLabel[0]?.id);
       setLoading(false);
     };
     getReceptient();
@@ -85,13 +88,12 @@ export function ComboBox({
         >
           {value2
             ? receptient?.find((item: any) => item.value === value2)?.label
-            : "Select Signer"}
+            : receptient[0]?.value}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full  p-1 h-full" align="start">
         <Command label="Command Menu">
-          <CommandInput placeholder="Search Signer" />
           <CommandEmpty>No Signer Found</CommandEmpty>
           <CommandGroup>
             <CommandList>
@@ -101,7 +103,7 @@ export function ComboBox({
                   value={item.value}
                   onSelect={(currentValue) => {
                     // console.log(currentValue, value);
-                    setValue2(currentValue === value2 ? "" : currentValue);
+                    setValue2(currentValue);
                     setValue(item.id);
                     setOpen(false);
                   }}
