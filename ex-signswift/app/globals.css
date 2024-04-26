@@ -385,6 +385,20 @@ Step3===========================================================================
   height: 100%;
   /* flex-grow: 1; */
 }
+.dnd-card H2{
+  font-weight: 600;
+}
+.dnd-card p {
+  margin: .6rem 0;
+  font-size: .8rem;
+}
+.dnd-card hr{
+  background-color: #f53e5e;
+  color: #f53e5e;
+}
+
+
+/* ===================step4================================ */
 
 .email-main {
   background-color: white;
@@ -407,9 +421,11 @@ Step3===========================================================================
 
 .form-head-text {
   font-size: 2rem;
-  font-weight: 500;
+  font-weight: 600;
   /* font-family: "Outfit"; */
+  font-family: "Poppins", sans-serif;
 }
+
 .email-form hr {
   padding: 1rem;
 }
@@ -424,8 +440,8 @@ Step3===========================================================================
 
 .email-form input,
 .email-form textarea {
-  background-color: white;
-  border: 2px solid #fff;
+  background-color: #ffffff;
+  border: 2px solid #f3b9b9;
   margin-top: 0.6rem;
   margin-bottom: 1.2rem;
   border-radius: 0.6rem;

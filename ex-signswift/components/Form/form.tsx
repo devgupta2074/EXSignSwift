@@ -83,9 +83,12 @@ const Form: FC<FormProps> = ({
           className="p-6  border-2 border-rose-500 "
           // style={{ height: "95%" }}
         >
-          <CardContent className="mt-5 mb-5">
-            <H2>ADD FIELDS</H2>
+          <CardContent className="dnd-card mt-5 mb-5">
+            <H2>Add Fields</H2>
+            <p>Add the required fields in the document using drag and drop</p>
+            <hr />
           </CardContent>
+          
           <CardContent className="w-full">
             <ComboBox
               docId={docId}
