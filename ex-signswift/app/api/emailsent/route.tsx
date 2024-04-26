@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import logo from "../../emails/ex_logg.png";
+import prisma from "@/lib/prisma";
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ let transporter = nodemailer.createTransport({
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, subject, email_body } = await req.json();
+    const { email, subject, email_body, docId } = await req.json();
 
     console.log(email, subject, email_body);
 
@@ -54,7 +55,16 @@ export async function POST(req: NextRequest) {
     };
 
     await transporter.sendMail(mailOptions);
+    const documet = await prisma.document.update({
+      where: {
+        id: parseInt(docId),
+      },
+      data: {
+        status: "PENDING",
+      },
+    });
 
+    console.log(documet);
     console.log("Email sent successfully!");
 
     return NextResponse.json({ message: "Email sent successfully" });

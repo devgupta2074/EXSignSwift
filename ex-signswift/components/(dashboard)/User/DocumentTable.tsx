@@ -25,6 +25,7 @@ export type Payment = {
 };
 
 export function DocumentTable(id: { id: string; email: string }) {
+  const session = useSession();
   // const [sorting, setSorting] = React.useState<SortingState>([]);
   // const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
   //   []
@@ -65,13 +66,14 @@ export function DocumentTable(id: { id: string; email: string }) {
       await axios
         .post(
           "http://localhost:3000/api/document/getDocumentForUser",
-          { userId: id.id }
+          { userId: id.id, email: "tapasviarora2002@gmail.com" }
+          //pending
           //why parse user id
         )
         .then((response) => {
           const document = response.data?.Document;
-
           setData(document);
+
           // setRecipientData(response && response?.data?.Document[0]?.Recipient);
         });
       setLoading(false);

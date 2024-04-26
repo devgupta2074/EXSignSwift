@@ -16,9 +16,11 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 const EmailForm = ({
   userId,
   recipient,
+  docId,
 }: {
   userId: string;
   recipient: any;
+  docId: string;
 }) => {
   const [emailSent, setEmailSent] = useState(false);
   const [inputs, setInputs] = useState({ subject: "", email_body: "" });
@@ -70,6 +72,7 @@ const EmailForm = ({
           email: emails,
           subject: inputs.subject,
           email_body: inputs.email_body,
+          docId: docId,
         }), // Change the email address as needed
       });
 
