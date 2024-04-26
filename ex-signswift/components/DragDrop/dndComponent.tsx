@@ -202,7 +202,7 @@ export const DndComponent = ({
           style={{
             // marginTop: "5rem",
             overflowY: "hidden",
-
+            width: "100%",
             overflowX: "scroll",
           }}
           className="border-2 border-rose-500 rounded-md   h-full w-[40rem]"
@@ -456,7 +456,7 @@ export const DndComponent = ({
             // width: "50vw",
           }
         }
-        className="w-[33rem] h-[50rem]"
+        className="w-[70rem] h-[50rem]"
       >
         <Form
           userId={userId}

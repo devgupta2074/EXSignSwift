@@ -86,7 +86,7 @@ const page = () => {
     };
 
     getDocument();
-  }, [params, session, signNumber, url, copiedItems]);
+  }, [params, session, signNumber, url]);
 
   const handleSign = () => {
     const signDoc = async () => {
