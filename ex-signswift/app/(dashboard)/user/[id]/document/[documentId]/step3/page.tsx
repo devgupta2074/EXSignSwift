@@ -92,13 +92,13 @@ export default function Document({
         <H2>{"Pdf_file_name"}</H2>
         <H4>Recepient info</H4>
       </div>
-      <div className="">
+      <div className="mt-5">
         <DndProvider backend={HTML5Backend}>
           <DndComponent
             addedfield={data?.Document?.Field || []}
             url={data?.Document?.ShareLink || ""}
             docId={params.documentId}
-            userId={params.documentId}
+            userId={params.id}
           />
         </DndProvider>
       </div>

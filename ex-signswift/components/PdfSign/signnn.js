@@ -2,18 +2,20 @@ import SignPDF from "./PdfSign.js";
 import fs from "node:fs";
 import path from "node:path";
 
-async function main() {
+export async function signDoc(signatures) {
   const pdfBuffer = new SignPDF(
-    path.resolve("./sow2.pdf"),
-    path.resolve("./certificate.p12")
+    path.resolve(
+      "/Users/tapasviarora/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf"
+    ),
+    path.resolve(
+      "/Users/tapasviarora/EXSignSwift/ex-signswift/components/PdfSign/certificate.p12"
+    ),
+    signatures
   );
 
   const signedDocs = await pdfBuffer.signPDF();
-  const randomNumber = Math.floor(Math.random() * 5000);
-  const pdfName = `./exported_file_${randomNumber}.pdf`;
 
+  const pdfName = `./exported_file.pdf`;
   fs.writeFileSync(pdfName, signedDocs);
-  console.log(`New Signed PDF created called: ${pdfName}`);
+  return true;
 }
-
-main();

@@ -25,9 +25,10 @@ import PDFArrayCustom from "./PdfArrayCustom.js";
 const signer = signerModule.default;
 
 export default class SignPDF {
-  constructor(pdfFile, certFile) {
+  constructor(pdfFile, certFile, signatures) {
     this.pdfDoc = fs.readFileSync(pdfFile);
     this.certificate = fs.readFileSync(certFile);
+    this.signatures = signatures;
     console.log(this.certificate);
   }
 
@@ -35,8 +36,7 @@ export default class SignPDF {
    * @return Promise<Buffer>
    */
   async signPDF() {
-    let newPDF = await this._addPlaceholder();
-
+    let newPDF = await this._addPlaceholder(this.signatures);
     console.log(signer, "signer is");
     newPDF = signer.sign(newPDF, this.certificate);
 
@@ -47,9 +47,8 @@ export default class SignPDF {
    * @see https://github.com/Hopding/pdf-lib/issues/112#issuecomment-569085380
    * @returns {Promise<Buffer>}
    */
-  async _addPlaceholder() {
+  async _addPlaceholder(signatures) {
     //image
-    const imageBuffer = fs.readFileSync("./sign.png");
 
     function signatureAppearanceStream(
       image,
@@ -72,10 +71,10 @@ export default class SignPDF {
         rotateDegrees(rotation),
         translate(0, rotation % 90 === 0 ? -width : 0),
         ...drawImage("Image", {
-          x: 0,
-          y: width, //y = 0 is width for me
-          width: width,
-          height: height,
+          x: 10,
+          y: 10, //y = 0 is width for me
+          width: 20,
+          height: 20,
           rotate: degrees(0),
           xSkew: degrees(0),
           ySkew: degrees(0),
@@ -85,7 +84,7 @@ export default class SignPDF {
         ...drawText(font.encodeText(text), {
           color: rgb(0, 0, 0),
           font: "F0",
-          size: 50,
+          size: 20,
           rotate: degrees(0),
           xSkew: degrees(0),
           ySkew: degrees(0),
@@ -103,73 +102,86 @@ export default class SignPDF {
 
     //load pdf
     const loadedPdf = await PDFDocument.load(this.pdfDoc);
-    const image = await loadedPdf.embedPng(imageBuffer);
-    const font = await loadedPdf.embedFont("Helvetica");
-
-    const ByteRange = PDFArrayCustom.withContext(loadedPdf.context);
-    const DEFAULT_BYTE_RANGE_PLACEHOLDER = "**********";
-    const SIGNATURE_LENGTH = 3322;
     const pages = loadedPdf.getPages();
+    for (const signature of signatures) {
+      // Embed the image
 
-    ByteRange.push(PDFNumber.of(0));
-    ByteRange.push(PDFName.of(DEFAULT_BYTE_RANGE_PLACEHOLDER));
-    ByteRange.push(PDFName.of(DEFAULT_BYTE_RANGE_PLACEHOLDER));
-    ByteRange.push(PDFName.of(DEFAULT_BYTE_RANGE_PLACEHOLDER));
+      const image = await loadedPdf.embedPng(signature?.signature);
+      const font = await loadedPdf.embedFont("Helvetica");
 
-    const signatureDict = loadedPdf.context.obj({
-      Type: "Sig",
-      Filter: "Adobe.PPKLite",
-      SubFilter: "adbe.pkcs7.detached",
-      ByteRange,
-      Contents: PDFHexString.of("A".repeat(SIGNATURE_LENGTH)),
-      Reason: PDFString.of("We need your signature for reasons..."),
-      M: PDFString.fromDate(new Date()),
-    });
+      // Add placeholder
+      const signatureAppearance = signatureAppearanceStream(
+        image,
+        "sign",
+        0,
+        signature.width,
+        signature.height,
+        font,
+        20
+      );
 
-    const signatureDictRef = loadedPdf.context.register(signatureDict);
+      const ByteRange = PDFArrayCustom.withContext(loadedPdf.context);
+      const DEFAULT_BYTE_RANGE_PLACEHOLDER = "**********";
+      const SIGNATURE_LENGTH = 3322;
 
-    const widgetDict = loadedPdf.context.obj({
-      Type: "Annot",
-      Subtype: "Widget",
-      FT: "Sig",
-      Rect: [image.width, image.height, 0, 0],
-      V: signatureDictRef,
-      T: PDFString.of("Signature1"),
-      F: 4,
-      P: pages[pages.length - 1].ref, //lastPage
-      AP: loadedPdf.context.obj({
-        N: signatureAppearanceStream(
-          image,
-          "Your Signature Text",
-          0,
-          image.width,
-          image.height,
-          font,
-          12
-        ),
-      }),
-    });
+      ByteRange.push(PDFNumber.of(0));
+      ByteRange.push(PDFName.of(DEFAULT_BYTE_RANGE_PLACEHOLDER));
+      ByteRange.push(PDFName.of(DEFAULT_BYTE_RANGE_PLACEHOLDER));
+      ByteRange.push(PDFName.of(DEFAULT_BYTE_RANGE_PLACEHOLDER));
 
-    const widgetDictRef = loadedPdf.context.register(widgetDict);
+      const signatureDict = loadedPdf.context.obj({
+        Type: "Sig",
+        Filter: "Adobe.PPKLite",
+        SubFilter: "adbe.pkcs7.detached",
+        ByteRange,
+        Contents: PDFHexString.of("A".repeat(SIGNATURE_LENGTH)),
+        Reason: PDFString.of("We need your signature for reasons..."),
+        M: PDFString.fromDate(new Date()),
+      });
+
+      const signatureDictRef = loadedPdf.context.register(signatureDict);
+
+      const widgetDict = loadedPdf.context.obj({
+        Type: "Annot",
+        Subtype: "Widget",
+        FT: "Sig",
+        Rect: [
+          signature.width,
+          signature.height,
+          signature.left,
+          signature.top,
+        ],
+        V: signatureDictRef,
+        T: PDFString.of("Signature1"),
+        F: 4,
+        P: pages[pages.length - 1].ref, //lastPage
+        AP: loadedPdf.context.obj({
+          N: signatureAppearance,
+        }),
+      });
+
+      const widgetDictRef = loadedPdf.context.register(widgetDict);
+
+      // Add signature widget to the first page
+      pages[0].node.set(
+        PDFName.of("Annots"),
+        loadedPdf.context.obj([widgetDictRef])
+      );
+
+      loadedPdf.catalog.set(
+        PDFName.of("AcroForm"),
+        loadedPdf.context.obj({
+          SigFlags: 3,
+          Fields: [widgetDictRef],
+        })
+      );
+    }
 
     // Add signature widget to the first page
-    pages[0].node.set(
-      PDFName.of("Annots"),
-      loadedPdf.context.obj([widgetDictRef])
-    );
-
-    loadedPdf.catalog.set(
-      PDFName.of("AcroForm"),
-      loadedPdf.context.obj({
-        SigFlags: 3,
-        Fields: [widgetDictRef],
-      })
-    );
 
     // Allows signatures on newer PDFs
     // @see https://github.com/Hopding/pdf-lib/issues/541
     const pdfBytes = await loadedPdf.save({ useObjectStreams: false });
-
     return SignPDF.unit8ToBuffer(pdfBytes);
   }
 

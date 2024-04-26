@@ -60,6 +60,7 @@ const Form: FC<FormProps> = ({
         droppedItem: copiedItems,
       });
       console.log(saveDocsSign);
+      console.log(docId, userId);
       router.push(`/user/${userId}/document/${docId}/step4`);
       setLoading(false);
     } catch (err) {
@@ -80,15 +81,13 @@ const Form: FC<FormProps> = ({
     <div className="w-full h-full flex justify-center items-start  ">
       <div className="" style={{ height: "100%" }}>
         <Card
-          className="p-6  border-2 border-rose-500 "
+          className="p-2  border-2 border-rose-500 "
           // style={{ height: "95%" }}
         >
-          <CardContent className="dnd-card mt-5 mb-5">
-            <H2>Add Fields</H2>
-            <p>Add the required fields in the document using drag and drop</p>
-            <hr />
+          <CardContent className="mt-5 mb-5">
+            <h1 className="font-medium text-3xl">Add Fields</h1>
           </CardContent>
-          
+
           <CardContent className="w-full">
             <ComboBox
               docId={docId}

@@ -60,9 +60,7 @@ export default function Document({
   };
 
   useEffect(() => {
-    if (params.documentId) {
-      request({ docId: params.documentId });
-    }
+    request({ docId: params.documentId });
   }, [params]);
 
   const handleSave = () => {
@@ -107,9 +105,10 @@ export default function Document({
         <div
           style={{
             overflowX: "hidden",
+            overflowY: "hidden",
           }}
           id="pdf-viewer"
-          className="rounded-md   h-[55rem] w-[40rem]"
+          className="rounded-md h-full w-[40rem]"
         >
           <PdfViewer url={data?.Document?.ShareLink || ""} />
         </div>

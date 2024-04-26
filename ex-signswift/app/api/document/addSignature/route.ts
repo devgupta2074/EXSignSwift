@@ -1,3 +1,4 @@
+// function to create user in our database
 // We impot our prisma client
 import prisma from "../../../../lib/prisma";
 // Prisma will help handle and catch errors
@@ -6,7 +7,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
 import { PDFDocument } from "pdf-lib";
-import pdf from "./dummy.pdf";
+import { signDoc } from "../../../../components/PdfSign/signnn.js";
 
 const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
@@ -41,6 +42,7 @@ interface IField {
 }
 export async function POST(req: NextRequest, res: NextApiResponse) {
   const { docId, copiedItems } = await req.json();
+  console.log(docId, copiedItems);
   const document = await prisma.document.findUnique({
     where: {
       id: parseInt(docId),
@@ -56,19 +58,20 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
   if (!response.ok) {
     throw new Error("Failed to fetch PDF file");
   }
-  console.log(response);
+  // console.log(response);
   const pdfBytes = await response.arrayBuffer();
-
   const pdfDoc = await PDFDocument.load(pdfBytes);
+
   copiedItems?.map(async (item: IField) => {
     if (item?.signature && item?.signature !== "") {
       const pngImage = await pdfDoc.embedPng(item?.signature);
-      const pngDims = pngImage.scale(1);
+
       const page = pdfDoc.getPage(item?.page - 1);
+
       const height = page?.getHeight();
-      console.log("height", height, item?.top);
+
       page.drawImage(pngImage, {
-        x: parseInt(item?.left + parseInt(item?.width) / 2),
+        x: parseInt(item?.left),
         y: Math.abs(height - parseInt(item?.top) - parseInt(item?.height)),
         width: parseInt(item?.width),
         height: parseInt(item?.height),
@@ -76,7 +79,15 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     }
   });
   const pdfBytes2 = await pdfDoc.save();
-  fs.writeFileSync("./demoooo2.pdf", pdfBytes2);
+  fs.writeFileSync(
+    "/Users/tapasviarora/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf",
+    pdfBytes2
+  );
+  signDoc(copiedItems);
+  //role recpient->creater ,reader,signer
+  //mail will be sent to  all
+  // and in case signer when its his step to sign doc
+
   var mailOptions = {
     from: process.env.SMTP_MAIL,
     to: ["guptadev545@gmail.com"],
@@ -102,22 +113,6 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       return NextResponse.json("data");
     }
   });
-
-  // const pngImage=await pdfDoc.embedPng(pngImg);
-  // const pngDims=pngImage.scale(0.5);
-  // const page = pdfDoc.addPage()
-
-  // page.drawImage(pngImage, {
-  //   x: page.getWidth() / 2 - pngDims.width / 2 + 75,
-  //   y: page.getHeight() / 2 - pngDims.height,
-  //   width: pngDims.width,
-  //   height: pngDims.height,
-  // })
-  // const pdfBytes = await pdfDoc.save();
-  // console.log("pdf bytes are ",pdfBytes)
-
-  const existingPdfBytes = new Uint8Array();
-
   try {
     return NextResponse.json({
       message: "success",
@@ -131,6 +126,3 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     });
   }
 }
-// We hash the user entered password using crypto.js
-
-// function to create user in our database

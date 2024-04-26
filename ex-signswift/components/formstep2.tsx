@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { MdDeleteOutline } from "react-icons/md";
+import axios from "axios";
 
 import Input from "./Input";
 import { addRecepient, deleteRecepientById } from "@/api-service/recepientApi";
@@ -12,7 +13,7 @@ import { useApi } from "@/api-service/useApi";
 import Loader from "./Loader";
 import { DropdownMenuDemo } from "./DropDownMenu";
 import { SignNumberDropDown } from "./SignNumberDropDown";
-import axios from "axios";
+
 interface InputObject {
   id: number;
   input: JSX.Element;
@@ -115,28 +116,25 @@ export default function Step2({
     e.preventDefault();
     console.log(receptientProp);
     console.log(inputs);
-    if (receptientProp?.result?.length > 0 && inputs?.length <= 1) {
+
+    const recipents: recipent[] = [];
+    for (let i = 0; i < inputs.length; i++) {
+      recipents.push({
+        name: name[inputs[i].id].toString(),
+        email: email[inputs[i].id].toString(),
+        token: i,
+        signnumber: selectedOption[i],
+      });
+    }
+    console.log(recipents);
+    const response = await axios.post(
+      "http://localhost:3000/api/document/addreceptient",
+      { docId, recipient: recipents }
+    );
+    console.log(response.data, "heell");
+    if (response.data.success) {
+      console.log("added succes");
       router.push(`/user/${userId}/document/${docId}/step3`);
-    } else {
-      const recipents: recipent[] = [];
-      for (let i = 0; i < inputs.length; i++) {
-        recipents.push({
-          name: name[inputs[i].id].toString(),
-          email: email[inputs[i].id].toString(),
-          token: i,
-          signnumber: selectedOption[i],
-        });
-      }
-      console.log(recipents);
-      const response = await axios.post(
-        "http://localhost:3000/api/document/addreceptient",
-        { docId, recipient: recipents }
-      );
-      console.log(response.data, "heell");
-      if (response.data.success) {
-        console.log("added succes");
-        router.push(`/user/${userId}/document/${docId}/step3`);
-      }
     }
   };
   console.log(data2, "data2");

@@ -32,6 +32,9 @@ const CustomSignaturePad = ({
     onSaveSignature(signatureImage || "");
     signatureCanvasRef?.current?.clear();
   };
+  const onUpload = () => {
+    signatureCanvasRef?.current?.fromDataURL("");
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
