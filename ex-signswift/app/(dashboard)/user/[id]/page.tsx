@@ -17,10 +17,16 @@ export default async function Dashboard({
   params: { id: string };
 }) {
   const session = await getServerSession();
+
+ 
   if (!session?.user) {
     console.log(session);
     redirect(`/login`);
+  }else{
+    console.log(session?.user)
   }
+
+
 
   return (
     <main className=" container flex flex-col gap-4  items-center px-16">

@@ -57,7 +57,7 @@ export function DocumentTable(id: { id: string; email: string }) {
         //why parse user id
       )
       .then((response) => {
-        console.log(response.data, "response");
+        console.log(response.data, "response get reciept");
         setRecipientData(response?.data?.result);
         response?.data?.result?.map((single: any) => {
           axios

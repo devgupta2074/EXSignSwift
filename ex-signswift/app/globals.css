@@ -21,10 +21,10 @@ html {
 
 
 :root{
-  /* --primary-color:#f53e5e */
+  --primary-color:#f53e5e
   /* --primary-color:#3454D1 */
   /* --primary-color:#F86624 */
-  --primary-color:#6d5fb3
+  /* --primary-color:#6d5fb3 */
 }
 @layer base {
   :root {
@@ -355,7 +355,7 @@ html {
 .doc-table{
   font-family: "Poppins", sans-serif;
   font-size: .8rem;
-  font-weight: 600;
+  font-weight: 00;
   color: #20204f;;
 }
 .sign-tble-btn,
