@@ -274,7 +274,7 @@ html {
   max-width: 1400px;
   /* border: 2px solid red; */
   margin: .4rem auto;
-  border-radius: 1rem;
+  /* border-radius: 1rem; */
   background-color: var(--primary-color);
   color: #ffffff;
 }

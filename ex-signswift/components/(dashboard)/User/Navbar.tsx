@@ -25,7 +25,7 @@ const Navbar = (props:any) => {
         {/* <div className=" nav-container-three w-full flex flex-row justify-between  "> */}
           <div className="nav-Logo-section w-1/2  gap-20">
             <H2> <FaPenNib/>SignSwift</H2>
-            <H4>Documents</H4>
+            {/* <H4>Documents</H4> */}
           </div>
           <div className="nav-profile">
             {/* <Image className="profile-icon-image" src={logo} alt="logo" /> */}
