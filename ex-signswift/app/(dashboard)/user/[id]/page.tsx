@@ -23,7 +23,7 @@ export default async function Dashboard({
     console.log(session);
     redirect(`/login`);
   }else{
-    console.log(session?.user)
+    console.log(session?.user, "user archit")
   }
 
 

@@ -317,14 +317,32 @@ html {
   padding: .6rem .6rem;
   /* border: 5px solid black; */
   flex-grow: 1;
-  display: flex;
- 
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
+  display: flex; 
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
 }
 .nav-profile .profile-icon-image{
   width: 1.8rem;
+}
+.nav-profile .user-data-logo{
+  display: flex;
+  flex-direction: column;
+  font-size: .8rem;
+
+}
+
+.nav-profile .signout-btn{
+  background-color: #fff;
+  padding: .3rem .4rem;
+  border-radius: .4rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+.nav-profile .signout-btn:hover{
+  background-color: #f3b9b9;
+  color: #fff;
 }
 /* =====================================DashBoard===================================== */
 

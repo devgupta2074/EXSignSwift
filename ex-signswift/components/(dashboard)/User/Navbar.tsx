@@ -2,15 +2,22 @@
 import * as React from "react";
 import { ComboboxDemo } from "./CombBox";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import H2 from "@/components/Typography/H2";
 import H4 from "@/components/Typography/H4";
 import logo from "@/public/Profile.png"
 import Image from "next/image";
 import { FaPenNib } from "react-icons/fa";
 
-const Navbar = () => {
+const Navbar = (props:any) => {
   const router = useRouter();
+
+  function handleSignOut(){    
+      console.log("signout click")
+      router.push('/api/auth/signout');
+      // redirect(`/api/auth/signout`)                       
+                
+  }
   return (
     <nav className="nav-container">
       <div className=" nav-container-two flex items-center ">
@@ -19,9 +26,18 @@ const Navbar = () => {
             <H2> <FaPenNib/>SignSwift</H2>
             <H4>Documents</H4>
           </div>
-          <div className=" nav-profile">
+          <div className="nav-profile">
             <Image className="profile-icon-image" src={logo} alt="logo" />
             {/* <p>Profile Icon</p> */}
+            <div className="user-data-logo">
+
+            <p>{props.user.name}</p>
+            <p>{props.user.email}</p>
+            
+            </div>
+            <button className="signout-btn" onClick={handleSignOut}>
+                          Sign Out
+                          </button>
           </div>
         </div>
       {/* </div> */}
