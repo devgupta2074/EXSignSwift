@@ -339,10 +339,29 @@ html {
 }
 
 
+
+/* ================table=============================== */
+.doc-table{
+  font-family: "Poppins", sans-serif;
+  font-size: .8rem;
+  font-weight: 500;
+  color: #20204f;;
+}
+.sign-tble-btn,
+.view-tble-btn{
+  padding: 1rem 1.6rem;
+  background-color: #f53e5e;
+  color: #fff;
+  font-weight: 600;
+}
+.sign-tble-btn:hover,
+.view-tble-btn:hover{
+  box-shadow: inset 0 0 0 2px #f53e5e;
+  background-color: #fff;
+  color: #f53e5e;
+}
+
 /*
-
-
-
 Step3==================================================================================================== */
 .dnd-step-section {
   /* border: 2px solid #fff; */

@@ -42,7 +42,10 @@ const EmailForm = ({ recipient }: any) => {
     setInputs((values) => ({ ...values, [name]: value }));
   };
   const mails = recipient?.map((email: any) => email.email);
-  console.log(mails);
+  console.log("mails",mails);
+  console.log("recipient",recipient.item);
+  const check = recipient.map((item: any) => item);
+  console.log("check",check)
   const sendEmail = async () => {
     console.log(recipient, "check by arc now");
     const emails = recipient.map((item: any) => item.email);

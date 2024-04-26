@@ -88,11 +88,12 @@ export function DocumentTable(id: { id: string; email: string }) {
   return (
     <div className="w-full sm:p-4">
       <div className="rounded-md sm:border">
-        <Table>
+        <Table className="doc-table">
           <TableHeader>
             <TableRow>
               <TableHead className="font-medium">Id</TableHead>
               <TableHead className="font-medium">Title</TableHead>
+              <TableHead className="font-medium">Recipient</TableHead>
               <TableHead className="font-medium">Link</TableHead>
               <TableHead className="font-medium">Status</TableHead>
               <TableHead className="font-medium">Actions</TableHead>
@@ -104,8 +105,9 @@ export function DocumentTable(id: { id: string; email: string }) {
                   <TableRow key={link?.id}>
                     <TableCell>{link?.id}</TableCell>
                     <TableCell>{link?.title || "NULL"}</TableCell>
+                    <TableCell>rr</TableCell>
                     <TableCell>
-                      <Button className="bg-[#A2E771]  w-24 hover:bg-[#A2E77] ">
+                      <Button className="view-tble-btn ">
                         <Link href={link.ShareLink}>
                           <H4>View</H4>
                         </Link>
@@ -114,7 +116,7 @@ export function DocumentTable(id: { id: string; email: string }) {
                     <TableCell>{link.status}</TableCell>
                     <TableCell>
                       <Button
-                        className="bg-[#A2E771]  w-24 p-2 hover:bg-[#A2E771] "
+                        className="sign-tble-btn  "
                         onClick={() => {
                           router.push(
                             `/user/${id.id}/document/${link.id}/step1`
