@@ -23,7 +23,7 @@ export default async function Dashboard({
   }
 
   return (
-    <main className=" flex flex-col gap-4  items-center px-16">
+    <main className=" container flex flex-col gap-4  items-center px-16">
       {/* User Dashboard with ID here the user should be directed to after login
       here will be the upload and table function */}
 
