@@ -97,7 +97,11 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
         </div>
         <div className="w-[33rem] h-full  justify-center pt-0  ">
           <div className="w-full h-full">
-            <EmailForm userId={userId} recipient={receptient} />
+            <EmailForm
+              userId={userId}
+              recipient={receptient}
+              docId={params.documentId}
+            />
           </div>
         </div>
       </div>

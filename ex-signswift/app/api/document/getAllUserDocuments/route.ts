@@ -7,20 +7,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest, res: NextApiResponse) {
   const { email } = await req.json();
   console.log(email);
-  console.log(email);
   try {
-    const recep = await prisma.recipient.findFirst({
-      where: {
-        email: email,
-      },
-      include: {
-        Document: true,
-      },
-    });
-    const rid = recep?.id;
-    // getting all unsigned docs
-
-    const documents = await prisma.document.findMany({
+    const document2 = await prisma.document.findMany({
       where: {
         Recipient: {
           some: {
@@ -34,11 +22,9 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       },
     });
 
-    console.log(documents);
-
     return NextResponse.json({
       message: "Document",
-      Document: documents,
+      Document: document2,
       status: 200,
     });
   } catch (error: any) {
