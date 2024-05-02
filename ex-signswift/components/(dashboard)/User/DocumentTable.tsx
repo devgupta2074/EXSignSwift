@@ -25,7 +25,6 @@ export type Payment = {
 };
 
 export function DocumentTable(id: { id: string; email: string }) {
-  const session = useSession();
   // const [sorting, setSorting] = React.useState<SortingState>([]);
   // const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
   //   []
@@ -66,14 +65,13 @@ export function DocumentTable(id: { id: string; email: string }) {
       await axios
         .post(
           "http://localhost:3000/api/document/getDocumentForUser",
-          { userId: id.id, email: "tapasviarora2002@gmail.com" }
-          //pending
+          { userId: id.id }
           //why parse user id
         )
         .then((response) => {
           const document = response.data?.Document;
-          setData(document);
 
+          setData(document);
           // setRecipientData(response && response?.data?.Document[0]?.Recipient);
         });
       setLoading(false);
@@ -112,7 +110,7 @@ export function DocumentTable(id: { id: string; email: string }) {
                     </TableCell>
                     <TableCell>{link?.title || "NULL"}</TableCell>
                     <TableCell>
-                      <Button className="bg-[#A2E771]  w-24 hover:bg-[#A2E77] ">
+                      <Button className="bg-rose-500  w-24 hover:bg-[#A2E77] text-white ">
                         <Link href={link.ShareLink || ""}>
                           <H4>View</H4>
                         </Link>
@@ -121,7 +119,7 @@ export function DocumentTable(id: { id: string; email: string }) {
                     <TableCell>{link.status}</TableCell>
                     <TableCell>
                       <Button
-                        className="bg-[#A2E771]  w-24 p-2 hover:bg-[#A2E771] "
+                        className="bg-rose-500  w-24 p-2 hover:bg-rose-600 text-white "
                         onClick={() => {
                           router.push(actionStatusUrl(link));
                         }}
