@@ -29,7 +29,6 @@ const DropItem: FC<DropItemProps> = ({ childref, itemId, icon, text }) => {
       type="button"
       size={"sm"}
       style={{
-        width: "12rem",
         height: "5rem",
         border: "1px solid #EAEAEA",
       }}

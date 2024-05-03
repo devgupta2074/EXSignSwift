@@ -205,7 +205,7 @@ export const DndComponent = ({
             width: "100%",
             overflowX: "scroll",
           }}
-          className="border-2 border-rose-500 rounded-md   h-full w-[40rem]"
+          className="border-2 border-rose-500 rounded-md   h-full w-full  max-w-[40rem]"
         >
           <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
             <div
@@ -456,7 +456,7 @@ export const DndComponent = ({
             // width: "50vw",
           }
         }
-        className="w-[70rem] h-[50rem]"
+        className="max-w-[50rem] w-full h-full bg-[#F7F7F7]"
       >
         <Form
           userId={userId}

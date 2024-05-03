@@ -23,7 +23,7 @@ const SignatureForm = ({
     console.log(signatureCanvasRef?.current?.toDataURL());
   };
   return (
-    <div className="w-full border-border bg-widget sticky flex  flex-col rounded-xl border px-4 py-6 top-20  bg-white w-full ">
+    <div className="bg-[#f7f7f7] border-border bg-widget sticky flex  flex-col rounded-xl border px-4 py-6 top-20  w-full ">
       <form className="px-4 py-2">
         <fieldset className="custom-scrollbar flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
           <div className="flex flex-col">

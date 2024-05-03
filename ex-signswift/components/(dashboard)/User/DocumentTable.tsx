@@ -16,6 +16,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import H4 from "@/components/Typography/H4";
 import Loader from "@/components/Loader";
+import {
+  ALL_DOCS,
+  COMPLETED_DOCS,
+  DRAFT_DOCS,
+  INBOX_DOCS,
+  PENDING_DOCS,
+} from "@/app/(dashboard)/user/[id]/signdoc/docstatus";
 
 export type Payment = {
   id: string;
@@ -24,7 +31,15 @@ export type Payment = {
   title: string;
 };
 
-export function DocumentTable(id: { id: string; email: string }) {
+export function DocumentTable({
+  id,
+  email,
+  status,
+}: {
+  id: string;
+  email: string;
+  status: string;
+}) {
   // const [sorting, setSorting] = React.useState<SortingState>([]);
   // const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
   //   []
@@ -35,6 +50,7 @@ export function DocumentTable(id: { id: string; email: string }) {
   const [signedData, setSignedData] = React.useState([]);
   const [recpientData, setRecipientData] = React.useState([]);
   const [data, setData] = React.useState<any[]>([]);
+  const [filteredData, setFilteredData] = React.useState<any[]>([]);
   console.log(id);
   const actionStatus = (status: any) => {
     if (status === "DRAFT") {
@@ -97,20 +113,43 @@ export function DocumentTable(id: { id: string; email: string }) {
     }
   };
   const [loading, setLoading] = React.useState(false);
+  const statusMap = (status: string) => {
+    if (status === INBOX_DOCS) {
+      return "SIGN";
+    } else if (status == PENDING_DOCS) {
+      return "PENDING";
+    } else if (status == DRAFT_DOCS) {
+      return "DRAFT";
+    } else if (status == COMPLETED_DOCS) {
+      return "COMPLETED";
+    }
+  };
+  React.useEffect(() => {
+    console.log(status);
+    console.log(statusMap(status));
+
+    setFilteredData(
+      status == ALL_DOCS
+        ? data
+        : data.filter((item: any) => {
+            return item.status == statusMap(status);
+          })
+    );
+  }, [status]);
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       await axios
         .post(
           "http://localhost:3000/api/document/getDocumentForUser",
-          { userId: id.id, email: id.email }
+          { userId: id, email: email }
           //pending
           //why parse user id
         )
         .then((response) => {
           const document = response.data?.Document;
           setData(document);
-          console.log(data, "hello dev");
+          setFilteredData(document);
 
           // setRecipientData(response && response?.data?.Document[0]?.Recipient);
         });
@@ -168,8 +207,8 @@ export function DocumentTable(id: { id: string; email: string }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data
-              ? data.map((link) => (
+            {filteredData
+              ? filteredData.map((link) => (
                   <TableRow key={link?.id}>
                     <TableCell>
                       {new Date(link?.createdAt).toLocaleDateString()}
