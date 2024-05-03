@@ -87,9 +87,9 @@ export function DocumentTable(id: { id: string; email: string }) {
   };
   const actionStatusUrl = (link: any) => {
     if (link.status === "DRAFT") {
-      return `http://localhost:3000/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/document/${link.id}/step1`;
+      return `https://ex-sign-swift.vercel.app/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/document/${link.id}/step1`;
     } else if (link.status === "SIGN") {
-      return `http://localhost:3000/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/signdoc/${link.id}`;
+      return `https://ex-sign-swift.vercel.app/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/signdoc/${link.id}`;
     } else if (link.status === "PENDING") {
       return "";
     } else if (link.status === "COMPLETED") {
@@ -102,7 +102,7 @@ export function DocumentTable(id: { id: string; email: string }) {
       setLoading(true);
       await axios
         .post(
-          "http://localhost:3000/api/document/getDocumentForUser",
+          "https://ex-sign-swift.vercel.app/api/document/getDocumentForUser",
           { userId: id.id, email: id.email }
           //pending
           //why parse user id

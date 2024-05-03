@@ -54,7 +54,7 @@ const page = () => {
   useEffect(() => {
     const getDocument = async () => {
       const response = await axios.post(
-        "http://localhost:3000/api/document/getDocument",
+        "https://ex-sign-swift.vercel.app/api/document/getDocument",
         {
           docId: params.documentId,
         }
@@ -86,7 +86,7 @@ const page = () => {
               }
             );
             setTimeout(() => {
-              router.push(`http://localhost:3000/user/${user?.id}`);
+              router.push(`https://ex-sign-swift.vercel.app/user/${user?.id}`);
             }, 2000);
           }
         }
@@ -98,10 +98,13 @@ const page = () => {
 
   const handleSign = () => {
     const signDoc = async () => {
-      await axios.post("http://localhost:3000/api/document/addSignature", {
-        docId: params.documentId,
-        copiedItems: copiedItems,
-      });
+      await axios.post(
+        "https://ex-sign-swift.vercel.app/api/document/addSignature",
+        {
+          docId: params.documentId,
+          copiedItems: copiedItems,
+        }
+      );
       router.push(`/sendSuccess`);
     };
     signDoc();

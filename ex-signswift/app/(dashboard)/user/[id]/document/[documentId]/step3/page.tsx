@@ -14,7 +14,7 @@ import Loader from "@/components/Loader";
 // async function fetchData(params: any) {
 //   try {
 //     const response = await axios.post(
-//       "http://localhost:3000/api/document/getDocument",
+//       "https://ex-sign-swift.vercel.app/api/document/getDocument",
 //       { userId: parseInt(params.id), id: params.documentId }
 //     );
 //     console.log(response.data);
