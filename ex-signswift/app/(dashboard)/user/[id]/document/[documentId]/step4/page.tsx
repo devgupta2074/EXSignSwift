@@ -77,7 +77,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
         <H4>Recepient info</H4>
       </div>
       <div
-        className="w-full flex flex-row   space-x-20   "
+        className="w-full flex flex-row justify-between   space-x-20   "
         // style={{ overflowY: "hidden", height: "86vh" }}
       >
         <div
@@ -87,7 +87,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
             height: "100%",
           }}
           id="pdf-viewer"
-          className="rounded-md w-[40rem]"
+          className="rounded-md  max-w-[40rem]"
         >
           <PdfViewer
             copiedItems={copiedItems}
@@ -95,8 +95,8 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
             url={url}
           />
         </div>
-        <div className="w-[33rem] h-full  justify-center pt-0  ">
-          <div className="w-full h-full">
+        <div className="w-full h-full bg-[#F7F7F7]  max-w-[30rem] justify-center pt-0  ">
+          <div className="w-full h-full bg-[#F7F7F7]">
             <EmailForm
               userId={userId}
               recipient={receptient}

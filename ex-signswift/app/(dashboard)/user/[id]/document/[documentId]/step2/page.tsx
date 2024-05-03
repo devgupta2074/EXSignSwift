@@ -72,7 +72,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
             height: "100%",
           }}
           id="pdf-viewer"
-          className="rounded-md   w-[40rem] overflow-x-scroll"
+          className="rounded-md w-full max-w-[40rem]  overflow-x-scroll"
         >
           <PdfViewer url={data?.Document?.ShareLink || ""} />
         </div>

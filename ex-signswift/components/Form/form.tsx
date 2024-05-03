@@ -78,17 +78,20 @@ const Form: FC<FormProps> = ({
   ];
 
   return (
-    <div className="w-full h-full flex justify-center items-start  ">
-      <div className="" style={{ height: "100%" }}>
+    <div className=" bg-[#F7F7F7] w-full h-full flex justify-center items-start  ">
+      <div className="w-full bg-[#F7F7F7]" style={{ height: "100%" }}>
         <Card
-          className="p-2  border-2 border-rose-500 "
+          className="p-2 w-full bg-[#F7F7F7]  border-2 border-rose-500 "
           // style={{ height: "95%" }}
         >
           <CardContent className="mt-5 mb-5">
             <h1 className="font-medium text-3xl">Add Fields</h1>
+            <h4 className=" font-light text-sm  pt-3 text-[#64748B]">
+              Add all relevant fields for each recipient.
+            </h4>
           </CardContent>
 
-          <CardContent className="w-full">
+          <CardContent className="w-full bg-[#F7F7F7]">
             <ComboBox
               docId={docId}
               value={value}
@@ -99,10 +102,10 @@ const Form: FC<FormProps> = ({
           </CardContent>
 
           <CardContent
-            className="flex  gap-1 w-auto flex-col pt-5 pb-10"
+            className="w-full flex  gap-1  flex-col pt-5 pb-10"
             style={{}}
           >
-            <fieldset className="grid grid-cols-2 gap-7 gap-x-25">
+            <fieldset className=" w-full grid grid-cols-2  gap-12 gap-x-25">
               {childrefs.map((childref, index) => (
                 <DropItem
                   key={index}
@@ -113,31 +116,43 @@ const Form: FC<FormProps> = ({
                 />
               ))}
             </fieldset>
-            <div className="flex gap-20 pt-7 items-center justify-center">
-              <Button
-                className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors  w-full"
-                type="button"
-              >
-                Go Back
-              </Button>
-
-              {loading ? (
-                <Button
-                  disabled
-                  className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
-                >
-                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button
-                  className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
+            <div className="mt-16">
+              <div>
+                <p className="text-muted-foreground text-sm">
+                  Step <span>2 of 4</span>
+                </p>
+                <div className="relative h-1 rounded-full mb-2">
+                  <div className="absolute left-0 top-0 h-full bg-rose-500 w-2/4"></div>
+                </div>
+              </div>
+              <div className="mt-4 flex gap-x-4">
+                <button
+                  className="inline-flex items-center justify-center text-white text-sm font-medium  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-secondary-foreground h-11 px-8 rounded-md bg-rose-500 hover:bg-rose-500/80 flex-1 "
                   type="button"
-                  onClick={handleContinue}
+                  onClick={() => {}}
                 >
-                  Continue
-                </Button>
-              )}
+                  Go Back
+                </button>
+                {loading ? (
+                  <Button
+                    disabled
+                    className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                  >
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                    Please wait
+                  </Button>
+                ) : (
+                  <button
+                    className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                    type="button"
+                    onClick={(e) => {
+                      handleContinue();
+                    }}
+                  >
+                    Continue
+                  </button>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>

@@ -8,44 +8,55 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
   const { userId, email } = await req.json();
   console.log(userId, email, "email");
 
+  //all docs of craeted user where user is not the signer
+
+  //all drafts  ->from users
+
   try {
     const document1 = await prisma.document.findMany({
       where: {
-        userId: userId,
+        AND: {
+          userId: userId,
+          NOT: {
+            Recipient: {
+              some: {
+                email: {
+                  equals: email,
+                },
+              },
+            },
+          },
+        },
       },
     });
+    //draft->can edit those docs  //pending->cant do anthying on these
+    // dont want those in which he is a  signer
 
-    //
-    //
-    // const recep = await prisma.recipient.findFirst({
-    //   where: {
-    //     email: email,
-    //   },
-    //   include: {
-    //     Document: true,
-    //   },
-    // });
+    //return docs with status pending and user is the recepient
 
-    // getting all unsigned docs
-
-    const documents = await prisma.document.findMany({
+    //get all doc that user has to sign
+    const document2 = await prisma.document.findMany({
       where: {
         Recipient: {
           some: {
             email: {
               equals: email,
             },
-            signingStatus: { equals: "NOT_SIGNED" },
           },
+        },
+        status: {
+          equals: "PENDING",
         },
       },
       include: {
         Recipient: true,
       },
     });
-
+    console.log(document1, "document 1 are");
+    // documents-> that user has to sign
+    //document2->user has to sign
     const documentsWithStatus = [
-      ...documents.map((doc) => ({ ...doc, status: "SIGN" })),
+      ...document2.map((doc) => ({ ...doc, status: "SIGN" })),
       ...document1.map((doc) => ({ ...doc })),
     ];
     // signer-> last user->completed

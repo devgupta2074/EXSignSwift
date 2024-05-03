@@ -1,7 +1,7 @@
 // We impot our prisma client
 import prisma from "../../../../lib/prisma";
 // Prisma will help handle and catch errors
-import { Prisma } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,6 +13,7 @@ interface Irec {
   token: string;
   documentId: number;
   signnumber: number;
+  signerStatus: string;
 }
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
@@ -27,6 +28,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         token: rec?.token?.toString(),
         signnumber: rec?.signnumber,
         documentId: parseInt(docId),
+        // role: rec?.signerStatus,
       })),
     });
     console.log(result, "in add recpint");
