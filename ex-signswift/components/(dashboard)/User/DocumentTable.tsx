@@ -121,13 +121,30 @@ export function DocumentTable(id: { id: string; email: string }) {
 
   const router = useRouter();
   console.log(signedData, "signed", "dev", data);
-  const randomColor = () => {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+  const getRandomColor = () => {
+    const colors = [
+      "#2ECC71", // Emerald Green
+      "#3498DB", // Dodger Blue
+      "#E74C3C", // Alizarin Crimson
+      "#8E44AD", // Studio Purple
+      "#1ABC9C", // Ocean Green
+      "#F39C12", // Tangerine
+      "#27AE60", // Nephritis
+      "#2980B9", // Belize Hole
+      "#E67E22", // Carrot Orange
+      "#9B59B6", // Amethyst Purple
+      "#16A085", // Dark Cyan
+      "#C0392B", // Red Orange
+      "#34495E", // Wet Asphalt
+      "#F1C40F", // Sunflower Yellow
+      "#7F8C8D", // Concrete Grey
+      "#2C3E50", // Midnight Blue
+      "#95A5A6", // Concrete Grey Light
+      "#D35400", // Pumpkin
+      "#1F618D", // Dark Cerulean
+      "#D35400", // Pumpkin
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
   };
   if (loading) {
     return (
@@ -166,40 +183,102 @@ export function DocumentTable(id: { id: string; email: string }) {
                       </Button>
                     </TableCell>
                     <TableCell className="flex flex-row">
-                      {link?.Recipient?.map((recpientData: any) => (
-                        <div className="relative">
-                          <div
-                            className="rounded-full p-1 px-2 text-white font-semibold m-1"
-                            style={{ backgroundColor: randomColor() }}
-                            title={recpientData.email}
-                          >
-                            {recpientData.name.charAt(0).toUpperCase()}
-                          </div>
-                          <style jsx>{`
-                            /* Additional styles for the tooltip */
-                            .tooltip {
-                              position: absolute;
-                              bottom: calc(100% + 5px); /* Adjust as needed */
-                              left: 50%;
-                              transform: translateX(-50%);
-                              padding: 5px;
-                              background-color: rgba(0, 0, 0, 0.8);
-                              color: #fff;
-                              font-size: 12px;
-                              border-radius: 3px;
-                              white-space: nowrap;
-                              opacity: 0;
-                              pointer-events: none;
-                              transition: opacity 0.3s ease;
-                            }
+                      <div className="flex -space-x-2 items-center justify-center">
+                        {link?.Recipient?.map(
+                          (recpientData: any, index: number) =>
+                            index < 2 && (
+                              <div className="relative">
+                                <div
+                                  style={{ backgroundColor: getRandomColor() }}
+                                  title={recpientData.email}
+                                  className="inline-block  size-[32px] rounded-full ring-2 ring-white dark:ring-neutral-900"
+                                >
+                                  <div className="flex items-center justify-center text-white text-xl font-medium m-1">
+                                    {recpientData.name.charAt(0).toUpperCase()}
+                                  </div>
 
-                            .rounded-full:hover .tooltip {
-                              opacity: 1;
-                              pointer-events: auto;
-                            }
-                          `}</style>
+                                  <style jsx>{`
+                                    /* Additional styles for the tooltip */
+                                    .tooltip {
+                                      position: absolute;
+                                      bottom: calc(
+                                        100% + 5px
+                                      ); /* Adjust as needed */
+                                      left: 50%;
+                                      transform: translateX(-50%);
+                                      padding: 5px;
+                                      background-color: rgba(0, 0, 0, 0.8);
+                                      color: #fff;
+                                      font-size: 12px;
+                                      border-radius: 3px;
+                                      white-space: nowrap;
+                                      opacity: 0;
+                                      pointer-events: none;
+                                      transition: opacity 0.3s ease;
+                                    }
+
+                                    .rounded-full:hover .tooltip {
+                                      opacity: 1;
+                                      pointer-events: auto;
+                                    }
+                                  `}</style>
+                                </div>
+                              </div>
+                            )
+                        )}
+                        <div className="hs-dropdown [--placement:top-left] relative inline-flex items-center justify-center">
+                          <div
+                            id="hs-avatar-group-dropdown"
+                            className="hs-dropdown-toggle inline-flex items-center justify-center size-[46px] rounded-full bg-white border-2 border-white font-medium text-gray-700 shadow-sm align-middle hover:bg-gray-300 focus:outline-none focus:bg-blue-100 focus:text-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm"
+                          >
+                            {link?.Recipient?.map(
+                              (recpientData: any, index: number) =>
+                                index >= 2 && (
+                                  <div className="relative">
+                                    <div
+                                      // style={{
+                                      //   backgroundColor: getRandomColor(),
+                                      // }}
+                                      title={recpientData.email}
+                                      // className="inline-block  size-[32px] rounded-full ring-2 ring-white dark:ring-neutral-900"
+                                    >
+                                      {/* <div className="flex items-center justify-center text-white text-xl font-medium m-1">
+                                {recpientData.name.charAt(0).toUpperCase()}
+                              </div> */}
+
+                                      <style jsx>{`
+                                        /* Additional styles for the tooltip */
+                                        .tooltip {
+                                          position: absolute;
+                                          bottom: calc(
+                                            100% + 5px
+                                          ); /* Adjust as needed */
+                                          left: 50%;
+                                          transform: translateX(-50%);
+                                          padding: 5px;
+                                          background-color: rgba(0, 0, 0, 0.8);
+                                          color: #fff;
+                                          font-size: 12px;
+                                          border-radius: 3px;
+                                          white-space: nowrap;
+                                          opacity: 0;
+                                          pointer-events: none;
+                                          transition: opacity 0.3s ease;
+                                        }
+
+                                        .rounded-full:hover .tooltip {
+                                          opacity: 1;
+                                          pointer-events: auto;
+                                        }
+                                      `}</style>
+                                    </div>
+                                  </div>
+                                )
+                            )}
+                            <span className="font-medium leading-none">+</span>
+                          </div>
                         </div>
-                      ))}
+                      </div>
                     </TableCell>
                     <TableCell>{link.status}</TableCell>
                     <TableCell>
