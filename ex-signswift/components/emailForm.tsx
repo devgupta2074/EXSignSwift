@@ -106,12 +106,12 @@ const EmailForm = ({
   }
 
   return (
-    <main className="email-main">
+    <main className="email-main bg-[#F7F7F7]">
       {/* <div className="heading">Hello MAIN</div>
       <Link href="#" onClick={sendEmail} className="link">
         {emailSent ? "Email Sent!" : "Send Email"}
       </Link> */}
-      <form onSubmit={handleSubmit} className="email-form">
+      <form onSubmit={handleSubmit} className="email-form bg-[#F7F7F7]">
         <h1 className="form-head-text"> Add Subject</h1>
         <p className="form-description">
           Add subject and body for the email you want to send{" "}

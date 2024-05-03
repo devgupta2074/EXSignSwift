@@ -36,6 +36,7 @@ export default function Step2({
   const router = useRouter();
   const [name, setName] = useState<String[]>([]);
   const [email, setEmail] = useState<String[]>([]);
+  const [selectedValue, setSelectedValue] = useState<string>("");
 
   const {
     loading: loading2,
@@ -116,6 +117,7 @@ export default function Step2({
     e.preventDefault();
     console.log(receptientProp);
     console.log(inputs);
+    console.log(receptient);
 
     const recipents: recipent[] = [];
     for (let i = 0; i < inputs.length; i++) {
@@ -195,11 +197,11 @@ export default function Step2({
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full  bg-[#F7F7F7]">
       <div className="w-full h-full">
         <form
           id="document-flow-form-container"
-          className=" bg-white sticky flex h-full  flex-col overflow-auto rounded-xl border px-4 py-6"
+          className=" bg-[#F7F7F7] sticky flex h-full  flex-col overflow-auto rounded-xl border px-4 py-6"
         >
           <div className="-mx-2 flex flex-1 flex-col px-2">
             <h3 className="text-black text-2xl font-semibold">General</h3>
@@ -221,11 +223,13 @@ export default function Step2({
                             handleDropDownMenu(input.id, e)
                           }
                         />
+                        <DropdownMenuDemo
+                          selectedValue={selectedValue}
+                          setSelectedValue={setSelectedValue}
+                        />
                       </div>
                       <div className="flex justify-center items-center hover:cursor-pointer"></div>
-                      <div className="flex justify-center items-center hover:cursor-pointer">
-                        <DropdownMenuDemo />
-                      </div>
+                      <div className="flex justify-center items-center hover:cursor-pointer"></div>
                       <div
                         className="flex justify-center items-center hover:cursor-pointer"
                         onClick={(e) => handleDelete(e, input.id)}

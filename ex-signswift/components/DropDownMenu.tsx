@@ -1,30 +1,37 @@
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export function DropdownMenuDemo() {
+export function DropdownMenuDemo({
+  selectedValue,
+  setSelectedValue,
+}: {
+  selectedValue: string;
+  setSelectedValue: (value: string) => void;
+}) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>Signer</DropdownMenuItem>
-        <DropdownMenuItem>Viewer</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Signer" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem
+          onClick={() => {
+            setSelectedValue("SIGNER");
+          }}
+          value="light"
+        >
+          Signer
+        </SelectItem>
+        <SelectItem onClick={() => setSelectedValue("VIEWER")} value="dark">
+          Recieves Copy
+        </SelectItem>
+      </SelectContent>
+    </Select>
   );
 }

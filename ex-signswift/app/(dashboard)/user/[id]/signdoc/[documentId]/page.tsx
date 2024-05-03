@@ -125,7 +125,7 @@ const page = () => {
       </div>
       <div className="flex flex-row w-full  gap-36">
         <div
-          className="rounded-md h-full w-[40rem]"
+          className="rounded-md h-full  w-full max-w-[40rem]"
           style={{
             display: "flex",
             padding: "1rem",
@@ -139,7 +139,7 @@ const page = () => {
             userid={params.id}
           />
         </div>
-        <div className="w-[30rem] h-full mb-10 flex  items-start pt-10 ">
+        <div className="w-[30rem]  h-full mb-10 flex  items-start pt-10 ">
           <SignatureForm
             signatureCanvasRef={signatureCanvasRef2}
             handleSign={handleSign}
