@@ -13,7 +13,8 @@ import H4 from "@/components/Typography/H4";
 import { useRouter } from "next/navigation";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
-import { useSession } from "next-auth/react";
+import Cookies from "js-cookie";
+import { User } from "@prisma/client";
 
 interface IField {
   id: number;
@@ -33,12 +34,23 @@ const page = () => {
   const signatureCanvasRef = React.useRef<SignatureCanvas | null>(null);
   const [url, setUrl] = React.useState("");
   const router = useRouter();
-  const session = useSession();
+  // Run only once on component mount
   const signatureCanvasRef2 = React.useRef<SignatureCanvas | null>(null);
   const [copiedItems, setCopiedItems] = React.useState<IField[]>([]);
   const [recipients, setRecpients] = React.useState<any[]>([]);
   const [signNumber, setSignNumber] = React.useState<number>(0);
+  const [user, setUser] = React.useState<User>();
 
+  React.useEffect(() => {
+    const cookieData = Cookies.get("session");
+    if (cookieData) {
+      const jsonData = JSON.parse(cookieData);
+      console.log(jsonData);
+      setUser(jsonData.data.user);
+    } else {
+      router.push("/login");
+    }
+  }, []);
   useEffect(() => {
     const getDocument = async () => {
       const response = await axios.post(
@@ -53,10 +65,8 @@ const page = () => {
       setRecpients(response?.data?.Document?.Recipient);
       setSignNumber(response?.data?.Document?.signnumber);
       console.log("step5", recipients, signNumber);
-      if (session?.data?.user?.id) {
-        const user = recipients.find(
-          (user) => user.email === session?.data?.user?.email
-        );
+      if (user?.id) {
+        const user = recipients.find((user) => user.email === user?.email);
         console.log("step6", user);
         if (user) {
           if (user.signnumber !== signNumber) {
@@ -76,9 +86,7 @@ const page = () => {
               }
             );
             setTimeout(() => {
-              router.push(
-                `http://localhost:3000/user/${session.data?.user?.id}`
-              );
+              router.push(`http://localhost:3000/user/${user?.id}`);
             }, 2000);
           }
         }
@@ -86,7 +94,7 @@ const page = () => {
     };
 
     getDocument();
-  }, [params, session, signNumber, url]);
+  }, [params, signNumber, url]);
 
   const handleSign = () => {
     const signDoc = async () => {

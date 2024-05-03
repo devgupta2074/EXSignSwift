@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { getServerSession, Session } from "next-auth";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");

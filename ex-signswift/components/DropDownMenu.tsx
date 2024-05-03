@@ -23,8 +23,6 @@ export function DropdownMenuDemo() {
       <DropdownMenuContent className="w-56">
         <DropdownMenuSeparator />
         <DropdownMenuItem>Signer</DropdownMenuItem>
-        <DropdownMenuItem>Recieves Copy</DropdownMenuItem>
-        <DropdownMenuItem>Approver</DropdownMenuItem>
         <DropdownMenuItem>Viewer</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

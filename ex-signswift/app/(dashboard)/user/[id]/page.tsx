@@ -1,32 +1,40 @@
+"use client";
 import { Payment, columns } from "@/components/(dashboard)/User/Columns";
 import { DocumentTable } from "@/components/(dashboard)/User/DocumentTable";
+import Cookies from "js-cookie";
 
-import { DocumentDropzone } from "@/components/(dashboard)/User/Upload";
 import * as React from "react";
 
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import UploadContainer from "../../../../components/(dashboard)/User/UploadContainer";
 import H2 from "@/components/Typography/H2";
-import H4 from "@/components/Typography/H4";
+
 import TableMenu from "@/components/TableMenu";
+import { useSession } from "next-auth/react";
 
-export default async function Dashboard({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const session = await getServerSession();
+export default function Dashboard({ params }: { params: { id: string } }) {
+  const router = useRouter();
+  const [user, setUser] = React.useState<any>(null);
+  const session = useSession();
 
- 
-  if (!session?.user) {
-    console.log(session);
-    redirect(`/login`);
-  }else{
-    console.log(session?.user, "user archit")
-  }
+  React.useEffect(() => {
+    if (!session?.data?.user) {
+      router.push("/login");
+    } else {
+      setUser(session.data.user);
+      const cookieData = JSON.stringify(session);
+      Cookies.set("session", cookieData, { expires: 1 / 3 });
+    }
+  }, [session]);
 
-
+  React.useEffect(() => {
+    const cookieData = Cookies.get("session");
+    if (cookieData) {
+      const jsonData = JSON.parse(cookieData);
+      console.log(jsonData);
+      setUser(jsonData.data.user);
+    }
+  }, []); // Run only once on component mount
 
   return (
     <main className=" container flex flex-col gap-4  items-center px-16">
@@ -45,7 +53,7 @@ export default async function Dashboard({
         </div>
       </div>
       <div className="w-full">
-        <DocumentTable id={params.id} email={session?.user?.email} />
+        <DocumentTable id={params.id} email={user?.email} />
       </div>
       {/* <p>navbar upload table</p> */}
     </main>

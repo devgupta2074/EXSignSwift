@@ -16,20 +16,19 @@ export default async function RootLayout({
 }>) {
   const session = await getServerSession();
 
- 
   if (!session?.user) {
     console.log(session);
     // redirect(`/login`);
-    redirect('/login')
-  }else{
-    console.log(session?.user, "user archit")
-  return (
-    <div className=" ">
-      <nav>
-        <Navbar user={session?.user} />
-      </nav>
-      {children}
-    </div>
-  );
-}
+    redirect("/login");
+  } else {
+    console.log(session?.user, "user archit");
+    return (
+      <div className=" ">
+        <nav>
+          <Navbar user={session?.user} />
+        </nav>
+        {children}
+      </div>
+    );
+  }
 }

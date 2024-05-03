@@ -12,7 +12,6 @@ import { DialogTrigger } from "../ui/dialog";
 import CustomSignaturePad from "../Signature/signaturePad";
 import SignatureCanvas from "react-signature-canvas";
 import axios from "axios";
-import { useSession } from "next-auth/react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -47,7 +46,7 @@ const PdfFillComponent = ({
   userid,
 }: PdfFillComponentProps) => {
   let id = -1;
-  const session = useSession();
+
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [open, setOpen] = React.useState(false);

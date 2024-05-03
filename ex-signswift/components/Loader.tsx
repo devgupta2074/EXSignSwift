@@ -18,8 +18,8 @@ const Loader = () => {
           x2="128"
           y2="64"
           strokeLinecap="round"
-          stroke-linejoin="round"
-          stroke-width="24"
+          strokeLinejoin="round"
+          strokeWidth="24"
         ></line>
         <line
           x1="195.9"
@@ -27,8 +27,8 @@ const Loader = () => {
           x2="173.3"
           y2="82.7"
           strokeLinecap="round"
-          stroke-linejoin="round"
-          stroke-width="24"
+          strokeLinejoin="round"
+          strokeWidth="24"
         ></line>
         <line
           x1="224"
@@ -36,8 +36,8 @@ const Loader = () => {
           x2="192"
           y2="128"
           strokeLinecap="round"
-          stroke-linejoin="round"
-          stroke-width="24"
+          strokeLinejoin="round"
+          strokeWidth="24"
         ></line>
         <line
           x1="195.9"
@@ -45,8 +45,8 @@ const Loader = () => {
           x2="173.3"
           y2="173.3"
           strokeLinecap="round"
-          stroke-linejoin="round"
-          stroke-width="24"
+          strokeLinejoin="round"
+          strokeWidth="24"
         ></line>
         <line
           x1="128"
@@ -54,8 +54,8 @@ const Loader = () => {
           x2="128"
           y2="192"
           strokeLinecap="round"
-          stroke-linejoin="round"
-          stroke-width="24"
+          strokeLinejoin="round"
+          strokeWidth="24"
         ></line>
         <line
           x1="60.1"
@@ -63,8 +63,8 @@ const Loader = () => {
           x2="82.7"
           y2="173.3"
           strokeLinecap="round"
-          stroke-linejoin="round"
-          stroke-width="24"
+          strokeLinejoin="round"
+          strokeWidth="24"
         ></line>
         <line
           x1="32"
@@ -72,8 +72,8 @@ const Loader = () => {
           x2="64"
           y2="128"
           strokeLinecap="round"
-          stroke-linejoin="round"
-          stroke-width="24"
+          strokeLinejoin="round"
+          strokeWidth="24"
         ></line>
         <line
           x1="60.1"
@@ -81,8 +81,8 @@ const Loader = () => {
           x2="82.7"
           y2="82.7"
           strokeLinecap="round"
-          stroke-linejoin="round"
-          stroke-width="24"
+          strokeLinejoin="round"
+          strokeWidth="24"
         ></line>
       </svg>
       <span className="text-4xl font-medium text-black">
