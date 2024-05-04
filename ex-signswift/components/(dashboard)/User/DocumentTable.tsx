@@ -43,10 +43,13 @@ export function DocumentTable({
   // const [sorting, setSorting] = React.useState<SortingState>([]);
   // const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
   //   []
-  // );
+  // )
   // const [columnVisibility, setColumnVisibility] =
   //   React.useState<VisibilityState>({});
   // const [rowSelection, setRowSelection] = React.useState({});
+  React.useEffect(() => {
+    console.log(email, "email in user table");
+  });
   const [signedData, setSignedData] = React.useState([]);
   const [recpientData, setRecipientData] = React.useState([]);
   const [data, setData] = React.useState<any[]>([]);
@@ -103,9 +106,9 @@ export function DocumentTable({
   };
   const actionStatusUrl = (link: any) => {
     if (link.status === "DRAFT") {
-      return `http://localhost:3000/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/document/${link.id}/step1`;
+      return `http://localhost:3000/user/${id}/document/${link.id}/step1`;
     } else if (link.status === "SIGN") {
-      return `http://localhost:3000/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/signdoc/${link.id}`;
+      return `http://localhost:3000/user/${id}/signdoc/${link.id}`;
     } else if (link.status === "PENDING") {
       return "";
     } else if (link.status === "COMPLETED") {
@@ -139,24 +142,26 @@ export function DocumentTable({
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await axios
-        .post(
-          "http://localhost:3000/api/document/getDocumentForUser",
-          { userId: id, email: email }
-          //pending
-          //why parse user id
-        )
-        .then((response) => {
-          const document = response.data?.Document;
-          setData(document);
-          setFilteredData(document);
+      if (id && email) {
+        await axios
+          .post(
+            "http://localhost:3000/api/document/getDocumentForUser",
+            { userId: id, email: email }
+            //pending
+            //why parse user id
+          )
+          .then((response) => {
+            const document = response.data?.Document;
+            setData(document);
+            setFilteredData(document);
 
-          // setRecipientData(response && response?.data?.Document[0]?.Recipient);
-        });
-      setLoading(false);
+            // setRecipientData(response && response?.data?.Document[0]?.Recipient);
+          });
+        setLoading(false);
+      }
     };
     fetchData();
-  }, [id]);
+  }, [id, email]);
 
   const router = useRouter();
   console.log(signedData, "signed", "dev", data);

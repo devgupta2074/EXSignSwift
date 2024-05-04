@@ -85,7 +85,9 @@ const Navbar = (props: any) => {
               <DropdownMenuContent className="w-48">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>SignOut</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSignOut()}>
+                  SignOut
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
