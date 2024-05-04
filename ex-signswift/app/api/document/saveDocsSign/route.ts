@@ -1,62 +1,60 @@
 // We impot our prisma client
+
 import prisma from "../../../../lib/prisma";
 // Prisma will help handle and catch errors
 import { Prisma } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
-import { ReactNode } from "react";
-interface DroppedItem {
+
+export interface IField {
   id: number;
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-  pageNumber: number;
+  documentId: number;
+  left: string;
+  secondaryId: string;
+  top: string;
+  width: string;
+  height: string;
+  page: number;
   text: string;
   icon: string;
-  secondaryId: number;
-  userEmail: string;
-  userId: number;
+  recipientId: number;
 }
 interface ExtendedNextApiRequest extends NextApiRequest {
-    body:{
-        droppedItem:DroppedItem[],
-        docId:string,
-    }
+  body: {
+    droppedItem: IField[];
+    docId: string;
+  };
 }
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const {docId,droppedItem}= await req.json();
-  console.log(docId,droppedItem);
+  const { docId, droppedItem } = await req.json();
+  console.log(docId, droppedItem, "new dropped items are");
+  await prisma.field.deleteMany({
+    where: {
+      documentId: parseInt(docId),
+    },
+  });
 
+  // Create new fields based on droppedItem
+  const newFields = droppedItem.map((item: IField) => ({
+    documentId: item.documentId,
+    recipientId: item.recipientId || 0,
+    page: item.page,
+    width: item.width,
+    height: item.height,
+    left: item.left,
+    text: item.text,
+    top: item.top,
+  }));
 
-const updateDocument=await prisma.document.update({
-  where:{
-    id:parseInt(docId)
-  },
-  data:{
-    Field:{
-      createMany:{
-        data:droppedItem.map((field:DroppedItem) => ({
-          page: field.pageNumber,
-          recipientId:field.userId,
-          left: field.left,
-          top: field.top,
-          width: field.width,
-          height: field.height,
-          text: field.text,
-        })),
-      }
+  // Create the new fields
+  const doc = await prisma.field.createMany({
+    data: newFields,
+  });
 
-    }
-  }
-
-})
-console.log(updateDocument,"updateDocument");
-  
-    return NextResponse.json({
-      message: "Document Field created successfully",
-      status: 201,
-    });
-  
+  console.log(doc);
+  return NextResponse.json({
+    message: "Document Field created successfully",
+    status: 201,
+  });
 }

@@ -10,6 +10,7 @@ import H4 from "@/components/Typography/H4";
 import { useApi } from "@/api-service/useApi";
 import { getDocumentById } from "@/api-service/documentApi";
 import Loader from "@/components/Loader";
+import { IField, IRecepient } from "@/types/global.type";
 
 // async function fetchData(params: any) {
 //   try {
@@ -37,6 +38,7 @@ export default function Document({
   // const response = fetchData(params).then((response) =>
   //   setUrl(response?.data.Document.url)
   // );
+
   interface IData {
     Document: {
       ShareLink: string;
@@ -46,20 +48,10 @@ export default function Document({
       status: string;
       updatedAt: Date;
       Field: IField[];
+      Recipient: IRecepient[];
     };
   }
-  interface IField {
-    id: number;
-    secondaryId: string;
-    left: string;
-    top: string;
-    width: string;
-    height: string;
-    page: number;
-    text: string;
-    icon: string;
-    recipientId: number;
-  }
+
   const { loading, error, data, request } = useApi(getDocumentById) as {
     loading: boolean;
     error: string;
@@ -99,6 +91,7 @@ export default function Document({
             url={data?.Document?.ShareLink || ""}
             docId={params.documentId}
             userId={params.id}
+            recepient={data?.Document?.Recipient || []}
           />
         </DndProvider>
       </div>

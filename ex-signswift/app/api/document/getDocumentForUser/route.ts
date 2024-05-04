@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
   const { userId, email } = await req.json();
-  console.log(userId, email, "email");
+  console.log(userId, email, "email  for getting the filessss");
 
   //all docs of craeted user where user is not the signer
 

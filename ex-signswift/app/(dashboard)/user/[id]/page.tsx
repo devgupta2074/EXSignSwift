@@ -35,7 +35,7 @@ export default function Dashboard({ params }: { params: { id: string } }) {
     const cookieData = Cookies.get("session");
     if (cookieData) {
       const jsonData = JSON.parse(cookieData);
-      console.log(jsonData);
+      console.log(jsonData, "jssson data");
       setUser(jsonData.data.user);
     }
   }, []); // Run only once on component mount
