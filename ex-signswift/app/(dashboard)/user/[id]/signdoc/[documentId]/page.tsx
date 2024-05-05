@@ -15,6 +15,7 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import Cookies from "js-cookie";
 import { User } from "@prisma/client";
+import { useEdgeStore } from "@/lib/edgestore";
 
 interface IField {
   id: number;
@@ -29,6 +30,7 @@ interface IField {
   recipientId: string;
 }
 const page = () => {
+  const { edgestore } = useEdgeStore();
   const params = useParams<{ documentId: string; id: string }>();
   console.log(params.id, params.documentId);
   const signatureCanvasRef = React.useRef<SignatureCanvas | null>(null);
@@ -41,7 +43,7 @@ const page = () => {
   const [copiedItems, setCopiedItems] = React.useState<IField[]>([]);
   const [recipients, setRecipients] = React.useState<any[]>([]);
   const [signNumber, setSignNumber] = React.useState<number>(0);
-  const [user, setUser] = React.useState<User>();
+  const [userx, setUser] = React.useState<User>();
 
   React.useEffect(() => {
     const cookieData = Cookies.get("session");
@@ -55,7 +57,7 @@ const page = () => {
     }
   }, []);
   useEffect(() => {
-    setEmail(user?.email || "");
+    setEmail(userx?.email || "");
     const getDocument = async () => {
       const response = await axios.post(
         "http://localhost:3000/api/document/getDocument",
@@ -77,8 +79,8 @@ const page = () => {
       setSignNumber(response?.data?.Document?.signnumber);
 
       console.log("step5", recipients, signNumber);
-      if (user?.id) {
-        const user = recipients.find((user) => user.email === user?.email);
+      if (userx?.id) {
+        const user = recipients.find((user) => user.email === userx?.email);
 
         if (user?.signnumber === recipients?.length - 1) {
           setIsLast(true);
@@ -112,14 +114,29 @@ const page = () => {
     getDocument();
   }, [params, signNumber, url]);
 
-  const handleSign = () => {
+  const handleSign = async () => {
     const signDoc = async () => {
-      await axios.post("http://localhost:3000/api/document/addSignature", {
-        docId: params.documentId,
-        copiedItems: copiedItems,
-        isLast: isLast,
-        recipientEmail: email,
+      const response = await axios.post(
+        "http://localhost:3000/api/document/addSignature",
+        {
+          docId: params.documentId,
+          copiedItems: copiedItems,
+          isLast: isLast,
+          recipientEmail: email,
+        }
+      );
+
+      console.log(response, "funny");
+      const res = await edgestore.publicFiles.upload({
+        file: new File([response.data.pdf], "complete.pdf", {
+          type: "application/pdf",
+        }),
+        options: {
+          replaceTargetUrl: response.data.oldurl,
+        },
       });
+
+      console.log("File uploaded successfully:", res);
       router.push(`/sendSuccess`);
     };
     signDoc();

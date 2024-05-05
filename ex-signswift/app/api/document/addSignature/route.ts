@@ -41,7 +41,7 @@ interface IField {
 }
 export async function POST(req: NextRequest, res: NextApiResponse) {
   const { docId, copiedItems, isLast, recipientEmail } = await req.json();
-
+  console.log(recipientEmail);
   const document = await prisma.document.findUnique({
     where: {
       id: parseInt(docId),
@@ -121,11 +121,20 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       }
     });
     const pdfBytes2 = await pdfDoc.save();
-    fs.writeFileSync(
-      "/Users/tapasviarora/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf",
-      pdfBytes2
-    );
-    // signDoc();
+    const pdfFilePath = path.join(__dirname, "complete.pdf");
+    fs.writeFileSync(pdfFilePath, pdfBytes2);
+    console.log(pdfFilePath, "dnddnd");
+    // fs.writeFileSync(
+    //   "/Users/tapasviarora/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf",
+    //   pdfBytes2
+    // );
+    // const res = await edgestore.publicFiles.upload({
+    //   file: new File([pdfBytes2], "completed_pdf", { type: "application/pdf" }),
+    //   options: {
+    //     replaceTargetUrl: pdfUrl,
+    //   },
+    // });
+
     const updatedDocument = await prisma.document.update({
       where: {
         id: parseInt(docId || "0"),
@@ -140,7 +149,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
 
     var mailOptions = {
       from: process.env.SMTP_MAIL,
-      to: [user2?.email],
+      to: [user2?.email, "guptadev265@gmail.com", "guptadev545@gmail.com"],
       subject: "check_multiple in main",
       // react: <Welcome />
       // html: emailHtml,
@@ -148,7 +157,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       attachments: [
         {
           filename: document?.title,
-          path: "/Users/tapasviarora/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf",
+          path: pdfFilePath,
           contentType: "application/pdf",
         },
       ],
@@ -159,7 +168,11 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         console.log(error);
       } else {
         console.log("Email sent successfully!");
-        return NextResponse.json("data");
+        return NextResponse.json({
+          message: "data",
+          pdf: pdfBytes2,
+          oldurl: pdfUrl,
+        });
       }
     });
   } else {
@@ -174,7 +187,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     });
     var mailOptions2 = {
       from: process.env.SMTP_MAIL,
-      to: [user2?.email || "tapasviarora2002@gmail.com"],
+      to: [user2?.email || "guptadev265@gmail.com"],
       subject: "user signed alert",
       // react: <Welcome />
       // html: emailHtml,

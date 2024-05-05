@@ -52,12 +52,30 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         Recipient: true,
       },
     });
+    const document3 = await prisma.document.findMany({
+      where: {
+        Recipient: {
+          some: {
+            email: {
+              equals: email,
+            },
+          },
+        },
+        status: {
+          equals: "COMPLETED",
+        },
+      },
+      include: {
+        Recipient: true,
+      },
+    });
     console.log(document1, "document 1 are");
     // documents-> that user has to sign
     //document2->user has to sign
     const documentsWithStatus = [
       ...document2.map((doc) => ({ ...doc, status: "SIGN" })),
       ...document1.map((doc) => ({ ...doc })),
+      ...document3.map((doc) => ({ ...doc })),
     ];
     // signer-> last user->completed
 

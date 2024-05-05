@@ -34,7 +34,7 @@ const Navbar = (props: any) => {
     // redirect(`/api/auth/signout`)   wont't work because this is client component it would have worked in server side componenet
   }
   return (
-    <nav className=" bg-white shadow-xl  fixed top-0 w-full z-50 ">
+    <nav className=" bg-white shadow-xl  top-0 left-0 w-full ">
       <div className="w-full bg-rose-100 h-10">
         <div className="flex items-center justify-center p-1 text-sm font-medium font-sans ">
           Solution Porvided by Ex Squared Solutions
