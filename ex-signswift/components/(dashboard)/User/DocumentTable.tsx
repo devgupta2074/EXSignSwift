@@ -16,6 +16,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import H4 from "@/components/Typography/H4";
 import Loader from "@/components/Loader";
+import {
+  ALL_DOCS,
+  COMPLETED_DOCS,
+  DRAFT_DOCS,
+  INBOX_DOCS,
+  PENDING_DOCS,
+} from "@/app/(dashboard)/user/[id]/signdoc/docstatus";
 
 export type Payment = {
   id: string;
@@ -24,17 +31,29 @@ export type Payment = {
   title: string;
 };
 
-export function DocumentTable(id: { id: string; email: string }) {
+export function DocumentTable({
+  id,
+  email,
+  status,
+}: {
+  id: string;
+  email: string;
+  status: string;
+}) {
   // const [sorting, setSorting] = React.useState<SortingState>([]);
   // const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
   //   []
-  // );
+  // )
   // const [columnVisibility, setColumnVisibility] =
   //   React.useState<VisibilityState>({});
   // const [rowSelection, setRowSelection] = React.useState({});
+  React.useEffect(() => {
+    console.log(email, "email in user table");
+  });
   const [signedData, setSignedData] = React.useState([]);
   const [recpientData, setRecipientData] = React.useState([]);
   const [data, setData] = React.useState<any[]>([]);
+  const [filteredData, setFilteredData] = React.useState<any[]>([]);
   console.log(id);
   const actionStatus = (status: any) => {
     if (status === "DRAFT") {
@@ -87,9 +106,9 @@ export function DocumentTable(id: { id: string; email: string }) {
   };
   const actionStatusUrl = (link: any) => {
     if (link.status === "DRAFT") {
-      return `http://localhost:3000/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/document/${link.id}/step1`;
+      return `http://localhost:3000/user/${id}/document/${link.id}/step1`;
     } else if (link.status === "SIGN") {
-      return `http://localhost:3000/user/d07aab98-907a-44c7-83ab-9e3e77dbe6ca/signdoc/${link.id}`;
+      return `http://localhost:3000/user/${id}/signdoc/${link.id}`;
     } else if (link.status === "PENDING") {
       return "";
     } else if (link.status === "COMPLETED") {
@@ -97,27 +116,52 @@ export function DocumentTable(id: { id: string; email: string }) {
     }
   };
   const [loading, setLoading] = React.useState(false);
+  const statusMap = (status: string) => {
+    if (status === INBOX_DOCS) {
+      return "SIGN";
+    } else if (status == PENDING_DOCS) {
+      return "PENDING";
+    } else if (status == DRAFT_DOCS) {
+      return "DRAFT";
+    } else if (status == COMPLETED_DOCS) {
+      return "COMPLETED";
+    }
+  };
+  React.useEffect(() => {
+    console.log(status);
+    console.log(statusMap(status));
+
+    setFilteredData(
+      status == ALL_DOCS
+        ? data
+        : data.filter((item: any) => {
+            return item.status == statusMap(status);
+          })
+    );
+  }, [status]);
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await axios
-        .post(
-          "http://localhost:3000/api/document/getDocumentForUser",
-          { userId: id.id, email: id.email }
-          //pending
-          //why parse user id
-        )
-        .then((response) => {
-          const document = response.data?.Document;
-          setData(document);
-          console.log(data, "hello dev");
+      if (id && email) {
+        await axios
+          .post(
+            "http://localhost:3000/api/document/getDocumentForUser",
+            { userId: id, email: email }
+            //pending
+            //why parse user id
+          )
+          .then((response) => {
+            const document = response.data?.Document;
+            setData(document);
+            setFilteredData(document);
 
-          // setRecipientData(response && response?.data?.Document[0]?.Recipient);
-        });
-      setLoading(false);
+            // setRecipientData(response && response?.data?.Document[0]?.Recipient);
+          });
+        setLoading(false);
+      }
     };
     fetchData();
-  }, [id]);
+  }, [id, email]);
 
   const router = useRouter();
   console.log(signedData, "signed", "dev", data);
@@ -168,8 +212,8 @@ export function DocumentTable(id: { id: string; email: string }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data
-              ? data.map((link) => (
+            {filteredData
+              ? filteredData.map((link) => (
                   <TableRow key={link?.id}>
                     <TableCell>
                       {new Date(link?.createdAt).toLocaleDateString()}

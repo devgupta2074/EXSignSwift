@@ -3,17 +3,18 @@ import * as React from "react";
 
 import { redirect, useRouter } from "next/navigation";
 import H2 from "@/components/Typography/H2";
-
-import logo1 from "../../../public/ex_logg.png";
+import H4 from "@/components/Typography/H4";
+import logo from "@/public/Profile.png";
+import logo1 from "../../../assets/image.png";
 import Image from "next/image";
-// import { FaPenNib } from "react-icons/fa";
-// import { Link } from "lucide-react";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-// } from "@/components/ui/select";
+import { FaPenNib } from "react-icons/fa";
+import { Link } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -94,7 +95,9 @@ const Navbar = (props: any) => {
               <DropdownMenuContent className="w-48">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>SignOut</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSignOut()}>
+                  SignOut
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

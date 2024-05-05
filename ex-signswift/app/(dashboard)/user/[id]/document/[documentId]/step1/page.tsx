@@ -5,6 +5,7 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/api-service/useApi";
+import { CiFileOn } from "react-icons/ci";
 import {
   Card,
   CardContent,
@@ -98,8 +99,11 @@ export default function Document({
       style={{ overflowY: "scroll" }}
     >
       <div className="w-full flex flex-col gap-7">
-        <H2>{data?.Document?.title || "Pdf_file_name"}</H2>
-        <H4>Invited you to view the document</H4>
+        <H2>{data?.Document?.title || "file.pdf"}</H2>
+        <div className="w-full text-sm text-[#64748B] items-center   flex flex-row gap-2">
+          <CiFileOn size={20} />
+          Draft
+        </div>
       </div>
       <div className="flex gap-32 pt-5 w-full">
         <div
@@ -108,18 +112,15 @@ export default function Document({
             overflowY: "hidden",
           }}
           id="pdf-viewer"
-          className="rounded-md h-full w-[40rem]"
+          className="rounded-md h-full w-full max-w-[40rem]"
         >
           <PdfViewer url={data?.Document?.ShareLink || ""} />
         </div>
         <div className=" w-[30rem] h-full">
           <div>
-            <Tabs defaultValue="account" className="w-full">
-              <TabsList className="grid w-full grid-cols-1">
-                <TabsTrigger value="account">Document</TabsTrigger>
-              </TabsList>
+            <Tabs defaultValue="account" className="w-full ">
               <TabsContent value="account">
-                <Card className="h-full">
+                <Card className="h-full  bg-[#F7F7F7]">
                   <CardHeader>
                     <CardTitle>Document</CardTitle>
                     <CardDescription>Give name to document</CardDescription>
@@ -129,6 +130,7 @@ export default function Document({
                       <Label htmlFor="name">Title</Label>
                       <Input
                         id="name"
+                        className=""
                         defaultValue={data?.Document?.title}
                         onChange={(e) => setTitle(e.target.value)}
                       />
@@ -163,7 +165,7 @@ export default function Document({
                     ) : (
                       <Button
                         disabled
-                        className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+                        className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2  ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
                         onClick={handleSave}
                       >
                         Save changes

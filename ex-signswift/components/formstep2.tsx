@@ -123,6 +123,7 @@ export default function Step2({
     console.log(receptientProp);
     console.log(inputs);
     console.log(receptient);
+    console.log(receptient);
 
     const recipents: recipent[] = [];
     for (let i = 0; i < inputs.length; i++) {

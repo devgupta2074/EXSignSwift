@@ -16,6 +16,7 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 
 import "react-pdf/dist/Page/TextLayer.css";
 import { RefObject } from "react";
+import { IField, IRecepient } from "@/types/global.type";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -25,32 +26,6 @@ interface PdfViewerProps {
   parentRef: RefObject<HTMLDivElement>;
 }
 
-interface DroppedItem {
-  id: number;
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-  pageNumber: number;
-  text: string;
-  icon: string;
-  secondaryId: number;
-  userEmail: string;
-  userId: number;
-}
-interface addedItemProps {
-  id: number;
-  secondaryId: string;
-  left: string;
-  top: string;
-  width: string;
-  height: string;
-  page: number;
-  text: string;
-  icon: string;
-  recipientId: number;
-}
-
 interface ChildRefs {
   [key: number]: React.MutableRefObject<HTMLButtonElement | null>;
 }
@@ -58,15 +33,18 @@ interface ChildRefs {
 export const DndComponent = ({
   url,
   userId,
+  recepient,
   docId,
   addedfield,
 }: {
   url: string;
   userId: string;
   docId: string;
-  addedfield: addedItemProps[];
+  recepient: IRecepient[];
+  addedfield: IField[];
 }) => {
   const [numPages, setNumPages] = useState<number>(0);
+  const [addedfieldProp, setAddedFieldProp] = useState<IField[]>(addedfield);
   console.log(docId, userId);
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -82,11 +60,11 @@ export const DndComponent = ({
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseDown = (e: React.MouseEvent, item: DroppedItem) => {
+  const handleMouseDown = (e: React.MouseEvent, item: IField) => {
     const startX = e.clientX;
     const startY = e.clientY;
-    const startLeft = item.left;
-    const startTop = item.top;
+    const startLeft = parseInt(item.left);
+    const startTop = parseInt(item.top);
 
     const handleMouseMove = (e: MouseEvent) => {
       let left = startLeft + e.clientX - startX;
@@ -101,7 +79,7 @@ export const DndComponent = ({
       top = Math.max(0, top);
       const maxTop = (parentRect?.height || 0) - (childRect?.height || 0) - 5;
       top = Math.min(top, maxTop);
-      moveItem(item.id, left, top);
+      moveItem(item.id, left.toString(), top.toString());
     };
 
     const handleMouseUp = () => {
@@ -113,6 +91,7 @@ export const DndComponent = ({
     document.addEventListener("mouseup", handleMouseUp);
   };
   useEffect(() => {
+    console.log("thus is", addedfield);
     const handleScroll = (event: WheelEvent) => {
       const pdfViewer = document.getElementById("pdf-viewer");
       if (pdfViewer) {
@@ -152,27 +131,26 @@ export const DndComponent = ({
       console.log(copiedItems.length, "copied items length");
       const newItem = {
         icon: actualChildRef?.current?.querySelector("div")?.innerHTML || "",
-        pageNumber: currentPage,
-        secondaryId: item.id,
+        page: currentPage,
         id: copiedItems.length,
-        left,
-        top,
+        left: left.toString(),
+        top: top.toString(),
         text: actualChildRef?.current?.innerText || "",
-        width: childRect?.width || 0,
-        height: childRect?.height || 0,
-        userEmail: value2,
-        userId: value,
+        width: childRect?.width.toString() || "0",
+        height: childRect?.height.toString() || "0",
+        recipientId: value,
+        documentId: parseInt(docId),
       };
-      console.log(copiedItems);
-      setCopiedItems([...copiedItems, newItem]);
+      console.log(copiedItems, "coooop[ed");
+      setCopiedItems((prev) => [...prev, newItem]);
     },
   });
   const [value, setValue] = useState<number>(0);
   const [value2, setValue2] = useState<string>("");
   //value is person email to send
-  const [copiedItems, setCopiedItems] = useState<DroppedItem[]>([]);
+  const [copiedItems, setCopiedItems] = useState<IField[]>([]);
   //2rem->40
-  const moveItem = (id: number, left: number, top: number) => {
+  const moveItem = (id: number, left: string, top: string) => {
     const newItems = copiedItems.map((item) => {
       if (item.id === id) {
         return { ...item, left, top };
@@ -181,8 +159,31 @@ export const DndComponent = ({
     });
     setCopiedItems(newItems);
   };
+  const recepientMapping = (id: number): IRecepient | null => {
+    const recepients = recepient.find((item: IRecepient) => {
+      console.log(item.email, "emaoi,is");
+      return item.id === id;
+    });
+    return recepients || null;
+  };
+
   const deleteItem = (id: number) => {
     setCopiedItems(copiedItems.filter((item) => item.id !== id));
+  };
+  const [newItems, setnewItems] = useState<IField[]>([]);
+  const deleteaddedField = (id: number): void => {
+    console.log("id to be dleted ", id);
+    console.log(addedfield);
+    console.log(addedfieldProp);
+    const newField = [...addedfieldProp];
+    const indx = newField.findIndex((el, ind) => {
+      return el.id === id;
+    });
+    console.log(indx);
+    if (typeof indx === "number" && indx != -1) {
+      newField.splice(indx, 1);
+    }
+    setAddedFieldProp(newField);
   };
 
   drop(parentRef);
@@ -205,7 +206,7 @@ export const DndComponent = ({
             width: "100%",
             overflowX: "scroll",
           }}
-          className="border-2 border-rose-500 rounded-md   h-full w-[40rem]"
+          className="border-2 border-rose-500 rounded-md   h-full w-full  max-w-[40rem]"
         >
           <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
             <div
@@ -216,14 +217,14 @@ export const DndComponent = ({
             >
               {copiedItems.map(
                 (item, indx) =>
-                  item.pageNumber === currentPage && (
+                  item.page === currentPage && (
                     <div
                       key={indx}
                       style={{
-                        width: item.width,
-                        height: item.height,
-                        left: item.left,
-                        top: item.top,
+                        width: parseInt(item.width),
+                        height: parseInt(item.height),
+                        left: parseInt(item.left),
+                        top: parseInt(item.top),
                         position: "absolute",
                         borderRadius: "0.5rem",
                         zIndex: 1000,
@@ -234,8 +235,8 @@ export const DndComponent = ({
                       }}
                     >
                       <ResizableBox
-                        width={item?.width}
-                        height={item?.height}
+                        width={parseInt(item?.width)}
+                        height={parseInt(item?.height)}
                         minConstraints={[100, 100]}
                         maxConstraints={[500, 500]}
                         handle={
@@ -316,8 +317,8 @@ export const DndComponent = ({
                             if (item1.id === item.id) {
                               return {
                                 ...item1,
-                                width: newWidth,
-                                height: newHeight,
+                                width: newWidth.toString(),
+                                height: newHeight.toString(),
                               };
                             }
                             return item1;
@@ -329,11 +330,13 @@ export const DndComponent = ({
                           key={item.id}
                           style={{
                             position: "absolute",
-                            width: item.width,
+                            width: parseInt(item.width),
+                            height: parseInt(item.height),
+
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            height: item.height,
+
                             textAlign: "center",
                             zIndex: 1200,
                             cursor: "move",
@@ -361,7 +364,7 @@ export const DndComponent = ({
                               <div>{item?.text}</div>
                             </div>
                             <div className="text-xs text-center">
-                              {item?.userEmail}
+                              {recepientMapping(item?.recipientId)?.email || ""}
                             </div>
                           </div>
                         </div>
@@ -369,7 +372,7 @@ export const DndComponent = ({
                     </div>
                   )
               )}
-              {addedfield?.map(
+              {addedfieldProp?.map(
                 (item, indx) =>
                   item.page === currentPage && (
                     <div
@@ -390,23 +393,40 @@ export const DndComponent = ({
                         key={item.id}
                         style={{
                           position: "absolute",
-                          width: parseInt(item.width),
+
                           display: "flex",
                           justifyContent: "center",
                           alignItems: "center",
+                          width: parseInt(item.width),
                           height: parseInt(item.height),
+
                           textAlign: "center",
                           zIndex: 1200,
                         }}
                       >
+                        <div
+                          onClick={() => deleteaddedField(item.id)}
+                          className="absolute top-[-10px] right-[-10px] flex justify-center items-center w-8 h-8 bg-white rounded-full"
+                        >
+                          <LuTrash
+                            className="cursor-pointer text-gray-500"
+                            size={15}
+                          />
+                        </div>
                         <div className="flex flex-col gap-2 items-center justify-center">
-                          <div className="flex gap-5">
+                          <div className="flex gap-5 justify-start items-center">
                             <div
                               dangerouslySetInnerHTML={{
                                 __html: item?.icon || "",
                               }}
                             ></div>
-                            <div>{item?.text}</div>
+                            <div className="flex flex-col gap-2 justify-center items-center">
+                              <div>{item?.text}</div>
+                              <div className="text-sm font-light">
+                                {recepientMapping(item?.recipientId)?.email ||
+                                  ""}
+                              </div>
+                            </div>
                           </div>
                           <div className="text-xs text-center"></div>
                         </div>
@@ -456,13 +476,13 @@ export const DndComponent = ({
             // width: "50vw",
           }
         }
-        className="w-[70rem] h-[50rem]"
+        className="max-w-[50rem] w-full h-full bg-[#F7F7F7]"
       >
         <Form
           userId={userId}
           docId={docId}
           childrefs={childrefs}
-          copiedItems={copiedItems}
+          copiedItems={[...copiedItems, ...addedfieldProp]}
           value={value}
           value2={value2}
           setValue2={setValue2}

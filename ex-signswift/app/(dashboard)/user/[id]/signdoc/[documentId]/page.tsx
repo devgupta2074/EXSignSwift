@@ -32,12 +32,14 @@ const page = () => {
   const params = useParams<{ documentId: string; id: string }>();
   console.log(params.id, params.documentId);
   const signatureCanvasRef = React.useRef<SignatureCanvas | null>(null);
+  const [isLast, setIsLast] = React.useState<boolean>(false);
   const [url, setUrl] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const router = useRouter();
   // Run only once on component mount
   const signatureCanvasRef2 = React.useRef<SignatureCanvas | null>(null);
   const [copiedItems, setCopiedItems] = React.useState<IField[]>([]);
-  const [recipients, setRecpients] = React.useState<any[]>([]);
+  const [recipients, setRecipients] = React.useState<any[]>([]);
   const [signNumber, setSignNumber] = React.useState<number>(0);
   const [user, setUser] = React.useState<User>();
 
@@ -48,10 +50,12 @@ const page = () => {
       console.log(jsonData);
       setUser(jsonData.data.user);
     } else {
+      //redirect to login
       router.push("/login");
     }
   }, []);
   useEffect(() => {
+    setEmail(user?.email || "");
     const getDocument = async () => {
       const response = await axios.post(
         "http://localhost:3000/api/document/getDocument",
@@ -61,12 +65,24 @@ const page = () => {
       );
       console.log("step4", response);
       setUrl(response?.data?.Document?.ShareLink);
-      setCopiedItems(response?.data?.Document?.Field);
-      setRecpients(response?.data?.Document?.Recipient);
+      const recipientId = response?.data?.Document?.Recipient?.find(
+        (user: any) => user.email === user?.email
+      ).id;
+      const fields = response?.data?.Document?.Field?.filter((item: IField) => {
+        return item.recipientId === recipientId;
+      });
+      //filter out fields for this user only
+      setCopiedItems(fields);
+      setRecipients(response?.data?.Document?.Recipient);
       setSignNumber(response?.data?.Document?.signnumber);
+
       console.log("step5", recipients, signNumber);
       if (user?.id) {
         const user = recipients.find((user) => user.email === user?.email);
+
+        if (user?.signnumber === recipients?.length - 1) {
+          setIsLast(true);
+        }
         console.log("step6", user);
         if (user) {
           if (user.signnumber !== signNumber) {
@@ -86,7 +102,7 @@ const page = () => {
               }
             );
             setTimeout(() => {
-              router.push(`http://localhost:3000/user/${user?.id}`);
+              router.push(`http://localhost:3000/user/${params.id}`);
             }, 2000);
           }
         }
@@ -101,6 +117,8 @@ const page = () => {
       await axios.post("http://localhost:3000/api/document/addSignature", {
         docId: params.documentId,
         copiedItems: copiedItems,
+        isLast: isLast,
+        recipientEmail: email,
       });
       router.push(`/sendSuccess`);
     };
@@ -122,7 +140,7 @@ const page = () => {
       </div>
       <div className="flex flex-row w-full  gap-36">
         <div
-          className="rounded-md h-full w-[40rem]"
+          className="rounded-md h-full  w-full max-w-[40rem]"
           style={{
             display: "flex",
             padding: "1rem",
@@ -136,7 +154,7 @@ const page = () => {
             userid={params.id}
           />
         </div>
-        <div className="w-[30rem] h-full mb-10 flex  items-start pt-10 ">
+        <div className="w-[30rem]  h-full mb-10 flex  items-start pt-10 ">
           <SignatureForm
             signatureCanvasRef={signatureCanvasRef2}
             handleSign={handleSign}
