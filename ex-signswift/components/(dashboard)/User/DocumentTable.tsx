@@ -126,9 +126,9 @@ export function DocumentTable({
   };
   const actionStatusUrl = (link: any) => {
     if (link.status === "DRAFT") {
-      return `https://ex-sign-swift.vercel.app/user/${id}/document/${link.id}/step1`;
+      return `http://ex-sign-swift.vercel.app/user/${id}/document/${link.id}/step1`;
     } else if (link.status === "SIGN") {
-      return `https://ex-sign-swift.vercel.app/user/${id}/signdoc/${link.id}`;
+      return `http://ex-sign-swift.vercel.app/user/${id}/signdoc/${link.id}`;
     } else if (link.status === "PENDING") {
       return "";
     } else if (link.status === "COMPLETED") {
@@ -165,7 +165,7 @@ export function DocumentTable({
       if (id && email) {
         await axios
           .post(
-            "https://ex-sign-swift.vercel.app/api/document/getDocumentForUser",
+            "http://ex-sign-swift.vercel.app/api/document/getDocumentForUser",
             { userId: id, email: email }
             //pending
             //why parse user id

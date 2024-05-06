@@ -32,7 +32,7 @@ const EmailForm = ({
   // useEffect(() => {
   //   const fetchRecepients = async () => {
   //     const result = await axios.post(
-  //       "https://ex-sign-swift.vercel.app.vercel.app/api/document/getreceptient",
+  //       "http://ex-sign-swift.vercel.app.vercel.app/api/document/getreceptient",
   //       docId
   //     );
   //     const receptientres = result?.data;

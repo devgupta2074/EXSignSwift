@@ -1,1 +1,1 @@
-export const API_BASE_URL = "https://ex-sign-swift.vercel.appft.vercel.app/api";
+export const API_BASE_URL = "http://ex-sign-swift.vercel.appft.vercel.app/api";

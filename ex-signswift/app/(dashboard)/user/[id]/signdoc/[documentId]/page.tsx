@@ -61,7 +61,7 @@ const page = () => {
     setEmail(userx?.email || "");
     const getDocument = async () => {
       const response = await axios.post(
-        "https://ex-sign-swift.vercel.app/api/document/getDocument",
+        "http://ex-sign-swift.vercel.app/api/document/getDocument",
         {
           docId: params.documentId,
         }
@@ -105,7 +105,7 @@ const page = () => {
               }
             );
             setTimeout(() => {
-              router.push(`https://ex-sign-swift.vercel.app/user/${params.id}`);
+              router.push(`http://ex-sign-swift.vercel.app/user/${params.id}`);
             }, 2000);
           }
         }
@@ -120,7 +120,7 @@ const page = () => {
   const handleSign = async () => {
     const signDoc = async () => {
       const response = await axios.post(
-        "https://ex-sign-swift.vercel.app/api/document/addSignature",
+        "http://ex-sign-swift.vercel.app/api/document/addSignature",
         {
           docId: params.documentId,
           copiedItems: copiedItems,
@@ -145,7 +145,7 @@ const page = () => {
           console.log("File uploaded successfully:", res);
           if (res.url) {
             const response = await axios.post(
-              "https://ex-sign-swift.vercel.app/api/document/updatedocumentlink",
+              "http://ex-sign-swift.vercel.app/api/document/updatedocumentlink",
               {
                 id: params.documentId,
                 link: res.url,
