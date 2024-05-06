@@ -42,7 +42,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
     const getDocument = async () => {
       setLoading(true);
       const response = await axios.post(
-        "http://ex-sign-swift.vercel.app.vercel.app/api/document/getDocument",
+        "https://ex-sign-swift.vercel.app/api/document/getDocument",
         {
           docId: params.documentId,
         }
