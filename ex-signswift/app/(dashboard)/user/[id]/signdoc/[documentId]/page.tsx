@@ -17,7 +17,7 @@ import "react-toastify/ReactToastify.css";
 import Cookies from "js-cookie";
 import { User } from "@prisma/client";
 import { useEdgeStore } from "@/lib/edgestore";
-import file from "/public/sow2.pdf";
+import file from "/sow2.pdf";
 interface IField {
   id: number;
   secondaaryId: string;

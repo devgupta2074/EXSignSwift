@@ -129,7 +129,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     }
 
     console.log(pdfbytes4, oldurl);
-    const pdfFilePath = "/public/sow2.pdf";
+    const pdfFilePath = "/sow2.pdf";
     fs.writeFileSync(pdfFilePath, pdfBytes2);
     console.log(pdfFilePath, "dnddnd");
     // fs.writeFileSync(
