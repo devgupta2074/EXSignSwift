@@ -19,8 +19,11 @@ interface InputObject {
   input: JSX.Element;
 }
 interface IReceptient {
+  id: number;
   name: string;
   email: string;
+  signnumber: number;
+  role: string;
 }
 export default function Step2({
   docId,
@@ -34,9 +37,14 @@ export default function Step2({
   // const [count, setCount] = React.useState<number>(1);
   const [receptient, setReceptient] = React.useState<IReceptient[]>([]);
   const router = useRouter();
-  const [name, setName] = useState<String[]>([]);
-  const [email, setEmail] = useState<String[]>([]);
-  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [loading4, setloading4] = React.useState<boolean>(false);
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [role, setRole] = useState<string>("SIGNER");
+  const [order, setOrder] = useState<number[]>([]);
+  const [id, setId] = useState<number>(
+    receptientProp?.length > 0 ? receptientProp?.length : 0
+  );
 
   const {
     loading: loading2,
@@ -66,46 +74,6 @@ export default function Step2({
     console.log("number times step 2 render");
   }, []);
 
-  const handleNameChange = (
-    index: number,
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    const updatedNames = [...name];
-    updatedNames.splice(index, 1, event.target.value);
-    setName(updatedNames);
-  };
-  const [selectedOption, setSelectedOption] = useState<number[]>([0]);
-
-  const handleDropDownMenu = (
-    index: number,
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    const updatedNames = [...selectedOption];
-    updatedNames.splice(index, 1, parseInt(event.target.value));
-    setSelectedOption(updatedNames);
-  };
-  const handleEmailChange = (
-    index: number,
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    const updatedEmails = [...email];
-    updatedEmails.splice(index, 1, event.target.value.toLowerCase());
-    setEmail(updatedEmails);
-  };
-
-  const [inputs, setInputs] = useState<InputObject[]>([
-    {
-      id: 0,
-      input: (
-        <Input
-          key={0}
-          onChangeName={(e) => handleNameChange(0, e)}
-          onChangeEmail={(e) => handleEmailChange(0, e)}
-          onChangeSignnumber={(e) => handleDropDownMenu(0, e)}
-        />
-      ),
-    },
-  ]);
   interface recipent {
     name: string;
     email: string;
@@ -114,64 +82,61 @@ export default function Step2({
   }
 
   const onContinue = async (e: any) => {
+    setloading4(true);
     e.preventDefault();
-    console.log(receptientProp);
-    console.log(inputs);
-    console.log(receptient);
+    console.log(receptientProp.result);
 
-    const recipents: recipent[] = [];
-    for (let i = 0; i < inputs.length; i++) {
-      recipents.push({
-        name: name[inputs[i].id].toString(),
-        email: email[inputs[i].id].toString(),
-        token: i,
-        signnumber: selectedOption[i],
-      });
+    if (receptient.length > 0) {
+      for (let index = 0; index < receptient?.length; index++) {
+        receptient[index].signnumber = order[index];
+      }
+      const response = await axios.post(
+        "http://localhost:3000/api/document/addreceptient",
+        { docId, recipient: receptient }
+      );
+      console.log(response.data, "heell");
+      if (response.data.success) {
+        console.log("added succes");
+        router.push(`/user/${userId}/document/${docId}/step3`);
+      }
     }
-    console.log(recipents);
-    const response = await axios.post(
-      "https://ex-sign-swift.vercel.app/api/document/addreceptient",
-      { docId, recipient: recipents }
-    );
-    console.log(response.data, "heell");
-    if (response.data.success) {
+    if (receptientProp?.result?.length > 0) {
       console.log("added succes");
       router.push(`/user/${userId}/document/${docId}/step3`);
     }
   };
-  console.log(data2, "data2");
-  if (data2?.count == 1) {
-    console.log("added succes");
-    router.push(`/user/${userId}/document/${docId}/step3`);
-  }
+  // console.log(data2, "data2");
+  // if (data2?.count == 1) {
+  //   console.log("added succes");
+  //   router.push(`/user/${userId}/document/${docId}/step3`);
+  // }
 
   const deleteInput = (id: number): void => {
-    const updatedInputs = inputs.filter((input) => input.id !== id);
+    const updatedInputs = receptient.filter((input) => input.id !== id);
     // Assuming you need to update the state or any other action after deletion
     // For example:
-    setInputs(updatedInputs);
+    console.log(updatedInputs, "ss");
+    setReceptient(updatedInputs);
   };
   function onClickHandler(e: any) {
     e.preventDefault();
-    if (count === 0) {
-      setCount(1);
-    }
 
-    setInputs([
-      ...inputs,
+    setReceptient((prevRecipients) => [
+      ...prevRecipients,
       {
-        id: count,
-        input: (
-          <Input
-            key={inputs.length}
-            onChangeName={(e) => handleNameChange(count, e)}
-            onChangeEmail={(e) => handleEmailChange(count, e)}
-            onChangeSignnumber={(e) => handleDropDownMenu(0, e)}
-          />
-        ),
+        name: name,
+        email: email,
+        signnumber: 0,
+        role: role,
+        id: id,
+        token: "0",
       },
     ]);
-    setCount(count + 1);
+    setOrder((x) => [...x, 0]);
+    setId(id + 1);
+    setName("");
+    setEmail("");
+    setRole("SIGNER");
   }
 
   const handleDelete = (e: any, id: number) => {
@@ -188,13 +153,19 @@ export default function Step2({
       router.refresh();
     }
   };
-  if (loading3) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <Loader />
-      </div>
-    );
-  }
+  // Function to handle the change event of a select element
+  const handleSelectChange = (index: number, value: number) => {
+    const updatedSelectValues = [...order]; // Make a copy of the current selectValues array
+    updatedSelectValues[index] = value; // Update the value at the specified index
+    setOrder(updatedSelectValues); // Update the state
+  };
+  // if (loading3) {
+  //   return (
+  //     <div className="w-full h-screen flex items-center justify-center">
+  //       <Loader />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="w-full h-full  bg-[#F7F7F7]">
@@ -203,36 +174,172 @@ export default function Step2({
           id="document-flow-form-container"
           className=" bg-[#F7F7F7] sticky flex h-full  flex-col overflow-auto rounded-xl border px-4 py-6"
         >
-          <div className="-mx-2 flex flex-1 flex-col px-2">
-            <h3 className="text-black text-2xl font-semibold">General</h3>
+          <div className="-mx-2 flex flex-1 flex-col px-2 w-full">
+            <h3 className="text-black text-2xl font-semibold">Add Signers</h3>
             <p className="text-black mt-2 text-sm">
-              Configure general settings for the document.
+              Add the people who will sign the document.
             </p>
-            <div className="border-border mb-0 mt-4"></div>
+            <div className="border  mb-6 mt-4"></div>
             <div className="custom-scrollbar -mx-2 flex flex-1 flex-col overflow-hidden px-2">
               <div className="flex flex-1 flex-col">
                 <div className="space-y-4">
-                  {inputs.map((input) => (
-                    <div key={input.id} className="flex  flex-row gap-2">
-                      <div className="w-full flex flex-row">
-                        <Input
-                          key={input.id}
-                          onChangeName={(e) => handleNameChange(input.id, e)}
-                          onChangeEmail={(e) => handleEmailChange(input.id, e)}
-                          onChangeSignnumber={(e) =>
-                            handleDropDownMenu(input.id, e)
-                          }
-                        />
-                        <DropdownMenuDemo
-                          selectedValue={selectedValue}
-                          setSelectedValue={setSelectedValue}
+                  <div className="flex  flex-row gap-2">
+                    <fieldset className="grid grid-cols-3 gap-4 pb-4">
+                      <div className="space-y-2 relative">
+                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          Email
+                          <span className="text-destructive ml-1 inline-block font-medium">
+                            *
+                          </span>
+                        </label>
+
+                        <input
+                          className="bg-background border-input ring-offset-background placeholder:text-muted-foreground/40 focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          placeholder="Email"
+                          id=":r17b:-form-item"
+                          aria-describedby=":r17b:-form-item-description"
+                          aria-invalid="false"
+                          type="email"
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                          }}
+                          value={email}
+                          name="email"
                         />
                       </div>
-                      <div className="flex justify-center items-center hover:cursor-pointer"></div>
-                      <div className="flex justify-center items-center hover:cursor-pointer"></div>
+                      <div className="space-y-2 ">
+                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          Name
+                        </label>
+
+                        <input
+                          className="bg-background border-input ring-offset-background placeholder:text-muted-foreground/40 focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          placeholder="Name"
+                          id=":r17c:-form-item"
+                          aria-describedby=":r17c:-form-item-description"
+                          aria-invalid="false"
+                          onChange={(e) => {
+                            setName(e.target.value);
+                          }}
+                          value={name}
+                          name="name"
+                        />
+                      </div>
+                      <div className="space-y-2   mt-auto">
+                        <select
+                          className="border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-10 items-center justify-between rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-background w-full"
+                          aria-hidden="true"
+                          name="signers.0.role"
+                          value={role} // Bind value to state
+                          onChange={(e) => {
+                            setRole(e.target.value);
+                          }} // Attach onChange event handler
+                        >
+                          <option value="SIGNER" selected>
+                            Needs to sign
+                          </option>
+                          {/* <option value="APPROVER">Needs to approve</option> */}
+                          <option value="VIEWER">Needs to view</option>
+                          {/* <option value="CC">Receives copy</option> */}
+                        </select>
+                      </div>
+                      {/* <div className="space-y-2 col-span-1 mt-auto">
+                        <select
+                          className="border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-10 items-center justify-between rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-background w-[100px]"
+                          aria-hidden="true"
+                          name="signers.0.role"
+                        >
+                          <option value="SIGNER" selected>
+                            Needs to sign
+                          </option>
+                          <option value="APPROVER">Needs to approve</option>
+                          <option value="VIEWER">Needs to view</option>
+                          <option value="CC">Receives copy</option>
+                        </select>
+                      </div> */}
+                      {/* <button
+                        type="button"
+                        className="col-span-1 mt-auto inline-flex h-10 w-10 items-center justify-center text-slate-500 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          className="h-5 w-5"
+                        >
+                          <path d="M3 6h18"></path>
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                        </svg>
+                      </button> */}
+                    </fieldset>
+                  </div>
+                  <div className="mt-4">
+                    <button
+                      className="bg-rose-500 hover:bg-rose-700 text-white font-normal py-2 px-4 rounded w-2/3"
+                      onClick={(e) => onClickHandler(e)}
+                    >
+                      + Add Signer
+                    </button>
+                  </div>
+                  {receptient?.map((item: IReceptient, index: number) => (
+                    <div key={item.id} className="flex flex-row gap-2">
+                      <div className="flex flex-row gap-2">
+                        <input
+                          disabled
+                          className="border text-black border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:border-rose-500 w-full"
+                          type="email"
+                          value={item.email}
+                        />
+                        <input
+                          disabled
+                          className="border text-black border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:border-rose-500 w-full"
+                          type="name"
+                          value={item.name}
+                        />
+                        <input
+                          disabled
+                          className="border text-black border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:border-rose-500 w-full"
+                          type="role"
+                          value={item.role}
+                        />
+                        <div className="space-y-2  mt-auto">
+                          <select
+                            className="border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-10 items-center justify-between rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-background w-[100px]"
+                            aria-hidden="true"
+                            name={`signers.${index}.order`}
+                            id={item.id.toString()}
+                            value={order[index]} // Bind value to state
+                            onChange={(e) =>
+                              handleSelectChange(
+                                index,
+                                parseInt(e.target.value)
+                              )
+                            }
+                          >
+                            <option value={0} selected>
+                              DEFAULT - 0
+                            </option>
+                            {receptient
+                              .slice(0, receptient.length - 1)
+                              .map((item, index) => (
+                                <option key={index} value={index + 1}>{`${
+                                  index + 1
+                                }`}</option>
+                              ))}
+                          </select>
+                        </div>
+                      </div>
                       <div
                         className="flex justify-center items-center hover:cursor-pointer"
-                        onClick={(e) => handleDelete(e, input.id)}
+                        onClick={() => deleteInput(item.id)}
                       >
                         <MdDeleteOutline size={25} className=" text-gray-600" />
                       </div>
@@ -251,6 +358,18 @@ export default function Step2({
                           type="name"
                           value={item.name}
                         />
+                        <input
+                          disabled
+                          className="border text-black border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:border-rose-500 w-full"
+                          type="role"
+                          value={item.role}
+                        />
+                        <input
+                          disabled
+                          className="border text-black border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:border-rose-500 w-full"
+                          type="role"
+                          value={item.signnumber}
+                        />
                       </div>
                       <div
                         className="flex justify-center items-center hover:cursor-pointer"
@@ -260,14 +379,6 @@ export default function Step2({
                       </div>
                     </div>
                   ))}
-                </div>
-                <div className="mt-4">
-                  <button
-                    className="bg-rose-500 hover:bg-rose-700 text-white font-normal py-2 px-4 rounded"
-                    onClick={(e) => onClickHandler(e)}
-                  >
-                    + Add Signer
-                  </button>
                 </div>
               </div>
             </div>
@@ -288,7 +399,7 @@ export default function Step2({
                 >
                   Go Back
                 </button>
-                {loading2 ? (
+                {loading4 ? (
                   <Button
                     disabled
                     className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"

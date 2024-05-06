@@ -8,22 +8,17 @@ import { NextRequest, NextResponse } from "next/server";
 //update title of document
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { droppedItem, id } = await req.json();
-  //id ->String
-  const field = {
-    secondaryId: droppedItem.id.toString(),
-    documentId: id,
-  };
-  try {
-    // const document=await prisma.document.update({
-    //   where: { id: id },
-    //   data: { Field:droppedItem},
-    // })
-    const rece = await prisma.recipient.findMany({});
-    console.log(rece);
-    return NextResponse.json({
-      message: "Document Created",
+  const { link, id } = await req.json();
 
+  try {
+    const document = await prisma.document.update({
+      where: { id: parseInt(id) },
+      data: { ShareLink: link },
+    });
+    console.log(document);
+    return NextResponse.json({
+      message: "Document link updated",
+      success: true,
       status: 201,
     });
   } catch (error) {

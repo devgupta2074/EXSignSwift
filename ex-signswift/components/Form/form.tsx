@@ -13,27 +13,15 @@ import DropItem from "../DropItem/dropItem";
 import ComboBox from "../DragDrop/comboBox";
 import axios from "axios";
 import H2 from "../Typography/H2";
+import { IField } from "@/types/global.type";
 
-interface DroppedItem {
-  id: number;
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-  pageNumber: number;
-  text: string;
-  icon: string;
-  secondaryId: number;
-  userEmail: string;
-  userId: number;
-}
 //for which user->mail id save  getting from common box set value
 
 interface FormProps {
   userId: string;
   docId: string;
   childrefs: RefObject<HTMLButtonElement>[];
-  copiedItems: DroppedItem[];
+  copiedItems: IField[];
   value: number;
   setValue: (value: number) => void;
   value2: string;

@@ -2,12 +2,15 @@ import React from "react";
 import { FaSignature } from "react-icons/fa6";
 import { FaRegClock } from "react-icons/fa";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+import { RiDraftLine } from "react-icons/ri";
+
 import { IoMdDocument } from "react-icons/io";
 import {
   ALL_DOCS,
   DRAFT_DOCS,
   INBOX_DOCS,
   PENDING_DOCS,
+  COMPLETED_DOCS,
 } from "@/app/(dashboard)/user/[id]/signdoc/docstatus";
 
 const TableMenu = ({
@@ -35,14 +38,21 @@ const TableMenu = ({
         onClick={() => setdocStatus(DRAFT_DOCS)}
         className="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900"
       >
-        <FaRegClock className="react-icon" />
+        <RiDraftLine className="react-icon" />
         Draft
+      </button>
+      <button
+        onClick={() => setdocStatus(COMPLETED_DOCS)}
+        className="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900"
+      >
+        <IoIosCheckmarkCircleOutline className="react-icon font-semibold" />
+        Completed
       </button>
       <button
         onClick={() => setdocStatus(PENDING_DOCS)}
         className="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900"
       >
-        <IoIosCheckmarkCircleOutline className="react-icon" />
+        <FaRegClock className="react-icon" />
         Pending
       </button>
       <button

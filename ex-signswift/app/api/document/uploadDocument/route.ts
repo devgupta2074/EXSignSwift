@@ -7,13 +7,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
   const { userId, ShareLink } = await req.json();
-  
+
   console.log(userId, ShareLink);
   if (req.method === "POST") {
     // create user
     console.log("post");
     console.log("document creation process");
-
+    console.log("user id is", userId);
     const user = await prisma.document.create({
       data: { userId: userId, ShareLink: ShareLink },
     });

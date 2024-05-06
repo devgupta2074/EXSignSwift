@@ -1,6 +1,7 @@
 //sign doc route should be seend by email only
 "use client";
 import PdfFillComponent from "@/components/DragDrop/pdfFillComponent";
+
 import SignatureForm from "@/components/Form/signatureForm";
 import { useParams } from "next/navigation";
 import axios from "axios";
@@ -15,7 +16,8 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import Cookies from "js-cookie";
 import { User } from "@prisma/client";
-
+import { useEdgeStore } from "@/lib/edgestore";
+import file from "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf";
 interface IField {
   id: number;
   secondaaryId: string;
@@ -29,17 +31,20 @@ interface IField {
   recipientId: string;
 }
 const page = () => {
+  const { edgestore } = useEdgeStore();
   const params = useParams<{ documentId: string; id: string }>();
   console.log(params.id, params.documentId);
   const signatureCanvasRef = React.useRef<SignatureCanvas | null>(null);
+  const [isLast, setIsLast] = React.useState<boolean>(false);
   const [url, setUrl] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const router = useRouter();
   // Run only once on component mount
   const signatureCanvasRef2 = React.useRef<SignatureCanvas | null>(null);
   const [copiedItems, setCopiedItems] = React.useState<IField[]>([]);
-  const [recipients, setRecpients] = React.useState<any[]>([]);
+  const [recipients, setRecipients] = React.useState<any[]>([]);
   const [signNumber, setSignNumber] = React.useState<number>(0);
-  const [user, setUser] = React.useState<User>();
+  const [userx, setUser] = React.useState<User>();
 
   React.useEffect(() => {
     const cookieData = Cookies.get("session");
@@ -48,10 +53,12 @@ const page = () => {
       console.log(jsonData);
       setUser(jsonData.data.user);
     } else {
+      //redirect to login
       router.push("/login");
     }
   }, []);
   useEffect(() => {
+    setEmail(userx?.email || "");
     const getDocument = async () => {
       const response = await axios.post(
         "https://ex-sign-swift.vercel.app/api/document/getDocument",
@@ -61,12 +68,24 @@ const page = () => {
       );
       console.log("step4", response);
       setUrl(response?.data?.Document?.ShareLink);
-      setCopiedItems(response?.data?.Document?.Field);
-      setRecpients(response?.data?.Document?.Recipient);
+      const recipientId = response?.data?.Document?.Recipient?.find(
+        (user: any) => user.email === user?.email
+      ).id;
+      const fields = response?.data?.Document?.Field?.filter((item: IField) => {
+        return item.recipientId === recipientId;
+      });
+      //filter out fields for this user only
+      setCopiedItems(fields);
+      setRecipients(response?.data?.Document?.Recipient);
       setSignNumber(response?.data?.Document?.signnumber);
+
       console.log("step5", recipients, signNumber);
-      if (user?.id) {
-        const user = recipients.find((user) => user.email === user?.email);
+      if (userx?.id) {
+        const user = recipients.find((user) => user.email === userx?.email);
+
+        if (user?.signnumber === recipients?.length - 1) {
+          setIsLast(true);
+        }
         console.log("step6", user);
         if (user) {
           if (user.signnumber !== signNumber) {
@@ -86,7 +105,7 @@ const page = () => {
               }
             );
             setTimeout(() => {
-              router.push(`https://ex-sign-swift.vercel.app/user/${user?.id}`);
+              router.push(`http://localhost:3000/user/${params.id}`);
             }, 2000);
           }
         }
@@ -96,16 +115,48 @@ const page = () => {
     getDocument();
   }, [params, signNumber, url]);
 
-  const handleSign = () => {
+  console.log(process.cwd());
+
+  const handleSign = async () => {
     const signDoc = async () => {
-      await axios.post(
-        "https://ex-sign-swift.vercel.app/api/document/addSignature",
+      const response = await axios.post(
+        "http://localhost:3000/api/document/addSignature",
         {
           docId: params.documentId,
           copiedItems: copiedItems,
+          isLast: isLast,
+          recipientEmail: email,
         }
       );
-      router.push(`/sendSuccess`);
+
+      console.log(response, "funny");
+      if (response.status === 200) {
+        fetch(file).then(async (response) => {
+          const contentType = response.headers.get("content-type");
+          const blob = await response.blob();
+          const file = new File([blob], "filename.pdf");
+          // access file here
+          const res = await edgestore.publicFiles.upload({
+            file: file,
+            // options: {
+            //   replaceTargetUrl: response.data.oldurl,
+            // },
+          });
+          console.log("File uploaded successfully:", res);
+          if (res.url) {
+            const response = await axios.post(
+              "http://localhost:3000/api/document/updatedocumentlink",
+              {
+                id: params.documentId,
+                link: res.url,
+              }
+            );
+            console.log(response);
+          }
+        });
+      }
+
+      router.push(`/`);
     };
     signDoc();
   };

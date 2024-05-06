@@ -67,16 +67,15 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
       >
         <div
           style={{
+            overflowX: "hidden",
             overflowY: "hidden",
-
-            height: "100%",
           }}
           id="pdf-viewer"
-          className="rounded-md w-full max-w-[40rem]  overflow-x-scroll"
+          className="rounded-md h-full w-full max-w-[40rem]"
         >
           <PdfViewer url={data?.Document?.ShareLink || ""} />
         </div>
-        <div className="w-[33rem]  justify-center pt-0  ">
+        <div className="w-[50rem]  justify-center pt-0  ">
           <div className="w-full   h-[50rem]">
             <Step2
               receptientProp={data2}

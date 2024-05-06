@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
   const { userId, email } = await req.json();
-  console.log(userId, email, "email");
+  console.log(userId, email, "email  for getting the filessss");
 
   //all docs of craeted user where user is not the signer
 
@@ -52,12 +52,30 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         Recipient: true,
       },
     });
+    const document3 = await prisma.document.findMany({
+      where: {
+        Recipient: {
+          some: {
+            email: {
+              equals: email,
+            },
+          },
+        },
+        status: {
+          equals: "COMPLETED",
+        },
+      },
+      include: {
+        Recipient: true,
+      },
+    });
     console.log(document1, "document 1 are");
     // documents-> that user has to sign
     //document2->user has to sign
     const documentsWithStatus = [
       ...document2.map((doc) => ({ ...doc, status: "SIGN" })),
       ...document1.map((doc) => ({ ...doc })),
+      ...document3.map((doc) => ({ ...doc })),
     ];
     // signer-> last user->completed
 

@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
-import { ComboboxDemo } from "./CombBox";
-import { Button } from "@/components/ui/button";
+
 import { redirect, useRouter } from "next/navigation";
 import H2 from "@/components/Typography/H2";
 import H4 from "@/components/Typography/H4";
@@ -35,7 +34,12 @@ const Navbar = (props: any) => {
     // redirect(`/api/auth/signout`)   wont't work because this is client component it would have worked in server side componenet
   }
   return (
-    <nav className="nav-container bg-white">
+    <nav className=" bg-white shadow-xl  top-0 left-0 w-full ">
+      <div className="w-full bg-rose-100 h-10">
+        <div className="flex items-center justify-center p-1 text-sm font-medium font-sans ">
+          Solution Porvided by Ex Squared Solutions
+        </div>
+      </div>
       <div className="px-12 py-3   nav-container-two flex items-center bg-white text-black">
         {/* <div className=" nav-container-three w-full flex flex-row justify-between  "> */}
         <div className="nav-Logo-section  flex items-center w-1/2  gap-5 text-black">
@@ -48,7 +52,13 @@ const Navbar = (props: any) => {
         <div className="nav-profile">
           {/* <Image className="profile-icon-image" src={logo} alt="logo" /> */}
           <a href="/">
-            <Image className="profile-icon-image" src={logo} alt="logo" />
+            <Image
+              className="rounded-full"
+              src={props.user.image}
+              width={40}
+              height={40}
+              alt="logo"
+            />
           </a>
           {/* <p>Profile Icon</p> */}
           <div className="user-data-logo">
@@ -85,7 +95,9 @@ const Navbar = (props: any) => {
               <DropdownMenuContent className="w-48">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>SignOut</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSignOut()}>
+                  SignOut
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
