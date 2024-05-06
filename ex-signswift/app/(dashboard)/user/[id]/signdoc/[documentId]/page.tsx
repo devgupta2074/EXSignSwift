@@ -105,7 +105,7 @@ const page = () => {
               }
             );
             setTimeout(() => {
-              router.push(`http://localhost:3000/user/${params.id}`);
+              router.push(`https://ex-sign-swift.vercel.app/user/${params.id}`);
             }, 2000);
           }
         }
@@ -120,7 +120,7 @@ const page = () => {
   const handleSign = async () => {
     const signDoc = async () => {
       const response = await axios.post(
-        "http://localhost:3000/api/document/addSignature",
+        "https://ex-sign-swift.vercel.app/api/document/addSignature",
         {
           docId: params.documentId,
           copiedItems: copiedItems,
@@ -145,7 +145,7 @@ const page = () => {
           console.log("File uploaded successfully:", res);
           if (res.url) {
             const response = await axios.post(
-              "http://localhost:3000/api/document/updatedocumentlink",
+              "https://ex-sign-swift.vercel.app/api/document/updatedocumentlink",
               {
                 id: params.documentId,
                 link: res.url,

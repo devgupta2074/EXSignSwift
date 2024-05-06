@@ -91,7 +91,7 @@ export default function Step2({
         receptient[index].signnumber = order[index];
       }
       const response = await axios.post(
-        "http://localhost:3000/api/document/addreceptient",
+        "https://ex-sign-swift.vercel.app/api/document/addreceptient",
         { docId, recipient: receptient }
       );
       console.log(response.data, "heell");
