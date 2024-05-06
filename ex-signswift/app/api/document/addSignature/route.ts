@@ -40,6 +40,8 @@ interface IField {
   signature: string;
 }
 export async function POST(req: NextRequest, res: NextApiResponse) {
+  var oldurl = "";
+  var pdfbytes4;
   const { docId, copiedItems, isLast, recipientEmail } = await req.json();
   console.log(recipientEmail);
   const document = await prisma.document.findUnique({
@@ -121,7 +123,14 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       }
     });
     const pdfBytes2 = await pdfDoc.save();
-    const pdfFilePath = path.join(__dirname, "complete.pdf");
+    if (pdfBytes2) {
+      pdfbytes4 = pdfBytes2;
+      oldurl = pdfUrl;
+    }
+
+    console.log(pdfbytes4, oldurl);
+    const pdfFilePath =
+      "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf";
     fs.writeFileSync(pdfFilePath, pdfBytes2);
     console.log(pdfFilePath, "dnddnd");
     // fs.writeFileSync(
@@ -219,6 +228,8 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     return NextResponse.json({
       message: "success",
       status: 200,
+      pdf: pdfbytes4,
+      oldurl: oldurl,
     });
   } catch (error) {
     return NextResponse.json({

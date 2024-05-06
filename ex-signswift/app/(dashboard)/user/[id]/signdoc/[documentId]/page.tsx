@@ -1,6 +1,7 @@
 //sign doc route should be seend by email only
 "use client";
 import PdfFillComponent from "@/components/DragDrop/pdfFillComponent";
+
 import SignatureForm from "@/components/Form/signatureForm";
 import { useParams } from "next/navigation";
 import axios from "axios";
@@ -16,7 +17,7 @@ import "react-toastify/ReactToastify.css";
 import Cookies from "js-cookie";
 import { User } from "@prisma/client";
 import { useEdgeStore } from "@/lib/edgestore";
-
+import file from "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf";
 interface IField {
   id: number;
   secondaaryId: string;
@@ -114,6 +115,8 @@ const page = () => {
     getDocument();
   }, [params, signNumber, url]);
 
+  console.log(process.cwd());
+
   const handleSign = async () => {
     const signDoc = async () => {
       const response = await axios.post(
@@ -127,17 +130,33 @@ const page = () => {
       );
 
       console.log(response, "funny");
-      const res = await edgestore.publicFiles.upload({
-        file: new File([response.data.pdf], "complete.pdf", {
-          type: "application/pdf",
-        }),
-        options: {
-          replaceTargetUrl: response.data.oldurl,
-        },
-      });
+      if (response.status === 200) {
+        fetch(file).then(async (response) => {
+          const contentType = response.headers.get("content-type");
+          const blob = await response.blob();
+          const file = new File([blob], "filename.pdf");
+          // access file here
+          const res = await edgestore.publicFiles.upload({
+            file: file,
+            // options: {
+            //   replaceTargetUrl: response.data.oldurl,
+            // },
+          });
+          console.log("File uploaded successfully:", res);
+          if (res.url) {
+            const response = await axios.post(
+              "http://localhost:3000/api/document/updatedocumentlink",
+              {
+                id: params.documentId,
+                link: res.url,
+              }
+            );
+            console.log(response);
+          }
+        });
+      }
 
-      console.log("File uploaded successfully:", res);
-      router.push(`/sendSuccess`);
+      router.push(`/`);
     };
     signDoc();
   };
