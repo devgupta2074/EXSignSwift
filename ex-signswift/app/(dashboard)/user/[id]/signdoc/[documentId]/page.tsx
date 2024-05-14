@@ -17,7 +17,8 @@ import "react-toastify/ReactToastify.css";
 import Cookies from "js-cookie";
 import { User } from "@prisma/client";
 import { useEdgeStore } from "@/lib/edgestore";
-import file from "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf";
+// import file from "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf";
+import file from "D:/Robotic Process Automation/OCR/ScannedReceipts/receipt-petrol-1654779511.png.pdf";
 interface IField {
   id: number;
   secondaaryId: string;

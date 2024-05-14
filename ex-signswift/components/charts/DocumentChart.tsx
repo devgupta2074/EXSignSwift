@@ -22,8 +22,14 @@ ChartJS.register(
   Tooltip
 );
 ChartJS.register(ArcElement, Tooltip, Legend);
+interface MarketChartProps {
+  allDocs: number;
+  draft: number;
+  pending: number;
+  completed: number;
+}
 
-const MarketChart = () => {
+const MarketChart: React.FC<MarketChartProps> = ({allDocs, draft, pending, completed}) => {
   //const [chartData, setChartData] = useState<any>(null);
 
 //   useEffect(() => {
@@ -50,8 +56,8 @@ const MarketChart = () => {
 //     );
 //   }
 //   const { prices } = chartData;
-const prices = [["all",5],["drafts",89],["pending",78]]
-
+const prices = [["all",allDocs],["drafts", draft],["pending",pending], ["completed", completed]]
+console.log(prices);
   const data = {
     labels: prices.map((entry: any) => entry[0]),
     datasets: [
