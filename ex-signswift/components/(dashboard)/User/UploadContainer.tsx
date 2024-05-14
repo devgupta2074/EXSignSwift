@@ -4,8 +4,23 @@ import { useToast } from "@/components/ui/use-toast";
 import { useEdgeStore } from "../../../lib/edgestore";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { FileProps, ShortFileProp } from "@/app/utils/types";
+import {
+  getPresignedUrls,
+  handleUpload,
+  MAX_FILE_SIZE_S3_ENDPOINT,
+  validateFiles,
+} from "@/app/utils/fileUploadHelpers";
+import { createPresignedUrlToDownload } from "@/app/utils/s3-file-management";
 
+export async function getPresignedUrl(file: FileProps) {
+  console.log(file.name);
+  const response = await fetch(`/api/files/download/presignedUrl/${file.id}`);
+  const res = await response.json();
+
+  return res?.message;
+}
 export default function UploadContainer(id: { id: string }) {
   const router = useRouter();
   const { toast } = useToast();
@@ -19,26 +34,82 @@ export default function UploadContainer(id: { id: string }) {
       variant: "destructive",
     });
   };
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const uploadToServer = async (file: any) => {
+    console.log(file);
+    // check if files are selected
+    if (!file) {
+      alert("Please, select file you want to upload");
+      return;
+    }
+    // get File[] from FileList
+    const files = Object.values(file);
+    // validate files
+    const filesInfo: ShortFileProp[] = [
+      {
+        originalFileName: file.name,
+        fileSize: file.size,
+      },
+    ];
+
+    const filesValidationResult = validateFiles(
+      filesInfo,
+      MAX_FILE_SIZE_S3_ENDPOINT
+    );
+    if (filesValidationResult) {
+      alert(filesValidationResult);
+      return;
+    }
+    setLoading(true);
+
+    const presignedUrls = await getPresignedUrls(filesInfo);
+    console.log(presignedUrls, "Dev");
+    if (!presignedUrls?.length) {
+      alert("Something went wrong, please try again later");
+      return;
+    }
+
+    // upload files to s3 endpoint directly and save file info to db
+    await handleUpload([file], presignedUrls, async function () {
+      console.log(presignedUrls[0].url, file);
+      const files = await fetch("/api/files");
+      const body = (await files.json()) as FileProps[];
+      console.log(body[0]);
+
+      const presignedUrl = await getPresignedUrl(body[0]);
+      const response = await axios.post("/api/document/uploadDocument", {
+        userId: id.id,
+        ShareLink: presignedUrl,
+      });
+      console.log(response);
+      router.push(`/user/${id.id}/document/${response.data.user.id}/step1`);
+    });
+  };
   const onFileDrop = async (file: File) => {
     try {
       if (file) {
         console.log("file");
-        const res = await edgestore.publicFiles.upload({
-          file,
-          onProgressChange: (progress) => {
-            console.log(progress);
-            setLoading(true);
-          },
-        });
+        const res = await uploadToServer(file);
 
-        console.log(res);
+        // const res = await edgestore.publicFiles.upload({
+        //   file,
+        //   onProgressChange: (progress) => {
+        //     console.log(progress);
+        //     setLoading(true);
+        //   },
+        // });
 
-        const response = await axios.post("/api/document/uploadDocument", {
-          userId: id.id,
-          ShareLink: res.url,
-        });
-        console.log(response);
-        router.push(`/user/${id.id}/document/${response.data.user.id}/step1`);
+        console.log(res, "hello res minio");
+
+        setLoading(false);
+
+        // const response = await axios.post("/api/document/uploadDocument", {
+        //   userId: id.id,
+        //   ShareLink: res.url,
+        // });
+        // console.log(response);
+        // router.push(`/user/${id.id}/document/${response.data.user.id}/step1`);
       }
     } catch {
       toast({
