@@ -5,9 +5,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { userId, email } = await req.json();
-  console.log(userId, email, "email  for getting the filessss");
-
+  const { userId, email, titlematch } = await req.json();
+  console.log(userId, email, titlematch);
   //all docs of craeted user where user is not the signer
 
   //all drafts  ->from users
@@ -25,6 +24,10 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
                 },
               },
             },
+          },
+          title: {
+            contains: titlematch,
+            mode: "insensitive",
           },
         },
       },
@@ -44,12 +47,16 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
             },
           },
         },
+        title: {
+          contains: titlematch,
+          mode: "insensitive",
+        },
       },
       include: {
         Recipient: true,
       },
     });
-    console.log(document1, "document 1 are");
+
     // documents-> that user has to sign
     //document2->user has to sign
     const documentsWithStatus = [
