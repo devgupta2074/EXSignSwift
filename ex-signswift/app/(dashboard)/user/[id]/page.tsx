@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 
 import * as React from "react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import UploadContainer from "../../../../components/(dashboard)/User/UploadContainer";
 import H2 from "@/components/Typography/H2";
 
@@ -17,6 +17,12 @@ import { getSession } from "next-auth/react";
 export default function Dashboard({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [docstatus, setdocStatus] = useState<string>(ALL_DOCS);
+  const searchParams = useSearchParams();
+
+  React.useEffect(() => {
+    const status = searchParams.get("status");
+    setdocStatus(status?.toString() || ALL_DOCS);
+  }, [searchParams]);
 
   const [user, setUser] = React.useState<any>(null);
   const session = useSession();

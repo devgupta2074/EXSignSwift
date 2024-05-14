@@ -54,13 +54,15 @@ const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems, receptient }) => {
     return recipient ? recipient.email : -1;
   };
 
-  // if (loading) {
-  //   return <Skeleton className="h-96 w-full" />;
-  // }
-
   return (
     <div className="h-full  overflow-y-scroll">
-      <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
+      <Document
+        file={url}
+        onLoadProgress={() => {
+          <div>Loading</div>;
+        }}
+        onLoadSuccess={onDocumentLoadSuccess}
+      >
         <div
           style={{
             position: "relative",
