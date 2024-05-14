@@ -17,7 +17,7 @@ import "react-toastify/ReactToastify.css";
 import Cookies from "js-cookie";
 import { User } from "@prisma/client";
 import { useEdgeStore } from "@/lib/edgestore";
-import file from "/Users/tapasviarora/EXSignSwift/ex-signswift/demoooo.pdf";
+// import file from "/Users/tapasviarora/EXSignSwift/ex-signswift/demoooo.pdf";
 interface IField {
   id: number;
   secondaaryId: string;
@@ -131,29 +131,29 @@ const page = () => {
 
       console.log(response, "funny");
       if (response.status === 200) {
-        fetch(file).then(async (response) => {
-          const contentType = response.headers.get("content-type");
-          const blob = await response.blob();
-          const file = new File([blob], "filename.pdf");
-          // access file here
-          const res = await edgestore.publicFiles.upload({
-            file: file,
-            // options: {
-            //   replaceTargetUrl: response.data.oldurl,
-            // },
-          });
-          console.log("File uploaded successfully:", res);
-          if (res.url) {
-            const response = await axios.post(
-              "http://localhost:3000/api/document/updatedocumentlink",
-              {
-                id: params.documentId,
-                link: res.url,
-              }
-            );
-            console.log(response);
-          }
-        });
+        // fetch(file).then(async (response) => {
+        //   const contentType = response.headers.get("content-type");
+        //   const blob = await response.blob();
+        //   const file = new File([blob], "filename.pdf");
+        //   // access file here
+        //   const res = await edgestore.publicFiles.upload({
+        //     file: file,
+        //     // options: {
+        //     //   replaceTargetUrl: response.data.oldurl,
+        //     // },
+        //   });
+        //   console.log("File uploaded successfully:", res);
+        //   if (res.url) {
+        //     const response = await axios.post(
+        //       "http://localhost:3000/api/document/updatedocumentlink",
+        //       {
+        //         id: params.documentId,
+        //         link: res.url,
+        //       }
+        //     );
+        //     console.log(response);
+        //   }
+        // });
       }
 
       router.push(`/`);

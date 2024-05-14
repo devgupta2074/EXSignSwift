@@ -1,4 +1,3 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { createPresignedUrlToDownload } from "@/app/utils/s3-file-management";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
@@ -6,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 /**
  * This route is used to get presigned url for downloading file from S3
  */
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextRequest) {
   console.log("hnuefunfuenfuenn");
   console.log(req.url);
   const segments =

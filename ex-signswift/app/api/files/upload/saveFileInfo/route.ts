@@ -1,14 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-// Prisma will help handle and catch errors
-import { Prisma } from "@prisma/client";
 
 import type { PresignedUrlProp, FileInDBProp } from "@/app/utils/types";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest) {
   if (req.method !== "POST") {
-    res.status(405).json({ message: "Only POST requests are allowed" });
+    NextResponse.json({ message: "Only POST requests are allowed" });
     return;
   }
 

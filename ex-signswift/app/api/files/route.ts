@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 const LIMIT_FILES = 10;
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET() {
   // Get 10 latest files from the database
   // For simplicity, we are not using pagination
   // If you want to implement pagination, you can use skip and take

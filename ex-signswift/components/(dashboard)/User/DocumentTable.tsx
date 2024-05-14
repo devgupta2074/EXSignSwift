@@ -205,10 +205,10 @@ export function DocumentTable({
     );
 
     // setFilteredDatawithrange(setFilteredDatax(range, filteredData));
-  }, [status, range]);
-  React.useEffect(() => {
-    setFilteredDatawithrange(setFilteredDatax(range, filteredData));
-  }, [range, status]);
+  }, [status]);
+  // React.useEffect(() => {
+  //   setFilteredDatawithrange(setFilteredDatax(range, filteredData));
+  // }, [range, status]);
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -282,8 +282,8 @@ export function DocumentTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredDatawithrange
-              ? filteredDatawithrange.map((link) => (
+            {filteredData
+              ? filteredData.map((link) => (
                   <TableRow key={link?.id}>
                     <TableCell>
                       {new Date(link?.createdAt).toLocaleDateString()}

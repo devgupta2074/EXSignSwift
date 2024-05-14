@@ -8,18 +8,18 @@ import { NextRequest, NextResponse } from "next/server";
 //update title of document
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { title, id } = await req.json();
+  const { title, id, expiration } = await req.json();
 
-
+  console.log(title, id, expiration);
   try {
     const document = await prisma.document.update({
       where: { id: parseInt(id) },
-      data: { title: title },
+      data: { title: title, Expiration: expiration },
     });
     console.log(document);
     return NextResponse.json({
       message: "Document title updated",
-      success:true,
+      success: true,
       status: 201,
     });
   } catch (error) {

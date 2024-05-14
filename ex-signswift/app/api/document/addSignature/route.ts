@@ -10,6 +10,14 @@ import { PDFDocument } from "pdf-lib";
 import { signDoc } from "../../../../components/PdfSign/signnn.js";
 import fs from "fs";
 import path from "path";
+import {
+  createPresignedUrlToDownload,
+  createPresignedUrlToUpload,
+} from "@/app/utils/s3-file-management";
+import { nanoid } from "nanoid";
+import { FileProps, PresignedUrlProp } from "@/app/utils/types";
+import { uploadToS3 } from "@/app/utils/fileUploadHelpers";
+import axios from "axios";
 
 const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
@@ -129,12 +137,54 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     }
 
     console.log(pdfbytes4, oldurl);
-    const pdfFilePath =
-      "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf";
-    fs.writeFileSync(pdfFilePath, pdfBytes2);
-    console.log(pdfFilePath, "dnddnd");
+    const bucketName = "ipvms-dev";
+    const fileName = `${nanoid(5)}_completed_pdf.pdf`;
+    const expiry = 60 * 60 * 24 * 7; // 1 year
+    const url = await createPresignedUrlToUpload({
+      bucketName,
+      fileName,
+      expiry,
+    });
+    console.log(url, "presigned url created");
+    const blob = new Blob([pdfBytes2], { type: "application/pdf" });
+    const file = new File([blob], fileName, {
+      type: "application/pdf",
+      lastModified: Date.now(),
+    });
+    console.log(file, "file created");
+    const presignedurl: PresignedUrlProp = {
+      originalFileName: "name.pdf",
+      fileSize: 1212,
+      url: url,
+      fileNameInBucket: fileName,
+    };
+
+    const uploadtos3 = (await uploadToS3(presignedurl, file)).json();
+    console.log(uploadtos3, "upload to S3 put");
+    const presignedUrltodownload = await createPresignedUrlToDownload({
+      bucketName:
+        process.env.S3_BUCKET_NAME !== undefined
+          ? process.env.S3_BUCKET_NAME
+          : "ipvms-dev",
+      fileName: fileName,
+    });
+
+    console.log(presignedUrltodownload);
+    const responseupdate = await axios.post(
+      "http://localhost:3000/api/document/updatedocumentlink",
+      {
+        id: docId,
+        link: presignedUrltodownload,
+      }
+    );
+    console.log(responseupdate, " update document link");
+
+    // const pdfFilePath =
+    //   "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf";
+    // fs.writeFileSync(pdfFilePath, pdfBytes2);
+    // console.log(pdfFilePath, "dnddnd");
     // fs.writeFileSync(
-    //   "/Users/tapasviarora/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf",
+    //   "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf",
     //   pdfBytes2
     // );
     // const res = await edgestore.publicFiles.upload({
@@ -143,7 +193,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     //     replaceTargetUrl: pdfUrl,
     //   },
     // });
-
+    // -----------------------important uncomment
     const updatedDocument = await prisma.document.update({
       where: {
         id: parseInt(docId || "0"),
@@ -162,14 +212,14 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       subject: "check_multiple in main",
       // react: <Welcome />
       // html: emailHtml,
-      html: " <h3>Your document is signed by all recipients</h3>",
-      attachments: [
-        {
-          filename: document?.title,
-          path: pdfFilePath,
-          contentType: "application/pdf",
-        },
-      ],
+      html: `<h3>Your document is signed by all recipients</h3> <a href=${presignedUrltodownload}> Download The Signed Document</a>`,
+      // attachments: [
+      //   {
+      //     filename: document?.title,
+      //     content: pdfBytes,
+      //     contentType: "application/pdf",
+      //   },
+      // ],
     };
     await transporter.sendMail(mailOptions, function (error: any, info: any) {
       if (error) {

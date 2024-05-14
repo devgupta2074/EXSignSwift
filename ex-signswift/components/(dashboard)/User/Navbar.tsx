@@ -112,9 +112,7 @@ const Navbar = (props: any) => {
   return (
     <nav className=" bg-white shadow-xl  top-0 left-0 w-full ">
       <div className="w-full bg-rose-100 h-10">
-        <div className="flex items-center justify-center p-1 text-sm font-medium font-sans ">
-          Solution Porvided by Ex Squared Solutions
-        </div>
+        <div className="flex items-center justify-center p-1 text-sm font-medium font-sans "></div>
       </div>
       <div className="px-12 py-3   nav-container-two flex items-center bg-white text-black">
         {/* <div className=" nav-container-three w-full flex flex-row justify-between  "> */}

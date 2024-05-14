@@ -56,6 +56,7 @@ export const uploadToS3 = async (
   presignedUrl: PresignedUrlProp,
   file: File
 ) => {
+  console.log(file, file.type, "fridge");
   const response = await fetch(presignedUrl.url, {
     method: "PUT",
     body: file,
@@ -101,6 +102,7 @@ export const handleUpload = async (
           file.name === presignedUrl.originalFileName &&
           file.size === presignedUrl.fileSize
       );
+      console.log(file, " file handle upload");
       if (!file) {
         throw new Error("File not found");
       }

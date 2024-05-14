@@ -107,7 +107,7 @@ const Form: FC<FormProps> = ({
             <div className="mt-16">
               <div>
                 <p className="text-muted-foreground text-sm">
-                  Step <span>2 of 4</span>
+                  Step <span>3 of 4</span>
                 </p>
                 <div className="relative h-1 rounded-full mb-2">
                   <div className="absolute left-0 top-0 h-full bg-rose-500 w-2/4"></div>
@@ -117,7 +117,9 @@ const Form: FC<FormProps> = ({
                 <button
                   className="inline-flex items-center justify-center text-white text-sm font-medium  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-secondary-foreground h-11 px-8 rounded-md bg-rose-500 hover:bg-rose-500/80 flex-1 "
                   type="button"
-                  onClick={() => {}}
+                  onClick={() => {
+                    router.back();
+                  }}
                 >
                   Go Back
                 </button>

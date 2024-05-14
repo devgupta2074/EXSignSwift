@@ -30,16 +30,16 @@ export async function POST(req: NextRequest) {
       <div style="font-family: Arial, sans-serif; margin: 20px; padding: 20px; border: 1px solid #e0e0e0;">
       <img src=${logo} alt="" />
       
-        <h2>Internship Acceptance Letter</h2>
+        <h2>Document Signing Invitation</h2>
         <p>
           Dear 
         </p>
         <p>
-          We are pleased to inform you that you have been accepted as an intern at ExSquared Company.
+          We are pleased to inform you that you have been invited to sign a Document
         </p>
         <p>
           Please click the button below to proceed with accepting and signing the contract
-          Go to or platform to 
+         
         </p>
         <p>${email_body}<p/>
         <a href="http://localhost:3000/login" style="display: inline-block; background-color: #0070f3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Accept and Sign Contract</a>

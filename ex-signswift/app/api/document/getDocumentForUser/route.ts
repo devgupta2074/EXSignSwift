@@ -15,20 +15,40 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
   try {
     const document1 = await prisma.document.findMany({
       where: {
-        AND: {
-          userId: userId,
-          NOT: {
-            Recipient: {
-              some: {
-                email: {
-                  equals: email,
+        AND: [
+          {
+            userId: userId,
+          },
+          {
+            NOT: {
+              Recipient: {
+                some: {
+                  email: {
+                    equals: email,
+                  },
                 },
               },
             },
           },
-        },
+          {
+            OR: [
+              {
+                Expiration: {
+                  gt: new Date(),
+                },
+              },
+              {
+                Expiration: null,
+              },
+            ],
+          },
+          {
+            Active: true,
+          },
+        ],
       },
     });
+
     //draft->can edit those docs  //pending->cant do anthying on these
     // dont want those in which he is a  signer
 
@@ -37,18 +57,38 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     //get all doc that user has to sign
     const document2 = await prisma.document.findMany({
       where: {
-        Recipient: {
-          some: {
-            email: {
-              equals: email,
+        AND: [
+          {
+            Recipient: {
+              some: {
+                email: {
+                  equals: email,
+                },
+              },
             },
           },
-        },
+          {
+            OR: [
+              {
+                Expiration: {
+                  gt: new Date(),
+                },
+              },
+              {
+                Expiration: null,
+              },
+            ],
+          },
+          {
+            Active: true,
+          },
+        ],
       },
       include: {
         Recipient: true,
       },
     });
+
     console.log(document1, "document 1 are");
     // documents-> that user has to sign
     //document2->user has to sign
