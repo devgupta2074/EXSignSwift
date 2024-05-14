@@ -171,7 +171,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
 
     console.log(presignedUrltodownload);
     const responseupdate = await axios.post(
-      "http://localhost:3000/api/document/updatedocumentlink",
+      "https://ex-sign-swift.vercel.app/api/document/updatedocumentlink",
       {
         id: docId,
         link: presignedUrltodownload,
