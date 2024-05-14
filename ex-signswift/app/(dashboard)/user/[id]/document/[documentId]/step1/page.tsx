@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/api-service/useApi";
 import { CiFileOn } from "react-icons/ci";
+import { format } from "date-fns";
 import {
   Card,
   CardContent,
@@ -24,6 +25,14 @@ import {
 import Loader from "@/components/Loader";
 import H2 from "@/components/Typography/H2";
 import H4 from "@/components/Typography/H4";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
 
 interface IData {
   Document: {
@@ -68,6 +77,7 @@ export default function Document({
     const data = {
       id: params.documentId,
       title: title,
+      expiration: date,
     };
     request2(data);
   };
@@ -78,6 +88,7 @@ export default function Document({
     router.push(`/user/${params.id}/document/${params.documentId}/step2`);
   }
   const [title, setTitle] = React.useState<string>("");
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [notempty, setNotEmpty] = React.useState<boolean>(false);
   useEffect(() => {
     if (title.length > 0) {
@@ -136,6 +147,38 @@ export default function Document({
                       />
                     </div>
                   </CardContent>
+                  <div className="ml-5 space-y-2">
+                    <div className="space-y-1 flex flex-col gap-5">
+                      <Label htmlFor="name">Expiry Date</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[280px] justify-start text-left font-normal",
+                              !date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? (
+                              format(date, "PPP")
+                            ) : (
+                              <span>Pick an Expiry date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+
                   <div className="p-5 pb-0 mt-72">
                     <p className="text-muted-foreground text-sm">
                       Step <span>1 of 4</span>

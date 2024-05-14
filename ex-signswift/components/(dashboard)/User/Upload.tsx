@@ -7,6 +7,7 @@ import { useDropzone } from "react-dropzone";
 
 import { cn } from "../../../lib/utils";
 import { Card, CardContent } from "./Card";
+import { UploadFilesS3PresignedUrl } from "@/components/UploadFilesForm/UploadFilesS3PresignedUrl";
 
 const DocumentDropzoneContainerVariants: Variants = {
   initial: {
@@ -119,7 +120,9 @@ export const DocumentDropzone = ({
     },
     maxSize: 50 * 1000000,
   });
-
+  const fetchFiles = () => {
+    console.log("complete upload");
+  };
   return (
     <motion.div
       className={cn("flex aria-disabled:cursor-not-allowed ", className)}
@@ -178,8 +181,8 @@ export const DocumentDropzone = ({
               <div className="bg-rose-500/60 group-hover:bg-documenso h-2 w-full rounded-[2px]" />
             </motion.div>
           </div>
-
-          <input {...getInputProps()} />
+          {/* 
+          <UploadFilesS3PresignedUrl onUploadSuccess={fetchFiles} /> */}
           <p className="group-hover:text-rose-500 text-rose-400 mt-8 font-medium">
             {DocumentDescription[type].headline}
           </p>

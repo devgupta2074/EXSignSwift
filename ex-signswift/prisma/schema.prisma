@@ -73,6 +73,8 @@ model Document {
   signnumber  Int?           @default(0)
   Field       Field[]
   Recipient   Recipient[]
+  Expiration DateTime?
+  Active      Boolean    @default(true)
 
   @@index([userId])
   @@index([status])
@@ -144,6 +146,14 @@ model DocumentShareLink {
   updatedAt  DateTime @updatedAt
 
   @@unique([documentId, email])
+}
+model File {
+    id           String   @id @default(uuid())
+    bucket       String
+    fileName     String   @unique
+    originalName String
+    createdAt    DateTime @default(now())
+    size         Int
 }
 
 enum Role {

@@ -3,6 +3,7 @@
 import * as React from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
+import moment from "moment";
 import {
   Table,
   TableBody,
@@ -35,10 +36,12 @@ export function DocumentTable({
   id,
   email,
   status,
+  range,
 }: {
   id: string;
   email: string;
   status: string;
+  range: string;
 }) {
   // const [sorting, setSorting] = React.useState<SortingState>([]);
   // const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -54,6 +57,9 @@ export function DocumentTable({
   const [recpientData, setRecipientData] = React.useState([]);
   const [data, setData] = React.useState<any[]>([]);
   const [filteredData, setFilteredData] = React.useState<any[]>([]);
+  const [filteredDatawithrange, setFilteredDatawithrange] = React.useState<
+    any[]
+  >([]);
   console.log(id);
   const actionStatus = (status: any) => {
     if (status === "DRAFT") {
@@ -124,6 +130,45 @@ export function DocumentTable({
       );
     }
   };
+
+  // Function to calculate the date range based on the provided range value
+  const getDateRange = (range: string) => {
+    const currentDate = moment();
+    switch (range) {
+      case "7":
+        return currentDate.clone().subtract(7, "days");
+      case "14":
+        return currentDate.clone().subtract(14, "days");
+      case "30":
+        return currentDate.clone().subtract(30, "days");
+      case "90":
+        return currentDate.clone().subtract(90, "days");
+      default:
+        return null; // Return null for "0" or any invalid range
+    }
+  };
+
+  // Assuming filteredData is an array of objects with a 'timestamp' field
+  const setFilteredDatax = (range: string, filteredData: any) => {
+    const currentDate = moment();
+
+    const dateRange = getDateRange(range);
+    // console.log(dateRange, "dateRange");
+
+    if (!dateRange) {
+      // If range is "0" or invalid, return the original filteredData
+      return filteredData;
+    } else {
+      // Filter data based on the date range
+      return filteredData.filter((item: any) => {
+        const itemDate = moment(item.createdAt);
+        return (
+          itemDate.isSameOrAfter(dateRange, "day") &&
+          itemDate.isSameOrBefore(currentDate, "day")
+        );
+      });
+    }
+  };
   const actionStatusUrl = (link: any) => {
     if (link.status === "DRAFT") {
       return `https://ex-sign-swift.vercel.app/user/${id}/document/${link.id}/step1`;
@@ -158,7 +203,12 @@ export function DocumentTable({
             return item.status == statusMap(status);
           })
     );
+
+    // setFilteredDatawithrange(setFilteredDatax(range, filteredData));
   }, [status]);
+  // React.useEffect(() => {
+  //   setFilteredDatawithrange(setFilteredDatax(range, filteredData));
+  // }, [range, status]);
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);

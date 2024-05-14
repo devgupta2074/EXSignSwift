@@ -395,7 +395,9 @@ export default function Step2({
                 <button
                   className="inline-flex items-center justify-center text-white text-sm font-medium  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-secondary-foreground h-11 px-8 rounded-md bg-rose-500 hover:bg-rose-500/80 flex-1 "
                   type="button"
-                  onClick={() => {}}
+                  onClick={() => {
+                    router.back();
+                  }}
                 >
                   Go Back
                 </button>
