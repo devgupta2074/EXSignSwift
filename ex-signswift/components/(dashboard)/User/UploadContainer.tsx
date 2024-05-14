@@ -102,7 +102,7 @@ export default function UploadContainer(id: { id: string }) {
 
         console.log(res, "hello res minio");
 
-        setLoading(false);
+        // setLoading(false);
 
         // const response = await axios.post("/api/document/uploadDocument", {
         //   userId: id.id,

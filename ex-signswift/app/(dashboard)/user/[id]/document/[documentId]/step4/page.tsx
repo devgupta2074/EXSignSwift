@@ -64,7 +64,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+      <div className="fixed inset-0 flex items-center justify-center z-[1299] bg-gray-800 bg-opacity-50">
         <Loader />
       </div>
     );
@@ -95,8 +95,8 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
             url={url}
           />
         </div>
-        <div className="w-full h-full bg-[#F7F7F7]  max-w-[30rem] justify-center pt-0  ">
-          <div className="w-full h-full bg-[#F7F7F7]">
+        <div className="w-[50rem]  justify-center pt-0  ">
+          <div className="w-full   h-[50rem]">
             <EmailForm
               userId={userId}
               recipient={receptient}
