@@ -56,15 +56,30 @@ const MarketChart: React.FC<MarketChartProps> = ({allDocs, draft, pending, compl
 //     );
 //   }
 //   const { prices } = chartData;
-const prices = [["all",allDocs],["drafts", draft],["pending",pending], ["completed", completed]]
+const prices = [["completed",completed],["drafts", draft],["pending",pending]]
 console.log(prices);
   const data = {
-    labels: prices.map((entry: any) => entry[0]),
+    labels: ['Completed', 'Draft', 'Pending'],
     datasets: [
       {
         label: "count",
         data: prices.map((entry: any) => entry[1]),
-        borderColor: "orange",
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
         borderWidth: 2,
         pointRadius: 4,
       },
@@ -72,7 +87,8 @@ console.log(prices);
   };
 
   return (
-    <div>
+    <div className="max-w-md w-4/12 mx-10 mt-8 p-6 rounded-lg shadow-md bg-white">
+      <h1>Total Documents : {allDocs}</h1>
       <Doughnut data={data} />
     </div>
   );

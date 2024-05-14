@@ -37,10 +37,7 @@ export default function() {
         <div>
 
 
-            <h1>Total Documents : {allDocs}</h1>
-            <h1>Draft Documents : {draft}</h1>
-            <h1>pending Documents : {pending}</h1>
-            <h1>completed  Documents : {completed}</h1>
+           
 
             <div className="flex">
             <MarketChart allDocs={allDocs} draft={draft} pending={pending} completed={completed} />
