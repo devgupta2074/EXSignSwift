@@ -1,6 +1,5 @@
 // function to create user in our database
 
-export const maxDuration = 60;
 // We impot our prisma client
 import prisma from "../../../../lib/prisma";
 // Prisma will help handle and catch errors
@@ -46,6 +45,11 @@ interface IField {
   recipientId: number;
   signature: string;
 }
+export const maxDuration = 50;
+export const config = {
+  maxDuration: 50,
+};
+
 export async function POST(req: NextRequest, res: NextResponse) {
   var oldurl = "";
   var pdfbytes4;
