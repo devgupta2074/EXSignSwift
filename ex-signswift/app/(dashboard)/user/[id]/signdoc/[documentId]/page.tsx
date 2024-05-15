@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import React from "react";
 import SignatureCanvas from "react-signature-canvas";
-import { ReactNode } from "react";
+
 import { useEffect } from "react";
 import H2 from "@/components/Typography/H2";
 import H4 from "@/components/Typography/H4";
@@ -17,7 +17,6 @@ import "react-toastify/ReactToastify.css";
 import Cookies from "js-cookie";
 import { User } from "@prisma/client";
 import { useEdgeStore } from "@/lib/edgestore";
-// import file from "/Users/tapasviarora/EXSignSwift/ex-signswift/demoooo.pdf";
 interface IField {
   id: number;
   secondaaryId: string;
@@ -114,8 +113,6 @@ const page = () => {
 
     getDocument();
   }, [params, signNumber, url]);
-
-  console.log(process.cwd());
 
   const handleSign = async () => {
     const signDoc = async () => {
