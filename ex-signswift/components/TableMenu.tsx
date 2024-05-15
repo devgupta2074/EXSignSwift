@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { FaSignature } from "react-icons/fa6";
 import { FaRegClock } from "react-icons/fa";
@@ -20,6 +21,7 @@ const TableMenu = ({
   status: string;
   setdocStatus: (value: string) => void;
 }) => {
+  // console.log(status);
   return (
     <div
       role="tablist"
@@ -30,7 +32,7 @@ const TableMenu = ({
       <button
         onClick={() => setdocStatus(INBOX_DOCS)}
         className={`text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900 ${
-          status === INBOX_DOCS ? "text-white bg-rose-500 rounded-md " : ""
+          status === INBOX_DOCS ? " text-white bg-rose-500 rounded-md " : ""
         }`}
       >
         <FaSignature className="react-icon" />

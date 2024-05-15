@@ -74,7 +74,12 @@ const page = () => {
         return item.recipientId === recipientId;
       });
       //filter out fields for this user only
-      setCopiedItems(fields);
+      const user = recipients.find((user) => user.email === userx?.email);
+      if (user?.role != "VIEWER") {
+        setCopiedItems(fields);
+        console.log("hhhh");
+      }
+
       setRecipients(response?.data?.Document?.Recipient);
       setSignNumber(response?.data?.Document?.signnumber);
 

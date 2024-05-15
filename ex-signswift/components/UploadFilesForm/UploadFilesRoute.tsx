@@ -18,7 +18,7 @@ export function UploadFilesRoute({ onUploadSuccess }: UploadFilesFormProps) {
       return;
     }
     const files = Object.values(fileInputRef.current?.files);
-    const filesInfo = files.map((file) => ({
+    const filesInfo = files?.map((file) => ({
       originalFileName: file.name,
       fileSize: file.size,
     }));

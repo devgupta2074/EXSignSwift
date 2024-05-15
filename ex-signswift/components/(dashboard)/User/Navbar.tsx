@@ -194,7 +194,7 @@ const Navbar = (props: any) => {
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup heading="Documents">
-                {suggestions.map((doc) => (
+                {suggestions?.map((doc) => (
                   <CommandItem
                     key={doc.id}
                     onSelect={() => {

@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
   // Get the file name in bucket from the database
   const saveFilesInfo = await prisma.file.createMany({
-    data: presignedUrls.map((file: FileInDBProp) => ({
+    data: presignedUrls?.map((file: FileInDBProp) => ({
       bucket:
         process.env.S3_BUCKET_NAME !== undefined
           ? process.env.S3_BUCKET_NAME

@@ -132,6 +132,7 @@ export default function Step2({
         token: "0",
       },
     ]);
+    console.log(role, "in add signer");
     setOrder((x) => [...x, 0]);
     setId(id + 1);
     setName("");
@@ -232,7 +233,9 @@ export default function Step2({
                           name="signers.0.role"
                           value={role} // Bind value to state
                           onChange={(e) => {
+                            //
                             setRole(e.target.value);
+                            console.log(e.target.value);
                           }} // Attach onChange event handler
                         >
                           <option value="SIGNER" selected>
@@ -328,8 +331,8 @@ export default function Step2({
                               DEFAULT - 0
                             </option>
                             {receptient
-                              .slice(0, receptient.length - 1)
-                              .map((item, index) => (
+                              ?.slice(0, receptient.length - 1)
+                              ?.map((item, index) => (
                                 <option key={index} value={index + 1}>{`${
                                   index + 1
                                 }`}</option>

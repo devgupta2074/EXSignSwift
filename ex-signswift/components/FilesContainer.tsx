@@ -21,7 +21,7 @@ export function FilesContainer({
         Last {files.length} uploaded file{files.length > 1 ? "s" : ""}
       </h1>
       <ul className="h-80 overflow-auto">
-        {files.map((file) => (
+        {files?.map((file) => (
           <FileItem
             key={file.id}
             file={file}

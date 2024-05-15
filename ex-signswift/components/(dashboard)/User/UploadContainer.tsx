@@ -72,6 +72,7 @@ export default function UploadContainer(id: { id: string }) {
     }
 
     // upload files to s3 endpoint directly and save file info to db
+
     await handleUpload([file], presignedUrls, async function () {}).then(
       async () => {
         console.log(presignedUrls[0].url, file);
@@ -89,6 +90,7 @@ export default function UploadContainer(id: { id: string }) {
             console.log(body);
             console.log(body[0], "dev body");
           }
+
 
           const presignedUrl = await getPresignedUrl(body[0]);
           console.log(presignedUrl);

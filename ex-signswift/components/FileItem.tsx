@@ -27,7 +27,7 @@ export function FileItem({
 }: FileItemProps) {
   async function deleteFile(id: string) {
     setFiles((files: FileProps[]) =>
-      files.map((file: FileProps) =>
+      files?.map((file: FileProps) =>
         file.id === id ? { ...file, isDeleting: true } : file
       )
     );
@@ -43,7 +43,7 @@ export function FileItem({
       alert("Failed to delete file");
     } finally {
       setFiles((files: FileProps[]) =>
-        files.map((file: FileProps) =>
+        files?.map((file: FileProps) =>
           file.id === id ? { ...file, isDeleting: false } : file
         )
       );
