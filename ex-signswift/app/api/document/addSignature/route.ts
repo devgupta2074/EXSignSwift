@@ -1,4 +1,6 @@
 // function to create user in our database
+
+export const maxDuration = 60;
 // We impot our prisma client
 import prisma from "../../../../lib/prisma";
 // Prisma will help handle and catch errors
