@@ -2,20 +2,17 @@
 // We impot our prisma client
 import prisma from "../../../../lib/prisma";
 // Prisma will help handle and catch errors
-import { Prisma } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
+
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
 import { PDFDocument } from "pdf-lib";
-import { signDoc } from "../../../../components/PdfSign/signnn.js";
-import fs from "fs";
-import path from "path";
+
 import {
   createPresignedUrlToDownload,
   createPresignedUrlToUpload,
 } from "@/app/utils/s3-file-management";
 import { nanoid } from "nanoid";
-import { FileProps, PresignedUrlProp } from "@/app/utils/types";
+import { PresignedUrlProp } from "@/app/utils/types";
 import { uploadToS3 } from "@/app/utils/fileUploadHelpers";
 import axios from "axios";
 
@@ -47,7 +44,7 @@ interface IField {
   recipientId: number;
   signature: string;
 }
-export async function POST(req: NextRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest, res: NextResponse) {
   var oldurl = "";
   var pdfbytes4;
   const { docId, copiedItems, isLast, recipientEmail } = await req.json();
@@ -169,16 +166,6 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       fileName: fileName,
     });
 
-    console.log(presignedUrltodownload);
-    const responseupdate = await axios.post(
-      "http://localhost:3000/api/document/updatedocumentlink",
-      {
-        id: docId,
-        link: presignedUrltodownload,
-      }
-    );
-    console.log(responseupdate, " update document link");
-
     // const pdfFilePath =
     //   "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf";
     // fs.writeFileSync(pdfFilePath, pdfBytes2);
@@ -203,6 +190,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
           increment: 1,
         },
         status: "COMPLETED",
+        ShareLink: presignedUrltodownload,
       },
     });
 
