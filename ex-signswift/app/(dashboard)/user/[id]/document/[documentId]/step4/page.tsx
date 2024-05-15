@@ -49,7 +49,7 @@ const page = ({ params }: { params: { id: string; documentId: string } }) => {
       );
 
       console.log("step4", response);
-      response?.data?.Document?.Recipient.map((item: IReceptient) => {
+      response?.data?.Document?.Recipient?.map((item: IReceptient) => {
         const res1 = { name: item.name, email: item.email, id: item.id };
         setReceptient((prev) => [...prev, res1]);
         console.log("check bu arc", receptient);

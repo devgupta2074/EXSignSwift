@@ -32,7 +32,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     // use Promise.all to get all the presigned urls in parallel
     await Promise.all(
       // loop through the files
-      files.map(async (file) => {
+      files?.map(async (file) => {
         const fileName = `${nanoid(5)}-${file?.originalFileName}`;
 
         // get presigned url using s3 sdk

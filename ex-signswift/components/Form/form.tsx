@@ -94,7 +94,7 @@ const Form: FC<FormProps> = ({
             style={{}}
           >
             <fieldset className=" w-full grid grid-cols-2  gap-12 gap-x-25">
-              {childrefs.map((childref, index) => (
+              {childrefs?.map((childref, index) => (
                 <DropItem
                   key={index}
                   childref={childref}

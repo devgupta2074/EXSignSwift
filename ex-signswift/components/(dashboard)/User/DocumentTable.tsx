@@ -151,10 +151,8 @@ export function DocumentTable({
   // Assuming filteredData is an array of objects with a 'timestamp' field
   const setFilteredDatax = (range: string, filteredData: any) => {
     const currentDate = moment();
-
     const dateRange = getDateRange(range);
     // console.log(dateRange, "dateRange");
-
     if (!dateRange) {
       // If range is "0" or invalid, return the original filteredData
       return filteredData;
@@ -196,16 +194,27 @@ export function DocumentTable({
     console.log(status);
     console.log(statusMap(status));
 
-    setFilteredData(
+    // setFilteredData(
+    //   status == ALL_DOCS
+    //     ? data
+    //     : data?.filter((item: any) => {
+    //         return item.status == statusMap(status);
+    //       })
+    // );
+    const newData = setFilteredDatax(range, data);
+    const dat =
       status == ALL_DOCS
-        ? data
-        : data.filter((item: any) => {
+        ? newData
+        : newData.filter((item: any) => {
             return item.status == statusMap(status);
-          })
+          });
+    dat.sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt).getDate() - new Date(a.createdAt).getDate()
     );
 
-    // setFilteredDatawithrange(setFilteredDatax(range, filteredData));
-  }, [status]);
+    setFilteredData(dat);
+  }, [status, range]);
   // React.useEffect(() => {
   //   setFilteredDatawithrange(setFilteredDatax(range, filteredData));
   // }, [range, status]);
@@ -223,6 +232,11 @@ export function DocumentTable({
           .then((response) => {
             const document = response.data?.Document;
             setData(document);
+            document.sort(
+              (a: any, b: any) =>
+                new Date(b.createdAt).getDate() -
+                new Date(a.createdAt).getDate()
+            );
             setFilteredData(document);
 
             // setRecipientData(response && response?.data?.Document[0]?.Recipient);
@@ -283,7 +297,7 @@ export function DocumentTable({
           </TableHeader>
           <TableBody>
             {filteredData
-              ? filteredData.map((link) => (
+              ? filteredData?.map((link) => (
                   <TableRow key={link?.id}>
                     <TableCell>
                       {new Date(link?.createdAt).toLocaleDateString()}
