@@ -45,8 +45,8 @@ interface IField {
   recipientId: number;
   signature: string;
 }
-export const maxDuration = 50;
 
+export const maxDuration = 50;
 export async function POST(req: NextRequest, res: NextResponse) {
   var oldurl = "";
   var pdfbytes4;
@@ -220,8 +220,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
         console.log("Email sent successfully!");
         return NextResponse.json({
           message: "data",
-          pdf: pdfBytes2,
-          oldurl: pdfUrl,
         });
       }
     });
@@ -260,7 +258,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         console.log(error);
       } else {
         console.log("Email sent successfully!");
-        return NextResponse.json("data");
+        return NextResponse.json({ message: "data" });
       }
     });
   }
@@ -269,8 +267,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return NextResponse.json({
       message: "success",
       status: 200,
-      pdf: pdfbytes4,
-      oldurl: oldurl,
     });
   } catch (error) {
     return NextResponse.json({
