@@ -75,9 +75,11 @@ export default function UploadContainer(id: { id: string }) {
       console.log(presignedUrls[0].url, file);
       const files = await fetch("/api/files");
       const body = (await files.json()) as FileProps[];
-      console.log(body[0]);
+      console.log(body);
+      console.log(body[0], "dev body");
 
       const presignedUrl = await getPresignedUrl(body[0]);
+      console.log(presignedUrl);
       const response = await axios.post("/api/document/uploadDocument", {
         userId: id.id,
         ShareLink: presignedUrl,
