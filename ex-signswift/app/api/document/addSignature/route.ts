@@ -168,16 +168,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       fileName: fileName,
     });
 
-    console.log(presignedUrltodownload);
-    const responseupdate = await axios.post(
-      "https://ex-sign-swift.vercel.app/api/document/updatedocumentlink",
-      {
-        id: docId,
-        link: presignedUrltodownload,
-      }
-    );
-    console.log(responseupdate, " update document link");
-
     // const pdfFilePath =
     //   "C:/Users/dgupta/Desktop/hrtech/EXSignSwift/ex-signswift/components/PdfSign/sow2.pdf";
     // fs.writeFileSync(pdfFilePath, pdfBytes2);
@@ -202,6 +192,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           increment: 1,
         },
         status: "COMPLETED",
+        ShareLink: presignedUrltodownload,
       },
     });
 
