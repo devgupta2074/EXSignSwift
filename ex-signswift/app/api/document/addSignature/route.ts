@@ -81,7 +81,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
 
   console.log("check2");
   if (isLast) {
-    const signFields = copiedItems.map((item: any) => ({
+    const signFields = copiedItems?.map((item: any) => ({
       fieldId: item.id,
       signatureImageAsBase64: item.signature,
       recipientId: item.recipientId,
@@ -235,7 +235,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       }
     });
   } else {
-    const signFields = copiedItems.map((item: any) => ({
+    const signFields = copiedItems?.map((item: any) => ({
       fieldId: item.id,
       signatureImageAsBase64: item.signature,
       recipientId: item.recipientId,

@@ -11,7 +11,7 @@ export async function GET() {
   // If you want to implement pagination, you can use skip and take
   // https://www.prisma.io/docs/concepts/components/prisma-client/pagination#skip-and-take
 
-  const files = await prisma.file.findMany({
+  const files = await prisma.file?.findMany({
     take: LIMIT_FILES,
     orderBy: {
       createdAt: "desc",
@@ -25,7 +25,7 @@ export async function GET() {
 
   // The database type is a bit different from the frontend type
   // Make the array of files compatible with the frontend type FileProps
-  const filesWithProps: FileProps[] = files.map((file) => ({
+  const filesWithProps: FileProps[] = files?.map((file: any) => ({
     id: file.id,
     originalFileName: file.originalName,
     fileSize: file.size,

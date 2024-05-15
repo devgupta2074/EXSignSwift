@@ -57,12 +57,12 @@ const EmailForm = ({
   const mails = recipient?.map((email: any) => email.email);
   console.log("mails", mails);
   console.log("recipient", recipient.item);
-  const check = recipient.map((item: any) => item);
+  const check = recipient?.map((item: any) => item);
   console.log("check", check);
   const sendEmail = async () => {
     setLoading2(true);
     console.log(recipient, "check by arc now");
-    const emails = recipient.map((item: any) => item.email);
+    const emails = recipient?.map((item: any) => item.email);
     console.log(emails);
     try {
       const response = await fetch("/api/emailsent", {

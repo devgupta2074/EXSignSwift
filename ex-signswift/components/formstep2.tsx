@@ -328,8 +328,8 @@ export default function Step2({
                               DEFAULT - 0
                             </option>
                             {receptient
-                              .slice(0, receptient.length - 1)
-                              .map((item, index) => (
+                              ?.slice(0, receptient.length - 1)
+                              ?.map((item, index) => (
                                 <option key={index} value={index + 1}>{`${
                                   index + 1
                                 }`}</option>

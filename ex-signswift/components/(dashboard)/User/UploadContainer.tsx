@@ -73,7 +73,7 @@ export default function UploadContainer(id: { id: string }) {
     // upload files to s3 endpoint directly and save file info to db
     await handleUpload([file], presignedUrls, async function () {
       console.log(presignedUrls[0].url, file);
-      const files = await fetch("/api/files");
+      const files = await fetch("/api/files", { cache: "no-store" });
       const body = (await files.json()) as FileProps[];
       console.log(body);
       console.log(body[0], "dev body");

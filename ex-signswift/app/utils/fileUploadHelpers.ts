@@ -96,7 +96,7 @@ export const handleUpload = async (
   onUploadSuccess: () => void
 ) => {
   const uploadToS3Response = await Promise.all(
-    presignedUrls.map((presignedUrl) => {
+    presignedUrls?.map((presignedUrl) => {
       const file = files.find(
         (file) =>
           file.name === presignedUrl.originalFileName &&

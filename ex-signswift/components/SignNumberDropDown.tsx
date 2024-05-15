@@ -30,7 +30,7 @@ export function SignNumberDropDown({
         <DropdownMenuItem onSelect={() => onSelect(0)}>
           <DropdownMenuLabel>0</DropdownMenuLabel>
         </DropdownMenuItem>
-        {Array.from(Array(length)).map((_, index) => (
+        {Array.from(Array(length))?.map((_, index) => (
           <DropdownMenuItem key={index} onSelect={() => onSelect(index + 1)}>
             <DropdownMenuLabel>{index + 1}</DropdownMenuLabel>
           </DropdownMenuItem>

@@ -106,7 +106,7 @@ export const DndComponent = ({
     };
   }, []);
   const useRefsArray = (length: number) => {
-    return Array.from({ length }).map(() => useRef<HTMLButtonElement>(null));
+    return Array.from({ length })?.map(() => useRef<HTMLButtonElement>(null));
   };
 
   const childrefs = useRefsArray(5);
@@ -151,7 +151,7 @@ export const DndComponent = ({
   const [copiedItems, setCopiedItems] = useState<IField[]>([]);
   //2rem->40
   const moveItem = (id: number, left: string, top: string) => {
-    const newItems = copiedItems.map((item) => {
+    const newItems = copiedItems?.map((item) => {
       if (item.id === id) {
         return { ...item, left, top };
       }
@@ -313,7 +313,7 @@ export const DndComponent = ({
                           const newWidth = size.width;
                           console.log("resizing");
                           const newHeight = size.height;
-                          const newItems = copiedItems.map((item1) => {
+                          const newItems = copiedItems?.map((item1) => {
                             if (item1.id === item.id) {
                               return {
                                 ...item1,

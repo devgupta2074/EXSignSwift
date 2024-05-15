@@ -36,7 +36,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
   });
 
   // Create new fields based on droppedItem
-  const newFields = droppedItem.map((item: IField) => ({
+  const newFields = droppedItem?.map((item: IField) => ({
     documentId: item.documentId,
     recipientId: item.recipientId || 0,
     page: item.page,

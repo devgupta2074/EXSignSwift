@@ -93,8 +93,8 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     // documents-> that user has to sign
     //document2->user has to sign
     const documentsWithStatus = [
-      ...document2.map((doc) => ({ ...doc, status: "SIGN" })),
-      ...document1.map((doc) => ({ ...doc })),
+      ...document2?.map((doc) => ({ ...doc, status: "SIGN" })),
+      ...document1?.map((doc) => ({ ...doc })),
     ];
     // signer-> last user->completed
 

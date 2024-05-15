@@ -42,7 +42,7 @@ export default function Home() {
     const response = await fetch("/api/files");
     const body = (await response.json()) as FileProps[];
     // set isDeleting to false for all files after fetching
-    setFiles(body.map((file) => ({ ...file, isDeleting: false })));
+    setFiles(body?.map((file) => ({ ...file, isDeleting: false })));
   };
 
   // fetch files on the first render

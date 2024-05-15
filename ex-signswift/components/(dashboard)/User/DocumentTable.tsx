@@ -199,7 +199,7 @@ export function DocumentTable({
     setFilteredData(
       status == ALL_DOCS
         ? data
-        : data.filter((item: any) => {
+        : data?.filter((item: any) => {
             return item.status == statusMap(status);
           })
     );
@@ -283,7 +283,7 @@ export function DocumentTable({
           </TableHeader>
           <TableBody>
             {filteredData
-              ? filteredData.map((link) => (
+              ? filteredData?.map((link) => (
                   <TableRow key={link?.id}>
                     <TableCell>
                       {new Date(link?.createdAt).toLocaleDateString()}
