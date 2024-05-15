@@ -18,6 +18,7 @@ export async function getPresignedUrl(file: FileProps) {
   console.log(file.name);
   const response = await fetch(`/api/files/download/presignedUrl/${file.id}`);
   const res = await response.json();
+  console.log();
 
   return res?.message;
 }
@@ -71,22 +72,35 @@ export default function UploadContainer(id: { id: string }) {
     }
 
     // upload files to s3 endpoint directly and save file info to db
-    await handleUpload([file], presignedUrls, async function () {
-      console.log(presignedUrls[0].url, file);
-      const files = await fetch("/api/files");
-      const body = (await files.json()) as FileProps[];
-      console.log(body);
-      console.log(body[0], "dev body");
+    await handleUpload([file], presignedUrls, async function () {}).then(
+      async () => {
+        console.log(presignedUrls[0].url, file);
+        setTimeout(async () => {
+          console.log("time out 4 seconds");
+          const filesx = await axios.post("/api/files");
+          let body = filesx.data as FileProps[];
+          console.log(body);
+          console.log(body[0], "dev body");
+          while (
+            body[0].originalFileName !== presignedUrls[0].originalFileName
+          ) {
+            const filesxc = await axios.post("/api/files");
+            body = filesxc.data as FileProps[];
+            console.log(body);
+            console.log(body[0], "dev body");
+          }
 
-      const presignedUrl = await getPresignedUrl(body[0]);
-      console.log(presignedUrl);
-      const response = await axios.post("/api/document/uploadDocument", {
-        userId: id.id,
-        ShareLink: presignedUrl,
-      });
-      console.log(response);
-      router.push(`/user/${id.id}/document/${response.data.user.id}/step1`);
-    });
+          const presignedUrl = await getPresignedUrl(body[0]);
+          console.log(presignedUrl);
+          const response = await axios.post("/api/document/uploadDocument", {
+            userId: id.id,
+            ShareLink: presignedUrl,
+          });
+          console.log(response);
+          router.push(`/user/${id.id}/document/${response.data.user.id}/step1`);
+        }, 4000);
+      }
+    );
   };
   const onFileDrop = async (file: File) => {
     try {
