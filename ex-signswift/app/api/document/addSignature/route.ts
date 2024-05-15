@@ -46,9 +46,6 @@ interface IField {
   signature: string;
 }
 export const maxDuration = 50;
-export const config = {
-  maxDuration: 50,
-};
 
 export async function POST(req: NextRequest, res: NextResponse) {
   var oldurl = "";
