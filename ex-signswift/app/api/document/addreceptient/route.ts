@@ -13,7 +13,7 @@ interface Irec {
   token: string;
   documentId: number;
   signnumber: number;
-  signerStatus: string;
+  role: string;
 }
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         token: rec?.token?.toString(),
         signnumber: rec?.signnumber,
         documentId: parseInt(docId),
-        // role: rec?.signerStatus,
+        role: rec?.role,
       })),
     });
     console.log(result, "in add recpint");
