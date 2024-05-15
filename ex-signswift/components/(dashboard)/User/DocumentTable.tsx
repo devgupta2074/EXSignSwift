@@ -210,7 +210,7 @@ export function DocumentTable({
           });
     dat.sort(
       (a: any, b: any) =>
-        new Date(b.createdAt).getDate() - new Date(a.createdAt).getDate()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
     setFilteredData(dat);
@@ -234,8 +234,8 @@ export function DocumentTable({
             setData(document);
             document.sort(
               (a: any, b: any) =>
-                new Date(b.createdAt).getDate() -
-                new Date(a.createdAt).getDate()
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
             );
             setFilteredData(document);
 

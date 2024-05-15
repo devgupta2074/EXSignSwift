@@ -110,55 +110,68 @@ const EmailForm = ({
   }
 
   return (
-    <main className="email-main bg-[#F7F7F7]">
+    <main className=" bg-[#F7F7F7] sticky flex h-full  flex-col overflow-auto rounded-xl border px-4 py-6">
       {/* <div className="heading">Hello MAIN</div>
       <Link href="#" onClick={sendEmail} className="link">
         {emailSent ? "Email Sent!" : "Send Email"}
       </Link> */}
-      <form onSubmit={handleSubmit} className="email-form bg-[#F7F7F7]">
-        <h1 className="form-head-text"> Add Subject</h1>
-        <p className="form-description">
-          Add subject and body for the email you want to send{" "}
-        </p>
+      <form onSubmit={handleSubmit} className=" bg-[#F7F7F7]">
+        <div className="-mx-2 flex flex-1 flex-col px-2 w-full">
+          <h3 className="text-black text-2xl font-semibold">Send Email</h3>
+          <p className="text-black mt-2 text-sm">
+            Add subject and body for the email you want to send
+          </p>
+        </div>
         <hr />
 
-        <label className="email-form-label">Subject</label>
-        <input
-          type="text"
-          name="subject"
-          value={inputs.subject || ""}
-          onChange={handleChange}
-          className="email-subject border-2 border-gray-600"
-        />
-        <label className="email-form-label">Email message</label>
-
-        <textarea
-          name="email_body"
-          value={inputs.email_body}
-          onChange={handleChange}
-          className="email-body border-2 border-gray-600"
-          rows={5}
-          cols={50}
-        />
-        {loading2 ? (
+        <div className="mt-5 mb-5 flex flex-col gap-3 ">
+          <label className="text-sm font-semibold">Subject</label>
+          <input
+            type="text"
+            name="subject"
+            value={inputs.subject || ""}
+            onChange={handleChange}
+            className="  w-1/2 h-10 shadow-sm border border-gray-100 rounded-md"
+          />
+        </div>
+        <div className="mt-5 mb-20 flex flex-col gap-3 ">
+          <label className="text-sm font-semibold">Email message</label>
+          <textarea
+            name="email_body"
+            value={inputs.email_body}
+            onChange={handleChange}
+            className="  w-full h-30 shadow-sm border border-gray-100 rounded-md"
+            rows={5}
+            cols={50}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-5">
           <Button
-            disabled
-            className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
+            className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+            onClick={() => router.back()}
           >
-            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-            Please wait
+            Go Back
           </Button>
-        ) : (
-          <Button
-            className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
-            type="button"
-            onClick={handleSubmit}
-          >
-            Send Email
-          </Button>
-        )}
+          {loading2 ? (
+            <Button
+              disabled
+              className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+            >
+              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </Button>
+          ) : (
+            <Button
+              className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background text-white hover:bg-rose-500/90 h-11 px-8 rounded-md bg-rose-500 flex-1"
+              type="button"
+              onClick={handleSubmit}
+            >
+              Send Email
+            </Button>
+          )}
+        </div>
       </form>
-      <div>
+      <div className="mt-5">
         <p className="text-muted-foreground text-sm text-black">
           Step <span>4 of 4</span>
         </p>
