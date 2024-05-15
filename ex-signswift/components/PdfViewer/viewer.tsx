@@ -1,20 +1,36 @@
 "use client";
 import React, { FC, useEffect } from "react";
 import { pdfjs } from "react-pdf";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import { Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
-import pdfFile from "./sow2.pdf";
+
 import "react-pdf/dist/Page/TextLayer.css";
 import { RefObject } from "react";
 
 import { useState } from "react";
 import usePdfFileFromUrl from "@/app/utils/usePdfUrl";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-interface PdfViewerProps {
-  parentRef?: RefObject<HTMLDivElement>;
-  pdfurl: string;
+interface IField {
+  id: number;
+  secondaaryId: string;
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+  page: number;
+  text: string;
+  icon: string;
+  recipientId: string;
 }
-const PdfViewer: FC<PdfViewerProps> = ({ parentRef, pdfurl }) => {
+interface PdfViewerProps {
+  url: string;
+  copiedItems?: IField[];
+}
+
+const PdfViewer: FC<PdfViewerProps> = ({ url, copiedItems }) => {
+  console.log("copied Items", copiedItems);
   const [numPages, setNumPages] = useState<number>(0);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -32,69 +48,102 @@ const PdfViewer: FC<PdfViewerProps> = ({ parentRef, pdfurl }) => {
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
+  console.log(url);
+  const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
 
-  const { pdfUrl, loading, error } = usePdfFileFromUrl(
-    "https://pdf-lib.js.org/assets/with_update_sections.pdf"
-  );
+  // if (loading) {
+  //   return <Skeleton className="h-96 w-full" />;
+  // }
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        width: "100%",
-        overflowY: "hidden",
-        height: "100%",
-        padding: "1rem",
-      }}
-      className="bg-gray-800"
-    >
-      <div>
+    <div className=" overflow-y-visible">
+      <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
         <div
           style={{
-            height: "70%",
-            marginTop: "5rem",
-            overflowY: "scroll",
-            overflowX: "clip",
+            border: "2px solid red",
+            position: "relative",
           }}
-          id="pdf-viewer"
-          className="border-2 border-rose-500 rounded-md m-2"
         >
-          <Document file={pdfurl} onLoadSuccess={onDocumentLoadSuccess}>
-            <div
-              ref={parentRef}
-              style={{ border: "2px solid green", position: "relative" }}
-            >
-              <Page key={`page_${currentPage}`} pageNumber={currentPage} />
-            </div>
-          </Document>
+          {copiedItems?.map(
+            (item, indx) =>
+              item.page === currentPage && (
+                <div
+                  key={indx}
+                  style={{
+                    width: parseInt(item.width),
+                    height: parseInt(item.height),
+                    left: parseInt(item.left),
+                    top: parseInt(item.top),
+                    position: "absolute",
+                    borderRadius: "0.5rem",
+                    zIndex: 1000,
+                    fontWeight: "500",
+                  }}
+                  className="bg-white text-gray-700 border-2 border-gray-200  rounded-md shadow-md flex justify-center items-center cursor-pointer"
+                >
+                  <div
+                    key={item.id}
+                    style={{
+                      position: "absolute",
+                      width: parseInt(item.width),
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: parseInt(item.height),
+                      textAlign: "center",
+                      zIndex: 1200,
+                    }}
+                  >
+                    <div className="flex flex-col gap-2 items-center justify-center">
+                      <div className="flex gap-5">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: item?.icon || "",
+                          }}
+                        ></div>
+                        <div>{item?.text}</div>
+                      </div>
+                      <div className="text-xs text-center">
+                        {item?.recipientId}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+          )}
+
+          <Page key={`page_${currentPage}`} pageNumber={currentPage} />
         </div>
-        <div className="mt-7 flex gap-40 items-center  justify-center">
-          <button
-            className={`px-6 py-2 mr-2 rounded-md ${
-              currentPage === 1
-                ? "bg-rose-700 text-white cursor-not-allowed"
-                : "bg-rose-500 text-white cursor-pointer"
-            }`}
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-          >
-            Prev
-          </button>
-          <p className="text-lg  text-white mx-4">
-            Page {currentPage} of {numPages}
-          </p>
-          <button
-            className={`px-6 py-2 rounded-md ${
-              currentPage === numPages
-                ? "bg-rose-700 text-white cursor-not-allowed"
-                : "bg-rose-500 text-white cursor-pointer"
-            }`}
-            onClick={handleNextPage}
-            disabled={currentPage === numPages}
-          >
-            Next
-          </button>
-        </div>
+      </Document>
+
+      <div className="mt-7 flex flex-row gap-40 items-center  justify-center">
+        <button
+          className={`px-6 py-2 mr-2 rounded-md ${
+            currentPage === 1
+              ? "bg-rose-700 text-white cursor-not-allowed"
+              : "bg-rose-500 text-white cursor-pointer"
+          }`}
+          onClick={handlePrevPage}
+          type="button"
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+        <p className="text-lg  text-white mx-4">
+          Page {currentPage} of {numPages}
+        </p>
+        <button
+          className={`px-6 py-2 rounded-md ${
+            currentPage === numPages
+              ? "bg-rose-700 text-white cursor-not-allowed"
+              : "bg-rose-500 text-white cursor-pointer"
+          }`}
+          type="button"
+          onClick={handleNextPage}
+          disabled={currentPage === numPages}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

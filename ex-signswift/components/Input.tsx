@@ -1,10 +1,9 @@
-import React, { ChangeEvent } from "react";
-
+import React from "react";
+import { ChangeEvent } from "react";
 interface InputProps {
   onChangeName: (event: ChangeEvent<HTMLInputElement>) => void;
   onChangeEmail: (event: ChangeEvent<HTMLInputElement>) => void;
 }
-
 export default function Input({ onChangeName, onChangeEmail }: InputProps) {
   return (
     <div className="flex flex-row space-x-2">

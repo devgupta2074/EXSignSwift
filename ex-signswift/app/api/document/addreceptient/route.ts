@@ -7,18 +7,30 @@ import { NextRequest, NextResponse } from "next/server";
 
 //update title of document
 
-export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { recpients } = await req.json();
+interface Irec {
+  name: string;
+  email: string;
+  token: string;
+  documentId: number;
+}
 
-  console.log(recpients);
+export async function POST(req: NextRequest, res: NextApiResponse) {
+  const { docId, recipient } = await req.json();
+  console.log(docId, recipient);
+
   try {
-    const rec = await prisma.recipient.createMany({
-      data: recpients,
+    const result = await prisma.recipient.createMany({
+      data: recipient.map((rec: Irec) => ({
+        name: rec.name.toString(),
+        email: rec.email.toString(),
+        token: rec.token.toString(),
+        documentId: parseInt(docId),
+      })),
     });
 
     return NextResponse.json({
       message: "Document Created",
-
+      recipient: result,
       status: 201,
     });
   } catch (error) {

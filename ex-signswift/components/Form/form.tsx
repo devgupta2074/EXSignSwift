@@ -1,16 +1,19 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefObject } from "react";
 import { FC } from "react";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 import { Mail, User, Calendar, Text } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import DropItem from "../DropItem/dropItem";
 import ComboBox from "../DragDrop/comboBox";
 import axios from "axios";
+
 interface DroppedItem {
   id: number;
   left: number;
@@ -19,12 +22,16 @@ interface DroppedItem {
   height: number;
   pageNumber: number;
   text: string;
-  icon: ReactNode;
+  icon: string;
+  secondaryId: number;
   userEmail: string;
   userId: number;
-  //for which user->mail id save  getting from common box set value
 }
+//for which user->mail id save  getting from common box set value
+
 interface FormProps {
+  userId: string;
+  docId: string;
   childrefs: RefObject<HTMLButtonElement>[];
   copiedItems: DroppedItem[];
   value: number;
@@ -39,15 +46,20 @@ const Form: FC<FormProps> = ({
   setValue,
   value2,
   setValue2,
+  userId,
+  docId,
 }) => {
-  console.log("copied item in form", copiedItems);
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
   const handleContinue = async () => {
+    setLoading(true);
     try {
       const saveDocsSign = await axios.post("/api/document/saveDocsSign", {
         docId: "1",
         droppedItem: copiedItems,
       });
-      console.log("saveDocsSign", saveDocsSign);
+      setLoading(false);
+      router.push(`/user/${userId}/document/${docId}/step4`);
     } catch (err) {
       console.log(err);
     }
@@ -106,13 +118,23 @@ const Form: FC<FormProps> = ({
                 Go Back
               </Button>
 
-              <Button
-                type="button"
-                onClick={handleContinue}
-                className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
-              >
-                Continue
-              </Button>
+              {loading ? (
+                <Button
+                  disabled
+                  className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
+                >
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button
+                  className=" bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors w-full"
+                  type="button"
+                  onClick={handleContinue}
+                >
+                  Continue
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>

@@ -4,6 +4,7 @@ import axios from "axios";
 import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useEffect } from "react";
 
 async function fetchData(params: any) {
   try {
@@ -31,6 +32,20 @@ export default function Document({
   // const response = fetchData(params).then((response) =>
   //   setUrl(response?.data.Document.url)
   // );
+  const [url, setUrl] = React.useState("");
+  useEffect(() => {
+    const getDocument = async () => {
+      const response = await axios.post(
+        "http://localhost:3000/api/document/getDocument",
+        {
+          docId: params.documentId,
+        }
+      );
+
+      setUrl(response?.data?.Document?.ShareLink);
+    };
+    getDocument();
+  }, [params]);
   return (
     <div
       className="w-full h-full overflow-hidden"
@@ -42,7 +57,11 @@ export default function Document({
     >
       <div className="flex-1 overflow-hidden">
         <DndProvider backend={HTML5Backend}>
-          <DndComponent url={""} />
+          <DndComponent
+            url={url}
+            docId={params.documentId}
+            userId={params.documentId}
+          />
         </DndProvider>
       </div>
     </div>

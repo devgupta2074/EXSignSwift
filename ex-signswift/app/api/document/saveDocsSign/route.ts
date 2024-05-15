@@ -13,7 +13,8 @@ interface DroppedItem {
   height: number;
   pageNumber: number;
   text: string;
-  icon: ReactNode;
+  icon: string;
+  secondaryId: number;
   userEmail: string;
   userId: number;
 }
@@ -29,17 +30,14 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
   console.log(docId,droppedItem);
 
 
-
 const updateDocument=await prisma.document.update({
   where:{
     id:parseInt(docId)
   },
   data:{
-
     Field:{
       createMany:{
         data:droppedItem.map((field:DroppedItem) => ({
-          secondaryId:field.id.toString(),
           page: field.pageNumber,
           recipientId:field.userId,
           left: field.left,

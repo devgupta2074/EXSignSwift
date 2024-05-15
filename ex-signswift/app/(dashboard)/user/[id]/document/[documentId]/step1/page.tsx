@@ -1,11 +1,25 @@
 "use client";
-
-import PdfViewer from "../../../../../../../components/PdfViewer/viewer";
-
+import { DndComponent } from "@/components/DragDrop/dndComponent";
+import PdfViewer from "@/components/PdfViewer/viewer";
 import axios from "axios";
 import React, { useEffect } from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 async function fetchData(params: any) {
   console.log();
@@ -31,19 +45,31 @@ export default function Document({
   params: { id: string; documentId: string };
 }) {
   const [url, setUrl] = React.useState("");
-  const [name, setName] = React.useState("");
+  const [loading, setLoading] = React.useState<boolean>(true);
+
   const router = useRouter();
+  // useEffect(() => {
+  //   axios
+  //     .post("http://localhost:3000/api/document/getDocument", {
+  //       docId: params.documentId,
+  //     })
+  //     .then((response) => {
+  //       console.log(response.data, "response");
+  //       setUrl(response?.data?.Document?.ShareLink);
+  //     });
+  const [name, setName] = React.useState("");
+
   useEffect(() => {
     fetchData(params).then((response) => {
       console.log(response);
-      setUrl(response?.data.Document.ShareLink);
+      setUrl(response?.data?.Document?.ShareLink);
     });
   }, [params]);
 
   const handleSave = async () => {
+    setLoading(true);
     const data = {
-      userId: 1,
-      id: 1,
+      id: params.documentId,
       title: title,
     };
 
@@ -51,26 +77,33 @@ export default function Document({
       "http://localhost:3000/api/document/updateDocumentTitle",
       data
     );
+    setLoading(false);
     if (updateDocRes) {
-      // router.push(`/user/${params.id}/document/${params.documentId}/step3`);
+      router.push(`/user/${params.id}/document/${params.documentId}/step2`);
     }
-    console.log(updateDocRes.data, "updateDocRes");
   };
-  const [title, setTitle] = React.useState<string>("Random");
+  const [title, setTitle] = React.useState<string>("");
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "row",
         width: "100%",
-        overflowY: "hidden",
+
         height: "100%",
         padding: "1rem",
       }}
       className="bg-gray-800"
     >
-      <div id="pdf-viewer">
-        <PdfViewer pdfurl={url} />
+      <div
+        // style={{
+        //   overflowY: "scroll",
+        //   overflowX: "hidden",
+        // }}
+        id="pdf-viewer"
+        className="border-2 border-rose-500 rounded-md  h-full w-1/2"
+      >
+        <PdfViewer url={url} />
       </div>
       <div className="bg-gray-800 w-full mt-[5rem]">
         <div>

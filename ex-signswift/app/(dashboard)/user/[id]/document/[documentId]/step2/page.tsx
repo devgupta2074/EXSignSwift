@@ -1,4 +1,31 @@
 "use client";
+// import PdfFillComponent from "@/components/DragDrop/pdfFillComponent";
+// import SignatureForm from "@/components/Form/signatureForm";
+// import PdfViewer from "@/components/PdfViewer/viewer";
+// import Step2 from "@/components/Step2";
+// import React from "react";
+// import SignatureCanvas from "react-signature-canvas";
+// import { useRouter } from "next/navigation";
+// import { useEffect } from "react";
+// import axios from "axios";
+// const page = ({ params }: { params: { id: string; documentId: string } }) => {
+//   const [title, setTitle] = React.useState<string>("");
+//   const [url, setUrl] = React.useState("");
+//   const [loading, setLoading] = React.useState<boolean>(true);
+//   const router = useRouter();
+//   useEffect(() => {
+//     const getDocument = async () => {
+//       const response = await axios.post(
+//         "http://localhost:3000/api/document/getDocument",
+//         {
+//           docId: params.documentId,
+//         }
+//       );
+//       setTitle(response?.data?.Document?.title);
+//       setUrl(response?.data?.Document?.ShareLink);
+//     };
+//     getDocument();
+//   }, [params]);
 
 import Input from "../../../../../../../components/Input";
 
@@ -128,7 +155,7 @@ export default function Document({
   const router = useRouter();
   useEffect(() => {
     fetchData(params).then((response) =>
-      setUrl(response?.data.Document.ShareLink)
+      setUrl(response?.data?.Document?.ShareLink)
     );
   }, [params]);
 
@@ -141,21 +168,19 @@ export default function Document({
         width: "100%",
         overflowY: "hidden",
         height: "100%",
+        gap: 0,
         padding: "1rem",
       }}
       className="bg-gray-800"
     >
       <div id="pdf-viewer">
-        <PdfViewer pdfurl={url} />
+        <PdfViewer url={url} />
       </div>
-      <div className="bg-gray-800 w-full mt-[5rem]">
+      <div className="bg-gray-800 w-[600px] mt-[5rem]">
         <div>
           <div className="w-full">
-            <form
-              id="document-flow-form-container"
-              className=" border-rose-500 sticky flex h-full max-h-[64rem] flex-col overflow-auto rounded-xl border px-4 py-6 lg:h-[calc(100vh-6rem)]"
-            >
-              <div className="-mx-2 flex flex-1 flex-col px-2">
+            <form id="document-flow-form-container" className="  ">
+              <div className=" flex flex-1 flex-col ">
                 <h3 className="text-white text-2xl font-semibold">General</h3>
                 <p className="text-gray-100 mt-2 text-sm">
                   Configure general settings for the document.

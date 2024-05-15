@@ -15,10 +15,17 @@ export default async function Home() {
   if (!session) {
     redirect("/login");
   } else {
-    const response = await axios.post("/api/users/registerUser", session.user);
+    const response = await axios.post(
+      "http://localhost:3000/api/users/registerUser",
+      session.user
+    );
     console.log(response.data.user.customerId);
     redirect(`/user/${response.data.user.customerId}`);
   }
 
-  return <></>;
+  return (
+    <>
+      <div></div>
+    </>
+  );
 }

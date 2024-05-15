@@ -34,6 +34,7 @@ interface DroppedItem {
   pageNumber: number;
   text: string;
   icon: string;
+  secondaryId: number;
   userEmail: string;
   userId: number;
 }
@@ -41,10 +42,16 @@ interface ChildRefs {
   [key: number]: React.MutableRefObject<HTMLButtonElement | null>;
 }
 
-export const DndComponent = ({ url }: { url: string }) => {
+export const DndComponent = ({
+  url,
+  userId,
+  docId,
+}: {
+  url: string;
+  userId: string;
+  docId: string;
+}) => {
   const [numPages, setNumPages] = useState<number>(0);
-
-  const handleAddFields = () => {};
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
@@ -56,9 +63,7 @@ export const DndComponent = ({ url }: { url: string }) => {
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
-  const { pdfUrl, loading, error } = usePdfFileFromUrl(
-    "https://pdf-lib.js.org/assets/with_update_sections.pdf"
-  );
+  const { pdfUrl, loading, error } = usePdfFileFromUrl(url);
 
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -113,7 +118,7 @@ export const DndComponent = ({ url }: { url: string }) => {
   const useRefsArray = (length: number) => {
     return Array.from({ length }).map(() => useRef<HTMLButtonElement>(null));
   };
-  const router = useRouter();
+
   const childrefs = useRefsArray(5);
   const [, drop] = useDrop({
     accept: "test",
@@ -132,16 +137,18 @@ export const DndComponent = ({ url }: { url: string }) => {
       top = Math.max(0, top);
       left = Math.min(left, parentRect.width - (childRect?.width || 0));
       top = Math.min(top, parentRect.height - (childRect?.height || 0));
+      console.log(item.id, "item id");
+      console.log(copiedItems.length, "copied items length");
       const newItem = {
         icon: actualChildRef?.current?.querySelector("div")?.innerHTML || "",
         pageNumber: currentPage,
-        id: item.id,
+        secondaryId: item.id,
+        id: copiedItems.length,
         left,
         top,
         text: actualChildRef?.current?.innerText || "",
         width: childRect?.width || 0,
         height: childRect?.height || 0,
-
         userEmail: value2,
         userId: value,
       };
@@ -395,6 +402,8 @@ export const DndComponent = ({ url }: { url: string }) => {
         className="h-1/4"
       >
         <Form
+          userId={userId}
+          docId={docId}
           childrefs={childrefs}
           copiedItems={copiedItems}
           value={value}

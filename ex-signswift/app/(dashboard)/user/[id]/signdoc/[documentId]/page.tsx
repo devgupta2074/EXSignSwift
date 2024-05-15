@@ -9,54 +9,39 @@ import SignatureCanvas from "react-signature-canvas";
 import { ReactNode } from "react";
 import { useEffect } from "react";
 
-interface DroppedItem {
+interface IField {
   id: number;
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-  pageNumber: number;
+  secondaaryId: string;
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+  page: number;
   text: string;
-  icon: ReactNode;
-  user: string;
+  icon: string;
+  recipientId: string;
 }
-const page = () => {
+const page = ({ params }: { params: { id: string; documentId: string } }) => {
   const signatureCanvasRef = React.useRef<SignatureCanvas | null>(null);
+  const [url, setUrl] = React.useState("");
   const signatureCanvasRef2 = React.useRef<SignatureCanvas | null>(null);
-  const { documentId } = useParams();
-  const [copiedItems, setCopiedItems] = React.useState<DroppedItem[]>([]);
+  const [copiedItems, setCopiedItems] = React.useState<IField[]>([]);
 
   useEffect(() => {
     const getDocument = async () => {
-      const data = {
-        docId: documentId,
-      };
       const response = await axios.post(
         "http://localhost:3000/api/document/getDocument",
-        data
+        {
+          docId: params.documentId,
+        }
       );
-      //   console.log(response);
+      console.log("step4", response);
 
-      const transformedFields = response.data.Document.Field;
-
-      const newField = transformedFields.map((field: any) => {
-        return {
-          id: field.secondaryId,
-          left: parseInt(field.left),
-          top: parseInt(field.top),
-          width: parseInt(field.width),
-          height: parseInt(field.height),
-          pageNumber: field.page,
-          text: field.text,
-          user: field.recipientId.toString(),
-        };
-      });
-      setCopiedItems(newField);
-
-      //   setCopiedItems(transformedFields);
+      setUrl(response?.data?.Document?.ShareLink);
+      setCopiedItems(response?.data?.Document?.Field);
     };
     getDocument();
-  }, []);
+  }, [params]);
 
   return (
     <div
@@ -78,6 +63,7 @@ const page = () => {
         }}
       >
         <PdfFillComponent
+          url={url}
           copiedItems={copiedItems}
           signatureCanvasRef={signatureCanvasRef}
           signatureCanvasRef2={signatureCanvasRef2}
