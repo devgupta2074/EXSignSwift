@@ -121,41 +121,22 @@ const page = () => {
 
   const handleSign = async () => {
     const signDoc = async () => {
-      const response = await axios.post(
-        "https://ex-sign-swift.vercel.app/api/document/addSignature",
-        {
-          docId: params.documentId,
-          copiedItems: copiedItems,
-          isLast: isLast,
-          recipientEmail: email,
-        }
-      );
+      try {
+        const response = await axios.post(
+          "https://ex-sign-swift.vercel.app/api/document/addSignature",
+          {
+            docId: params.documentId,
+            copiedItems: copiedItems,
+            isLast: isLast,
+            recipientEmail: email,
+          }
+        );
 
-      console.log(response, "funny");
-      if (response.status === 200) {
-        // fetch(file).then(async (response) => {
-        //   const contentType = response.headers.get("content-type");
-        //   const blob = await response.blob();
-        //   const file = new File([blob], "filename.pdf");
-        //   // access file here
-        //   const res = await edgestore.publicFiles.upload({
-        //     file: file,
-        //     // options: {
-        //     //   replaceTargetUrl: response.data.oldurl,
-        //     // },
-        //   });
-        //   console.log("File uploaded successfully:", res);
-        //   if (res.url) {
-        //     const response = await axios.post(
-        //       "https://ex-sign-swift.vercel.app/api/document/updatedocumentlink",
-        //       {
-        //         id: params.documentId,
-        //         link: res.url,
-        //       }
-        //     );
-        //     console.log(response);
-        //   }
-        // });
+        console.log(response, "funny");
+      } catch (error) {
+        console.error("Error during API call:", error);
+      } finally {
+        router.push(`/`);
       }
 
       router.push(`/`);
