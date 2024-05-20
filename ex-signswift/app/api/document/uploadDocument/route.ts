@@ -6,6 +6,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
+  console.log(req);
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Adjust the origin as needed
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  console.log("hello");
   const { userId, ShareLink } = await req.json();
 
   console.log(userId, ShareLink);
@@ -33,6 +38,3 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
 // We hash the user entered password using crypto.js
 
 // function to create user in our database
-async function createUserHandler(req: NextApiRequest, res: NextApiResponse) {
-  let errors = [];
-}

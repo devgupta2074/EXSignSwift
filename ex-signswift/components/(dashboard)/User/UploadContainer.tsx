@@ -91,7 +91,6 @@ export default function UploadContainer(id: { id: string }) {
             console.log(body[0], "dev body");
           }
 
-
           const presignedUrl = await getPresignedUrl(body[0]);
           console.log(presignedUrl);
           const response = await axios.post("/api/document/uploadDocument", {
