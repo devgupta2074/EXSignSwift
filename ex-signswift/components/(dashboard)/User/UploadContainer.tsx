@@ -77,7 +77,7 @@ export default function UploadContainer(id: { id: string }) {
       async () => {
         console.log(presignedUrls[0].url, file);
         setTimeout(async () => {
-          console.log("time out 4 seconds");
+          console.log("time out 4 seconds hello");
           const filesx = await axios.post("/api/files");
           let body = filesx.data as FileProps[];
           console.log(body);

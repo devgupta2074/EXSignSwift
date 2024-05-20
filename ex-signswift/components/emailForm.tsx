@@ -55,7 +55,7 @@ const EmailForm = ({
     setInputs((values) => ({ ...values, [name]: value }));
   };
   const mails = recipient?.map((email: any) => email.email);
-  console.log("mails", mails);
+  console.log("mailsss", mails);
   console.log("recipient", recipient.item);
   const check = recipient?.map((item: any) => item);
   console.log("check", check);
