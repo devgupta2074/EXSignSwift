@@ -428,6 +428,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         bucketName: process.env.S3_BUCKET_NAME || "ipvms-dev",
         fileName: fileName,
       });
+      console.log(presignedUrltodownload);
 
       await prisma.document.update({
         where: { id: parseInt(docId || "0") },
@@ -444,6 +445,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         subject: "check_multiple in main",
         html: `<h3>Your document is signed by all recipients</h3> <a href=${presignedUrltodownload}> Download The Signed Document</a>`,
       };
+      console.log("mail options", mailOptions);
 
       await transporter.sendMail(mailOptions, (error: any, info: any) => {
         if (error) {
