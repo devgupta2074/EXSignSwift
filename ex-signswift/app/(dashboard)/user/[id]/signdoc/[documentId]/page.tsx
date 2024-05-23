@@ -121,17 +121,23 @@ const page = () => {
 
   const handleSign = async () => {
     const signDoc = async () => {
-      const response = await axios.post(
-        "https://ex-sign-swift.vercel.app/api/document/addSignature",
-        {
-          docId: params.documentId,
-          copiedItems: copiedItems,
-          isLast: isLast,
-          recipientEmail: email,
-        }
-      );
+      try {
+        const response = await axios.post(
+          "https://ex-sign-swift.vercel.app/api/document/addSignature",
+          {
+            docId: params.documentId,
+            copiedItems: copiedItems,
+            isLast: isLast,
+            recipientEmail: email,
+          }
+        );
 
-      console.log(response, "funny");
+        console.log(response, "funny");
+      } catch (error) {
+        console.error("Error during API call:", error);
+      } finally {
+        router.push(`/`);
+      }
 
       router.push(`/`);
     };
