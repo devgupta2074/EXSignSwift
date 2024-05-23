@@ -292,8 +292,8 @@ const nodemailer = require("nodemailer");
 dotenv.config();
 let transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: true, // true for 465, false for other ports
+  port: 587, // Use 587 or 25
+  secure: false, // true for 465, false for other ports
   auth: {
     user: process.env.SMTP_MAIL, // generated ethereal user
     pass: process.env.SMTP_PASSWORD, // generated ethereal password
@@ -430,7 +430,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       });
       console.log(presignedUrltodownload);
 
-      await prisma.document.update({
+      const resd = await prisma.document.update({
         where: { id: parseInt(docId || "0") },
         data: {
           signnumber: { increment: 1 },
@@ -438,22 +438,22 @@ export async function POST(req: NextRequest, res: NextResponse) {
           ShareLink: presignedUrltodownload,
         },
       });
+      console.log(resd);
 
       const mailOptions = {
         from: process.env.SMTP_MAIL,
-        to: [user2.email, "guptadev265@gmail.com", "guptadev545@gmail.com"],
+        to: [user2.email, recipientEmail],
         subject: "check_multiple in main",
-        html: `<h3>Your document is signed by all recipients</h3> <a href=${presignedUrltodownload}> Download The Signed Document</a>`,
+        html: `<h3>Your document is signed by all recipients</h3> <a href=${presignedUrltodownload}>Link to Completed Document</a>`,
       };
       console.log("mail options", mailOptions);
 
-      await transporter.sendMail(mailOptions, (error: any, info: any) => {
-        if (error) {
-          console.error("Error sending email:", error);
-        } else {
-          console.log("Email sent successfully!");
-        }
-      });
+      try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email sent successfully:", info);
+      } catch (error) {
+        console.error("Error sending email:", error);
+      }
     } else {
       const signFields = copiedItems.map((item: any) => ({
         fieldId: item.id,
@@ -483,14 +483,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
       });
     }
-
-    return NextResponse.json({ message: "success", status: 200 });
+    console.log("hello");
+    return NextResponse.json({ message: "hello" });
   } catch (error: any) {
     console.error("Error processing request:", error);
-    return NextResponse.json({
-      message: "Internal Server Error",
-      status: 500,
-      error: error.message,
-    });
   }
 }
