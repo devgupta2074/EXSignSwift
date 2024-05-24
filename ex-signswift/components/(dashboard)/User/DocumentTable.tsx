@@ -274,6 +274,14 @@ export function DocumentTable({
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   };
+  const isExpired = (createdAt: any) => {
+    if (!isExpired) {
+      return false;
+    }
+
+    const expirationDate = new Date(createdAt);
+    return new Date() > expirationDate;
+  };
   if (loading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
@@ -305,7 +313,11 @@ export function DocumentTable({
                     <TableCell>{link?.title || "NULL"}</TableCell>
                     <TableCell>
                       <Button className="bg-rose-400  w-24 hover:bg-rose-500 text-white font-medium ">
-                        <Link href={link.ShareLink || ""}>
+                        <Link
+                          href={
+                            !isExpired(link?.Expiration) ? link.ShareLink : ""
+                          }
+                        >
                           <H4>View</H4>
                         </Link>
                       </Button>
@@ -360,12 +372,23 @@ export function DocumentTable({
                       <Button
                         className="bg-rose-400  w-28 p-2 hover:bg-rose-500 text-white font-medium "
                         onClick={() => {
-                          router.push(actionStatusUrl(link));
+                          if (!isExpired(link?.Expiration)) {
+                            router.push(actionStatusUrl(link));
+                          }
                         }}
                       >
                         {/* Sign or view*/}
                         <H4>{actionStatus(link?.status)}</H4>
                       </Button>
+                    </TableCell>
+                    <TableCell>
+                      {isExpired(link?.Expiration) &&
+                        (link.status === "PENDING" ||
+                          link.status === "SIGN") && (
+                          <div className="inline-flex items-center justify-center bg-red-500 text-white text-xs font-medium rounded-full px-2 py-1">
+                            Expired
+                          </div>
+                        )}
                     </TableCell>
                   </TableRow>
                 ))

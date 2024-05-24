@@ -67,21 +67,6 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
               },
             },
           },
-          {
-            OR: [
-              {
-                Expiration: {
-                  gt: new Date(),
-                },
-              },
-              {
-                Expiration: null,
-              },
-            ],
-          },
-          {
-            Active: true,
-          },
         ],
       },
       include: {
@@ -92,8 +77,15 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     console.log(document1, "document 1 are");
     // documents-> that user has to sign
     //document2->user has to sign
+    const modifiedDocument2 = document2.map((doc) => {
+      if (doc.status === "PENDING") {
+        return { ...doc, status: "SIGN" };
+      }
+      return doc;
+    });
+
     const documentsWithStatus = [
-      ...document2?.map((doc) => ({ ...doc, status: "SIGN" })),
+      ...modifiedDocument2?.map((doc) => ({ ...doc })),
       ...document1?.map((doc) => ({ ...doc })),
     ];
     // signer-> last user->completed
