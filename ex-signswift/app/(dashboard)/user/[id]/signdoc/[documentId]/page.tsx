@@ -5,7 +5,7 @@ import PdfFillComponent from "@/components/DragDrop/pdfFillComponent";
 import SignatureForm from "@/components/Form/signatureForm";
 import { useParams } from "next/navigation";
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 
 import { useEffect } from "react";
@@ -17,6 +17,7 @@ import "react-toastify/ReactToastify.css";
 import Cookies from "js-cookie";
 import { User } from "@prisma/client";
 import { useEdgeStore } from "@/lib/edgestore";
+import Loader from "@/components/Loader";
 interface IField {
   id: number;
   secondaaryId: string;
@@ -34,6 +35,7 @@ const page = () => {
   const params = useParams<{ documentId: string; id: string }>();
   console.log(params.id, params.documentId);
   const signatureCanvasRef = React.useRef<SignatureCanvas | null>(null);
+  const [loading, setLoading] = useState(false);
   const [isLast, setIsLast] = React.useState<boolean>(false);
   const [url, setUrl] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -121,6 +123,7 @@ const page = () => {
 
   const handleSign = async () => {
     const signDoc = async () => {
+      setLoading(true);
       try {
         console.log("is last is", isLast);
         const response = await axios.post(
@@ -138,12 +141,16 @@ const page = () => {
         console.error("Error during API call:", error);
       } finally {
         router.push(`/`);
+        setLoading(false);
       }
 
       router.push(`/`);
     };
     signDoc();
   };
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div
