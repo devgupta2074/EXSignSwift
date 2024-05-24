@@ -24,16 +24,7 @@ const SignatureForm = ({
     signatureCanvasRef?.current?.fromDataURL(imageUrl);
     console.log(signatureCanvasRef?.current?.toDataURL());
   };
-  const handleSignature = async () => {
-    setLoading(true);
-    try {
-      await handleSign();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
   return (
     <div className="bg-[#f7f7f7] border-border bg-widget sticky flex  flex-col rounded-xl border px-4 py-6 top-20  w-full ">
       <form className="px-4 py-2">
@@ -94,7 +85,7 @@ const SignatureForm = ({
               ) : (
                 <Button
                   className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
-                  onClick={handleSignature}
+                  onClick={handleSign}
                 >
                   Sign
                 </Button>
