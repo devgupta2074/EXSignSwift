@@ -60,7 +60,7 @@ const page = () => {
     setEmail(userx?.email || "");
     const getDocument = async () => {
       const response = await axios.post(
-        "http://localhost:3000/api/document/getDocument",
+        "https://ex-sign-swift.vercel.app/api/document/getDocument",
         {
           docId: params.documentId,
         }
@@ -109,7 +109,7 @@ const page = () => {
               }
             );
             setTimeout(() => {
-              router.push(`http://localhost:3000/user/${params.id}`);
+              router.push(`https://ex-sign-swift.vercel.app/user/${params.id}`);
             }, 2000);
           }
         }
