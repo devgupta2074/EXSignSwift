@@ -5,6 +5,7 @@ import { Card, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import CustomSignatureCanvas from "../Signature/signatureCanvas";
 import SignatureCanvas from "react-signature-canvas";
+import { ReloadIcon } from "@radix-ui/react-icons";
 interface SignatureFormProps {
   signatureCanvasRef: React.RefObject<SignatureCanvas>;
   handleSign: () => void;
@@ -14,6 +15,7 @@ const SignatureForm = ({
   handleSign,
 }: SignatureFormProps) => {
   const [imagesrc, setImagesrc] = useState("");
+  const [loading, setLoading] = useState(false);
   const uploadSignature = (e: any) => {
     console.log("sone");
     const file = e.target.files[0];
@@ -21,6 +23,16 @@ const SignatureForm = ({
     setImagesrc(imageUrl);
     signatureCanvasRef?.current?.fromDataURL(imageUrl);
     console.log(signatureCanvasRef?.current?.toDataURL());
+  };
+  const handleSignature = async () => {
+    setLoading(true);
+    try {
+      await handleSign();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="bg-[#f7f7f7] border-border bg-widget sticky flex  flex-col rounded-xl border px-4 py-6 top-20  w-full ">
@@ -71,14 +83,22 @@ const SignatureForm = ({
                 Cancel
               </Button>
 
-              <Button
-                type="button"
-                className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
-                onClick={handleSign}
-                // onClick prop
-              >
-                Sign
-              </Button>
+              {loading ? (
+                <Button
+                  className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
+                  disabled
+                >
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button
+                  className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
+                  onClick={handleSignature}
+                >
+                  Sign
+                </Button>
+              )}
             </div>
           </div>
         </fieldset>

@@ -338,9 +338,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const user2 = await prisma.user.findUnique({
       where: { customerId: userId },
     });
-
     if (!user2) throw new Error("User not found");
-
     console.log("user id", user2);
     console.log("email is", user2.email);
 

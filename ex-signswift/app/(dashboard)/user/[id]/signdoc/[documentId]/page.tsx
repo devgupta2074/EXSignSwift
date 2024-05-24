@@ -60,7 +60,7 @@ const page = () => {
     setEmail(userx?.email || "");
     const getDocument = async () => {
       const response = await axios.post(
-        "https://ex-sign-swift.vercel.app/api/document/getDocument",
+        "http://localhost:3000/api/document/getDocument",
         {
           docId: params.documentId,
         }
@@ -109,7 +109,7 @@ const page = () => {
               }
             );
             setTimeout(() => {
-              router.push(`https://ex-sign-swift.vercel.app/user/${params.id}`);
+              router.push(`http://localhost:3000/user/${params.id}`);
             }, 2000);
           }
         }
@@ -122,8 +122,9 @@ const page = () => {
   const handleSign = async () => {
     const signDoc = async () => {
       try {
+        console.log("is last is", isLast);
         const response = await axios.post(
-          "https://ex-sign-swift.vercel.app/api/document/addSignature",
+          "http://localhost:3000/api/document/addSignature",
           {
             docId: params.documentId,
             copiedItems: copiedItems,
