@@ -124,7 +124,7 @@ const page = () => {
       try {
         console.log("is last is", isLast);
         const response = await axios.post(
-          "http://localhost:3000/api/document/addSignature",
+          "https://ex-sign-swift.vercel.app/api/document/addSignature",
           {
             docId: params.documentId,
             copiedItems: copiedItems,
