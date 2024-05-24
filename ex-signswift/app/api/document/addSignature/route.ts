@@ -448,6 +448,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
       try {
         const info = await transporter.sendMail(mailOptions);
+        if (info) {
+          const webhookUrl = `http://localhost:5001/webhook/updateLetterStatus/${docId}`; // Replace with your actual webhook URL
+
+          await fetch(webhookUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+        }
         console.log("Email sent successfully:", info);
       } catch (error) {
         console.error("Error sending email:", error);

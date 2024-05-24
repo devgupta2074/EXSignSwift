@@ -74,22 +74,15 @@ const SignatureForm = ({
                 Cancel
               </Button>
 
-              {loading ? (
-                <Button
-                  className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
-                  disabled
-                >
-                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button
-                  className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
-                  onClick={handleSign}
-                >
-                  Sign
-                </Button>
-              )}
+              <Button
+                type="button"
+                className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
+                onClick={() => {
+                  handleSign();
+                }}
+              >
+                Sign
+              </Button>
             </div>
           </div>
         </fieldset>
