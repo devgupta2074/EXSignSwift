@@ -147,9 +147,11 @@ const page = () => {
     signDoc();
   };
   if (loading) {
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
-      <Loader />
-    </div>;
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+        <Loader />
+      </div>
+    );
   }
 
   return (
