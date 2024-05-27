@@ -27,7 +27,12 @@ const SignatureForm = ({
 
   return (
     <div className="bg-[#f7f7f7] border-border bg-widget sticky flex  flex-col rounded-xl border px-4 py-6 top-20  w-full ">
-      <form className="px-4 py-2">
+      <form
+        className="px-4 py-2"
+        // onSubmit={(e) => {
+        //   e.preventDefault();
+        // }}
+      >
         <fieldset className="custom-scrollbar flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
           <div className="flex flex-col">
             <h3 className="text-foreground text-2xl font-semibold">
@@ -74,22 +79,13 @@ const SignatureForm = ({
                 Cancel
               </Button>
 
-              {loading ? (
-                <Button
-                  className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
-                  disabled
-                >
-                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button
-                  className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
-                  onClick={handleSign}
-                >
-                  Sign
-                </Button>
-              )}
+              <Button
+                type="button"
+                className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
+                onClick={handleSign}
+              >
+                Sign
+              </Button>
             </div>
           </div>
         </fieldset>

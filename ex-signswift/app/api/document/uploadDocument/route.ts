@@ -20,7 +20,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     });
     return NextResponse.json({
       message: "Document Created",
-      user: user,
+      document: user,
       status: 201,
     });
   } else {

@@ -1,26 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async headers() {
-    return [
-      {
-        // matching all API routes
-        source: "/api/:path*",
-        headers: [
-          { key: "Access-Control-Allow-Credentials", value: "true" },
-          { key: "Access-Control-Allow-Origin", value: "*" }, // replace this your actual origin
-          {
-            key: "Access-Control-Allow-Methods",
-            value: "GET,DELETE,PATCH,POST,PUT",
-          },
-          {
-            key: "Access-Control-Allow-Headers",
-            value:
-              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
-          },
-        ],
-      },
-    ];
-  },
   images: {
     domains: ["lh3.googleusercontent.com"],
   },
@@ -32,8 +11,49 @@ const nextConfig = {
     NEXTAUTH_SECRET:
       "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcxMDc1NDg0NywiaWF0IjoxNzEwNzU0ODQ3fQ.9n-x_Zw4syq4hv_IqtQE8S1KhxdNoRfwLUj7kA_Ublo",
   },
+  async headers() {
+    return [
+      {
+        // matching all API routes
+
+        source: "/api/users/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value:
+              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+          },
+        ],
+      },
+      {
+        // matching all API routes
+
+        source: "/api/document/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value:
+              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+          },
+        ],
+      },
+    ];
+  },
   webpack: (config) => {
     config.resolve.alias.canvas = false;
+
     // config.module.rules.push({
     //   test: /\.pdf$/,
     //   use: {
@@ -43,6 +63,7 @@ const nextConfig = {
     //     },
     //   },
     // });
+
     config.module.rules.push({
       test: /\.(pdf)$/,
       type: "asset/resource",
