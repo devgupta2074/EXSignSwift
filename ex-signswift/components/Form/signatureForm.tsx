@@ -82,9 +82,7 @@ const SignatureForm = ({
               <Button
                 type="button"
                 className="bg-[#A2E771] hover:bg-[#a2e771c2] w-full text-black"
-                onClick={() => {
-                  handleSign();
-                }}
+                onClick={handleSign}
               >
                 Sign
               </Button>

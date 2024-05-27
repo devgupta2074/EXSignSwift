@@ -133,13 +133,13 @@ const page = () => {
             recipientEmail: email,
           }
         );
+        if (response) {
+          router.push(`/`);
+        }
         console.log(response, "funny");
       } catch (error) {
         console.error("Error during API call:", error);
-      } finally {
       }
-
-      router.push(`/`);
     };
     signDoc();
   };
