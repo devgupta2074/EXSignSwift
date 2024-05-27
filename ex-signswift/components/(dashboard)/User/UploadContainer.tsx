@@ -98,7 +98,9 @@ export default function UploadContainer(id: { id: string }) {
             ShareLink: presignedUrl,
           });
           console.log(response);
-          router.push(`/user/${id.id}/document/${response.data.user.id}/step1`);
+          router.push(
+            `/user/${id.id}/document/${response.data.document.id}/step1`
+          );
         }, 4000);
       }
     );
