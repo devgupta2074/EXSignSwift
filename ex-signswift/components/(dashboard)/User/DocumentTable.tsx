@@ -61,7 +61,8 @@ export function DocumentTable({
     any[]
   >([]);
   console.log(id);
-  const actionStatus = (status: any) => {
+  const actionStatus = (status: any, link: any) => {
+    console.log(status, link);
     if (status === "DRAFT") {
       return (
         <div className="inline-flex items-center justify-center rounded-md text-sm font-medium">
@@ -83,7 +84,7 @@ export function DocumentTable({
           Edit
         </div>
       );
-    } else if (status === "SIGN") {
+    } else if (status === "SIGN" && link.Recipient[0].role == "SIGNER") {
       return (
         <div className="inline-flex items-center justify-center rounded-md text-sm font-medium">
           <svg
@@ -102,6 +103,33 @@ export function DocumentTable({
             <path d="m15 5 4 4"></path>
           </svg>
           Sign
+        </div>
+      );
+    } else if (status === "SIGN" && link.Recipient[0].role == "VIEWER") {
+      console.log("hello");
+      return (
+        <div className="inline-flex items-center  justify-center rounded-md text-sm font-medium">
+          <svg
+            className="w-6 h-6 text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              stroke-width="2"
+              d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"
+            />
+            <path
+              stroke="currentColor"
+              stroke-width="2"
+              d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+            />
+          </svg>
+          VIEW
         </div>
       );
     } else if (status === "PENDING") {
@@ -167,11 +195,13 @@ export function DocumentTable({
       });
     }
   };
-  const actionStatusUrl = (link: any) => {
+  const actionStatusUrl = (link: any, role: any) => {
     if (link.status === "DRAFT") {
-      return `https://ex-sign-swift.vercel.app/user/${id}/document/${link.id}/step1`;
-    } else if (link.status === "SIGN") {
-      return `https://ex-sign-swift.vercel.app/user/${id}/signdoc/${link.id}`;
+      return `http://localhost:3000/user/${id}/document/${link.id}/step1`;
+    } else if (link.status === "SIGN" && role === "SIGNER") {
+      return `http://localhost:3000/user/${id}/signdoc/${link.id}`;
+    } else if (link.status === "SIGN" && role === "VIEWER") {
+      return link.ShareLink;
     } else if (link.status === "PENDING") {
       return "";
     } else if (link.status === "COMPLETED") {
@@ -214,6 +244,7 @@ export function DocumentTable({
     );
 
     setFilteredData(dat);
+    console.log(filteredData);
   }, [status, range]);
   // React.useEffect(() => {
   //   setFilteredDatawithrange(setFilteredDatax(range, filteredData));
@@ -224,13 +255,14 @@ export function DocumentTable({
       if (id && email) {
         await axios
           .post(
-            "https://ex-sign-swift.vercel.app/api/document/getDocumentForUser",
+            "http://localhost:3000/api/document/getDocumentForUser",
             { userId: id, email: email }
             //pending
             //why parse user id
           )
           .then((response) => {
             const document = response.data?.Document;
+            console.log(document, "document fff");
             setData(document);
             document.sort(
               (a: any, b: any) =>
@@ -373,12 +405,14 @@ export function DocumentTable({
                         className="bg-rose-400  w-28 p-2 hover:bg-rose-500 text-white font-medium "
                         onClick={() => {
                           if (!isExpired(link?.Expiration)) {
-                            router.push(actionStatusUrl(link));
+                            router.push(
+                              actionStatusUrl(link, link.Recipient[0].role)
+                            );
                           }
                         }}
                       >
                         {/* Sign or view*/}
-                        <H4>{actionStatus(link?.status)}</H4>
+                        <H4>{actionStatus(link?.status, link)}</H4>
                       </Button>
                     </TableCell>
                     <TableCell>
