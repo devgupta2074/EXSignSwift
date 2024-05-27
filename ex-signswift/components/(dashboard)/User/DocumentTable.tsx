@@ -406,7 +406,12 @@ export function DocumentTable({
                         onClick={() => {
                           if (!isExpired(link?.Expiration)) {
                             router.push(
-                              actionStatusUrl(link, link.Recipient[0].role)
+                              actionStatusUrl(
+                                link,
+                                link.Recipient !== undefined
+                                  ? link.Recipient[0].role
+                                  : ""
+                              )
                             );
                           }
                         }}
