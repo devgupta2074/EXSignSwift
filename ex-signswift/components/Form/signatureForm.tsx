@@ -27,7 +27,12 @@ const SignatureForm = ({
 
   return (
     <div className="bg-[#f7f7f7] border-border bg-widget sticky flex  flex-col rounded-xl border px-4 py-6 top-20  w-full ">
-      <form className="px-4 py-2">
+      <form
+        className="px-4 py-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <fieldset className="custom-scrollbar flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
           <div className="flex flex-col">
             <h3 className="text-foreground text-2xl font-semibold">
