@@ -74,8 +74,8 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       },
     });
 
-    console.log(document1, "document 1 are");
-    console.log(document2, "document 2 are");
+    // console.log(document1, "document 1 are");
+    // console.log(document2, "document 2 are");
     // documents-> that user has to sign
     //document2->user has to sign
     const modifiedDocument2 = document2.map((doc) => {

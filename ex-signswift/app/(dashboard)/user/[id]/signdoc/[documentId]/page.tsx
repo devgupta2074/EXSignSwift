@@ -46,6 +46,7 @@ const page = () => {
   const [recipients, setRecipients] = React.useState<any[]>([]);
   const [signNumber, setSignNumber] = React.useState<number>(0);
   const [userx, setUser] = React.useState<User>();
+  const [recipientid, setrecipientid] = React.useState<string>("0");
 
   React.useEffect(() => {
     const cookieData = Cookies.get("session");
@@ -69,9 +70,18 @@ const page = () => {
       );
       console.log("step4", response);
       setUrl(response?.data?.Document?.ShareLink);
-      const recipientId = response?.data?.Document?.Recipient?.find(
-        (user: any) => user.email === user?.email
-      ).id;
+      console.log(userx?.email, "step444444");
+      const recipientxxx = response?.data?.Document?.Recipient?.find(
+        (user: any) =>
+          user.email === (userx?.email !== undefined ? userx?.email : "")
+      );
+      let recipientId = "0";
+      if (recipientxxx) {
+        recipientId = recipientxxx.id;
+      }
+
+      setrecipientid(recipientId);
+      console.log(recipientId, "recipient ddd");
       const fields = response?.data?.Document?.Field?.filter((item: IField) => {
         return item.recipientId === recipientId;
       });
@@ -89,11 +99,21 @@ const page = () => {
       if (userx?.id) {
         const user = recipients.find((user) => user.email === userx?.email);
 
-        if (user?.signnumber === recipients?.length - 1) {
-          setIsLast(true);
+        if (response?.data?.Document.isOrder) {
+          if (user?.signnumber === recipients?.length - 1) {
+            setIsLast(true);
+          }
+        } else {
+          const notsignedrecipients = recipients.filter((recipient) => {
+            return recipient.signingStatus === "NOT_SIGNED";
+          });
+          if (user?.signnumber === notsignedrecipients?.length - 1) {
+            setIsLast(true);
+          }
         }
+
         console.log("step6", user);
-        if (user) {
+        if (user && response?.data?.Document.isOrder) {
           if (user.signnumber !== signNumber) {
             console.log("333");
             toast(
@@ -119,7 +139,7 @@ const page = () => {
     };
 
     getDocument();
-  }, [params, signNumber, url]);
+  }, [params, signNumber, url, email]);
 
   const handleSign = async () => {
     const signDoc = async () => {
@@ -133,6 +153,7 @@ const page = () => {
             copiedItems: copiedItems,
             isLast: isLast,
             recipientEmail: email,
+            recipientid: recipientid,
           }
         );
         console.log(response, "funny");
@@ -142,7 +163,7 @@ const page = () => {
         setLoading(false);
       }
 
-      router.push(`/`);
+      router.push(`https://ex-sign-swift.vercel.app/user/${params.id}`);
     };
     signDoc();
   };

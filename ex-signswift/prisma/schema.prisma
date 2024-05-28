@@ -73,6 +73,7 @@ model Document {
   signnumber  Int?           @default(0)
   Active      Boolean        @default(true)
   Expiration  DateTime?
+  isOrder     Boolean        @default(false)
   Field       Field[]
   Recipient   Recipient[]
 

@@ -1,6 +1,6 @@
 "use client";
 import PdfViewer from "@/components/PdfViewer/viewer";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -42,6 +42,8 @@ interface IData {
     title: string;
     status: string;
     updatedAt: Date;
+    isOrder: boolean;
+    Expiration: Date;
   };
 }
 
@@ -51,6 +53,10 @@ export default function Document({
   params: { id: string; documentId: string };
 }) {
   const router = useRouter();
+
+  const checkHandler = () => {
+    setIsChecked(!isChecked);
+  };
   const { loading, error, data, request } = useApi(getDocumentById) as {
     loading: boolean;
     error: string;
@@ -72,12 +78,20 @@ export default function Document({
   useEffect(() => {
     request({ docId: params.documentId });
   }, [params]);
+  const [isChecked, setIsChecked] = useState(data?.Document.isOrder);
+  console.log(isChecked, "hello uwuw");
+
+  useEffect(() => {
+    setIsChecked(data?.Document.isOrder);
+  }, [data]);
 
   const handleSave = () => {
+    console.log(isChecked);
     const data = {
       id: params.documentId,
       title: title,
       expiration: date,
+      isOrder: isChecked,
     };
     request2(data);
   };
@@ -177,6 +191,19 @@ export default function Document({
                         </PopoverContent>
                       </Popover>
                     </div>
+                  </div>
+
+                  <div className="flex items-center mb-4 m-3">
+                    <input
+                      id="default-checkbox"
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={checkHandler}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                      Document should be signed in an order
+                    </label>
                   </div>
 
                   <div className="p-5 pb-0 mt-72">

@@ -320,16 +320,25 @@ export async function POST(req: NextRequest, res: NextResponse) {
   try {
     var oldurl = "";
     var pdfbytes4;
-    const { docId, copiedItems, isLast, recipientEmail } = await req.json();
+    const { docId, copiedItems, isLast, recipientEmail, recipientid } =
+      await req.json();
     console.log(recipientEmail);
 
     const document = await prisma.document.findUnique({
       where: { id: parseInt(docId) },
       include: {
         Field: { include: { Signature: true } },
+        Recipient: { include: {} },
       },
     });
-
+    console.log(document?.Recipient, "hello recipeints");
+    const resdxxx = await prisma.recipient.update({
+      where: { id: parseInt(recipientid) },
+      data: {
+        signingStatus: "SIGNED",
+      },
+    });
+    console.log(resdxxx);
     if (!document) throw new Error("Document not found");
 
     let userId = document.userId;
@@ -350,13 +359,17 @@ export async function POST(req: NextRequest, res: NextResponse) {
       }));
 
       await prisma.signature.createMany({ data: signFields });
-
       const document2 = await prisma.document.findUnique({
         where: { id: parseInt(docId) },
         include: {
-          Field: { include: { Signature: true } },
+          Field: {
+            include: {
+              Signature: true,
+            },
+          },
         },
       });
+      console.log(document2);
 
       if (!document2) throw new Error("Document not found on final update");
 
@@ -437,10 +450,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
         },
       });
       console.log(resd);
+      const emaillist = [];
+      document?.Recipient.map((user) => {
+        emaillist.push(user.email);
+      });
+      emaillist.push(recipientEmail);
+      emaillist.push(user2.email);
 
       const mailOptions = {
         from: process.env.SMTP_MAIL,
-        to: [user2.email, recipientEmail],
+        to: emaillist,
         subject: "check_multiple in main",
         html: `<h3>Your document is signed by all recipients</h3> <a href=${presignedUrltodownload}>Link to Completed Document</a>`,
       };

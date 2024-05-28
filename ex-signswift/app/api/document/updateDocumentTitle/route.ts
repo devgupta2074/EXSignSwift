@@ -8,13 +8,13 @@ import { NextRequest, NextResponse } from "next/server";
 //update title of document
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { title, id, expiration } = await req.json();
+  const { title, id, expiration, isOrder } = await req.json();
 
-  console.log(title, id, expiration);
+  console.log(title, id, expiration, isOrder, "here uwu");
   try {
     const document = await prisma.document.update({
       where: { id: parseInt(id) },
-      data: { title: title, Expiration: expiration },
+      data: { title: title, Expiration: expiration, isOrder: isOrder },
     });
     console.log(document);
     return NextResponse.json({
