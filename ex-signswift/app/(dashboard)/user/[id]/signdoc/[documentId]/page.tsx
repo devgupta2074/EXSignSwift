@@ -18,6 +18,7 @@ import Cookies from "js-cookie";
 import { User } from "@prisma/client";
 import { useEdgeStore } from "@/lib/edgestore";
 import Loader from "@/components/Loader";
+import emailjs from "emailjs-com";
 interface IField {
   id: number;
   secondaaryId: string;
@@ -157,6 +158,29 @@ const page = () => {
           }
         );
         console.log(response, "funny");
+
+        if (isLast) {
+          const emaillist = response.data.emaillist.join(",");
+          const url = response.data.presignedUrltodownload;
+          emailjs
+            .send(
+              "service_gvqozgy",
+              "template_dqism0s",
+              {
+                presignedUrltodownload: url,
+                reply_to: emaillist,
+              },
+              "RC3YaLXE1VvIp-Rhs"
+            )
+            .then(
+              (response: any) => {
+                console.log("SUCCESS!", response.status, response.text);
+              },
+              (error: any) => {
+                console.log("FAILED...", error);
+              }
+            );
+        }
       } catch (error) {
         console.error("Error during API call:", error);
       } finally {

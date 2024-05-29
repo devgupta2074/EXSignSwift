@@ -280,6 +280,8 @@ import prisma from "../../../../lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
 import { PDFDocument } from "pdf-lib";
+import emailjs from "emailjs-com";
+
 import {
   createPresignedUrlToDownload,
   createPresignedUrlToUpload,
@@ -457,30 +459,35 @@ export async function POST(req: NextRequest, res: NextResponse) {
       emaillist.push(recipientEmail);
       emaillist.push(user2.email);
 
-      const mailOptions = {
-        from: process.env.SMTP_MAIL,
-        to: emaillist,
-        subject: "check_multiple in main",
-        html: `<h3>Your document is signed by all recipients</h3> <a href=${presignedUrltodownload}>Link to Completed Document</a>`,
-      };
-      console.log("mail options", mailOptions);
-
       try {
-        const info = await transporter.sendMail(mailOptions);
-        if (info) {
-          const webhookUrl = `http://localhost:5001/webhook/updateLetterStatus/${docId}`; // Replace with your actual webhook URL
+        // const info = await transporter.sendMail(mailOptions);
+        // if (info) {
+        const webhookUrl = `http://localhost:5001/webhook/updateLetterStatus/${docId}`; // Replace with your actual webhook URL
 
-          await fetch(webhookUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-        }
-        console.log("Email sent successfully:", info);
+        await fetch(webhookUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        // }
+        // console.log("Email sent successfully:", info);
       } catch (error) {
         console.error("Error sending email:", error);
       }
+      return Response.json({
+        status: 200,
+        emaillist: emaillist,
+        presignedUrltodownload: presignedUrltodownload,
+      });
+
+      // const mailOptions = {
+      //   from: process.env.SMTP_MAIL,
+      //   to: emaillist,
+      //   subject: "check_multiple in main",
+      //   html: `<h3>Your document is signed by all recipients</h3> <a href=${presignedUrltodownload}>Link to Completed Document</a>`,
+      // };
+      // console.log("mail options", mailOptions);
     } else {
       const signFields = copiedItems.map((item: any) => ({
         fieldId: item.id,
