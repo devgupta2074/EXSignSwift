@@ -434,9 +434,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         fileNameInBucket: fileName,
       };
 
-      const uploadtos3 = (await uploadToS3(presignedurl, file)).json();
-      console.log(uploadtos3, "upload to S3 put");
-
+      const uploadtos3 = await uploadToS3(presignedurl, file);
       const presignedUrltodownload = await createPresignedUrlToDownload({
         bucketName: process.env.S3_BUCKET_NAME || "ipvms-dev",
         fileName: fileName,
