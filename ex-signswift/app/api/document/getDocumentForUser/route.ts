@@ -30,18 +30,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
               },
             },
           },
-          {
-            OR: [
-              {
-                Expiration: {
-                  gt: new Date(),
-                },
-              },
-              {
-                Expiration: null,
-              },
-            ],
-          },
+
           {
             Active: true,
           },
