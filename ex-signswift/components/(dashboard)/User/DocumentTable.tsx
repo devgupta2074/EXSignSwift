@@ -62,7 +62,8 @@ export function DocumentTable({
   >([]);
   console.log(id);
   const actionStatus = (status: any, link: any) => {
-    console.log(status, link);
+    const role = link?.Recipient?.filter((x: any) => x.email === email)[0].role;
+    console.log(status, link, role, "ffffS");
     if (status === "DRAFT") {
       return (
         <div className="inline-flex items-center justify-center rounded-md text-sm font-medium">
@@ -84,7 +85,7 @@ export function DocumentTable({
           Edit
         </div>
       );
-    } else if (status === "SIGN" && link.Recipient[0].role == "SIGNER") {
+    } else if (status === "SIGN" && role == "SIGNER") {
       return (
         <div className="inline-flex items-center justify-center rounded-md text-sm font-medium">
           <svg
@@ -105,7 +106,7 @@ export function DocumentTable({
           Sign
         </div>
       );
-    } else if (status === "SIGN" && link.Recipient[0].role == "VIEWER") {
+    } else if (status === "SIGN" && role == "VIEWER") {
       console.log("hello");
       return (
         <div className="inline-flex items-center  justify-center rounded-md text-sm font-medium">
@@ -405,14 +406,11 @@ export function DocumentTable({
                         className="bg-rose-400  w-28 p-2 hover:bg-rose-500 text-white font-medium "
                         onClick={() => {
                           if (!isExpired(link?.Expiration)) {
-                            router.push(
-                              actionStatusUrl(
-                                link,
-                                link.Recipient !== undefined
-                                  ? link.Recipient[0].role
-                                  : ""
-                              )
-                            );
+                            const role = link?.Recipient.filter(
+                              (x: any) => x.email === email
+                            )[0].role;
+                            console.log("xxxxxx", role);
+                            router.push(actionStatusUrl(link, role));
                           }
                         }}
                       >
