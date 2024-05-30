@@ -8,7 +8,10 @@ import { NextRequest, NextResponse } from "next/server";
 //update title of document
 
 export async function POST(req: NextRequest, res: NextApiResponse) {
-  const { title, id, expiration, isOrder } = await req.json();
+  let { title, id, expiration, isOrder } = await req.json();
+  const currentDate = new Date(expiration);
+  currentDate.setHours(23, 59, 59, 999);
+  expiration = currentDate.toISOString();
 
   console.log(title, id, expiration, isOrder, "here uwu");
   try {

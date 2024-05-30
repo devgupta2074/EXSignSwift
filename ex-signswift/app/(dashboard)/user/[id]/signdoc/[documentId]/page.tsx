@@ -180,6 +180,27 @@ const page = () => {
                 console.log("FAILED...", error);
               }
             );
+        } else {
+          if (response?.data?.signedbyone) {
+            emailjs
+              .send(
+                "service_gvqozgy",
+                "template_w3ieoye",
+                {
+                  signed_by: response?.data?.recipientemail,
+                  reply_to: response?.data?.reply_to,
+                },
+                "RC3YaLXE1VvIp-Rhs"
+              )
+              .then(
+                (response: any) => {
+                  console.log("SUCCESS!", response.status, response.text);
+                },
+                (error: any) => {
+                  console.log("FAILED...", error);
+                }
+              );
+          }
         }
       } catch (error) {
         console.error("Error during API call:", error);

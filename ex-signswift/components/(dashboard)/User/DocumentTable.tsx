@@ -421,13 +421,11 @@ export function DocumentTable({
                       </Button>
                     </TableCell>
                     <TableCell>
-                      {isExpired(link?.Expiration) &&
-                        (link.status === "PENDING" ||
-                          link.status === "SIGN") && (
-                          <div className="inline-flex items-center justify-center bg-red-500 text-white text-xs font-medium rounded-full px-2 py-1">
-                            Expired
-                          </div>
-                        )}
+                      {isExpired(link?.Expiration) && (
+                        <div className="inline-flex items-center justify-center bg-red-500 text-white text-xs font-medium rounded-full px-2 py-1">
+                          Expired
+                        </div>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))

@@ -507,12 +507,19 @@ export async function POST(req: NextRequest, res: NextResponse) {
         data: { signnumber: { increment: 1 } },
       });
 
-      await transporter.sendMail(mailOptions2, (error: any, info: any) => {
-        if (error) {
-          console.error("Error sending email:", error);
-        } else {
-          console.log("Email sent successfully!");
-        }
+      // await transporter.sendMail(mailOptions2, (error: any, info: any) => {
+      //   if (error) {
+      //     console.error("Error sending email:", error);
+      //   } else {
+      //     console.log("Email sent successfully!");
+      //   }
+      // });
+
+      return Response.json({
+        status: 200,
+        recipientemail: recipientEmail,
+        reply_to: user2?.email || "guptadev265@gmail.com",
+        signedbyone: true,
       });
     }
     console.log("hello");
