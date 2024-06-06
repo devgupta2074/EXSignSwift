@@ -459,7 +459,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
       try {
         // const info = await transporter.sendMail(mailOptions);
-        // if (info) {
+        // if (info) {xxxx
         const webhookUrl = `http://ipvms-api.exitest.com/webhook/updateLetterStatus/${docId}`; // Replace with your actual webhook URL
 
         await fetch(webhookUrl, {
