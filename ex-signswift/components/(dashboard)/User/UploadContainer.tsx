@@ -18,7 +18,7 @@ export async function getPresignedUrl(file: FileProps) {
   console.log(file.name);
   const response = await fetch(`/api/files/download/presignedUrl/${file.id}`);
   const res = await response.json();
-  console.log();
+  console.log(res);
 
   return res?.message;
 }
@@ -93,6 +93,7 @@ export default function UploadContainer(id: { id: string }) {
 
           const presignedUrl = await getPresignedUrl(body[0]);
           console.log(presignedUrl);
+          console.log("dev body", body);
           const response = await axios.post("/api/document/uploadDocument", {
             userId: id.id,
             ShareLink: presignedUrl,

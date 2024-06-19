@@ -6,7 +6,7 @@ import type {
 import type { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 
-import { SupabaseAdapter } from "@auth/supabase-adapter";
+// import { SupabaseAdapter } from "@auth/supabase-adapter";
 import { getServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -22,11 +22,7 @@ export const config = {
       clientSecret: "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",
     }),
   ],
-  adapter: SupabaseAdapter({
-    url: "https://bxmmvowyynlggzhyuhid.supabase.co",
-    secret:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4bW12b3d5eW5sZ2d6aHl1aGlkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwOTcxODIzNSwiZXhwIjoyMDI1Mjk0MjM1fQ.rOfF5lgXV-AcTr_jGzX-oFhtsqFkh380w-kA6I1cmWE",
-  }) as Adapter,
+
   callbacks: {
     session: async ({ session, token }) => {
       console.log(token);
